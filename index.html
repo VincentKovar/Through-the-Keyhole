@@ -3,53 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome</title>
+    <title>Through the Keyhole</title>
     <style>
         body {
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-        form {
-            display: flex;
+            height: 100vh;
             flex-direction: column;
-            align-items: center;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            /* Add background here */
+            background: #f0f0f0;
         }
-        input, button {
-            margin: 10px;
+        .container {
+            max-width: 90%;
+            width: 300px;
+            text-align: center;
+        }
+        .logo {
+            width: 50px; /* Adjust size as needed */
+            height: auto;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
             padding: 10px;
-            font-size: 16px;
+            margin: 10px 0;
+            box-sizing: border-box;
         }
-        .footer-image {
-            position: absolute;
-            bottom: 10px;
-            width: 50px;
-            height: 50px;
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-    <h1>Welcome</h1>
-    <form id="nameForm">
-        <label for="nameInput">Enter your name:</label>
-        <input type="text" id="nameInput" name="nameInput" required>
-        <button type="submit">Submit</button>
-    </form>
-    <img src="https://static.wixstatic.com/media/cfee67_19fd25117c35424cb3230af8f9250f54~mv2.png/v1/fill/w_268,h_268,al_c,q_85,usm_1.20_1.00_0.01,enc_auto/WhBr-Rabbit-logo-golden-220609-v1.png" class="footer-image" alt="Footer Image">
+    <div class="container">
+        <img src="https://static.wixstatic.com/media/cfee67_19fd25117c35424cb3230af8f9250f54~mv2.png/v1/fill/w_268,h_268,al_c,q_85,usm_1.20_1.00_0.01,enc_auto/WhBr-Rabbit-logo-golden-220609-v1.png" alt="Logo" class="logo">
+        <h1>Welcome to Through the Keyhole</h1>
+        <p>Please enter "Key One" into the text box below.</p>
+        <input type="text" id="keyInput" placeholder="Enter Key One">
+        <button onclick="navigate()">Submit</button>
+    </div>
     <script>
-        document.getElementById('nameForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const name = document.getElementById('nameInput').value;
-            if (name.toLowerCase() === 'bob') {
+        function navigate() {
+            const key = document.getElementById('keyInput').value.trim().toLowerCase();
+            if (key === 'kimble') {
                 window.location.href = 'pageA.html';
             } else {
                 window.location.href = 'pageB.html';
             }
-        });
+        }
     </script>
 </body>
 </html>
