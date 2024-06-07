@@ -72,7 +72,17 @@
         <button onclick="navigate()">Submit</button>
         <p id="error-message" class="error-message"></p>
     </div>
+
+    <!-- Audio element -->
+    <audio id="background-audio" src="LockII-Audio.mp3" type="audio/mpeg"></audio>
+
     <script>
+        // Play audio when the page loads
+        window.onload = function() {
+            var audio = document.getElementById('background-audio');
+            audio.play();
+        };
+
         function navigate() {
             const enteredValue = parseInt(document.getElementById('keyInput').value.trim());
             const minValue = 222 - 8;
