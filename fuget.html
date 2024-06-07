@@ -59,17 +59,17 @@
         <h1>Through the Keyhole</h1>
         <h2>Lock IV</h2>
         <p>The bride of justice, go stand beside<br>
-        Twixt two faces fuget, behind whose hands they hide.<br>
-        For we're all late or early from time to time,<br>
-        But it's the difference you seek here in this rhyme.<br>
+        Twixt two faces fuget,<br> behind whose hands they hide.<br>
+        For we're all late or early<br> from time to time,<br>
+        But it's the difference you seek<br> here in this rhyme.<br>
         Between the river and rails of the track,<br>
-        Time flows onward but does not turn back.<br>
+        Time flows onward<br> but does not turn back.<br>
         Perhaps one runs right and one runs slow,<br>
         The secret counts on you to know.<br>
         For time ticks on, look and you’ll see.<br>
         The space between shall reveal the key.</p>
         <input type="text" id="keyInput" placeholder="Enter the number">
-        <button id="playButton">Play Audio</button>
+        <button onclick="checkAnswer()">Submit</button>
         <p id="error-message" class="error-message"></p>
     </div>
 
@@ -77,12 +77,12 @@
     <audio id="background-audio" src="old-fashioned-clock-sound-37729.mp3" type="audio/mpeg"></audio>
 
     <script>
-        document.getElementById('playButton').addEventListener('click', function() {
+        function playAudio() {
             var audio = document.getElementById('background-audio');
             audio.play();
-        });
+        }
 
-        function navigate() {
+        function checkAnswer() {
             const enteredValue = parseInt(document.getElementById('keyInput').value.trim());
             const minValue = 222 - 8;
             const maxValue = 222 + 8;
@@ -93,6 +93,7 @@
             } else {
                 errorMessage.textContent = 'The difference in total minutes. Numbers only.';
                 document.getElementById('keyInput').value = '';
+                playAudio(); // Play sound effect for wrong answer
             }
         }
     </script>
