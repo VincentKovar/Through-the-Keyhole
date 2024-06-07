@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Through the Keyhole</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background: #f0f0f0; /* Add background here */
+        }
+        .container {
+            max-width: 90%;
+            width: 300px;
+            text-align: center;
+        }
+        .logo {
+            width: 150px; /* Adjust size as needed */
+            height: auto;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .audio-player {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="IOOF.png" alt="Logo" class="logo">
+        <h1>Through the Keyhole</h1>
+         <h2>Lock II</h2>
+        <p>Here is Secret Message A. Write it in your book. You will need it to solve Lock III</p>
+        <p>5-3-2, 8-5-2, 8-4-4, 3-6-4, 2-3-3, 6-7-2, 3-3-2</p>
+        <input type="text" id="keyInput" placeholder="Enter the Founding Day — Key Two">
+        <button onclick="navigate()">Submit</button>
+    </div>
+   <script>
+    function navigate() {
+        const enteredKey = document.getElementById('keyInput').value.trim().toLowerCase(); // Convert entered key to lowercase
+        const comparisonKey = 'monday'.toLowerCase(); // Convert comparison key to lowercase
+
+        if (enteredKey === comparisonKey) {
+            window.location.href = 'goddess.html';
+        } else {
+            window.location.href = 'forbiddenway.html'; // Navigate to hint2 page for wrong input
+        }
+    }
+</script>
+
+
+</body>
+</html>
