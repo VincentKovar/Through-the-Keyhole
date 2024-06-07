@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Through the Keyhole</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background: #f0f0f0; /* Add background here */
+        }
+        .container {
+            max-width: 90%;
+            width: 300px;
+            text-align: center;
+        }
+        .logo {
+            width: 150px; /* Adjust size as needed */
+            height: auto;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error-message {
+            color: red;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://static.wixstatic.com/media/cfee67_19fd25117c35424cb3230af8f9250f54~mv2.png/v1/fill/w_268,h_268,al_c,q_85,usm_1.20_1.00_0.01,enc_auto/WhBr-Rabbit-logo-golden-220609-v1.png" alt="Logo" class="logo">
+        <h1>Through the Keyhole</h1>
+        <h2>Lock IV</h2>
+        <p>The bride of justice, go stand beside<br>
+        Twixt two faces fuget, behind whose hands they hide.<br>
+        For we're all late or early from time to time,<br>
+        But it's the difference you seek here in this rhyme.<br>
+        Between the river and rails of the track,<br>
+        Time flows onward but does not turn back.<br>
+        Perhaps one runs right and one runs slow,<br>
+        The secret counts on you to know.<br>
+        For time ticks on, look and you’ll see.<br>
+        The space between shall reveal the key.</p>
+        <input type="text" id="keyInput" placeholder="Enter the number">
+        <button onclick="navigate()">Submit</button>
+        <p id="error-message" class="error-message"></p>
+    </div>
+    <script>
+        function navigate() {
+            const enteredValue = parseInt(document.getElementById('keyInput').value.trim());
+            const minValue = 222 - 8;
+            const maxValue = 222 + 8;
+            const errorMessage = document.getElementById('error-message');
+
+            if (!isNaN(enteredValue) && enteredValue >= minValue && enteredValue <= maxValue) {
+                window.location.href = 'lostlanguage.html';
+            } else {
+                errorMessage.textContent = 'The difference in total minutes. Numbers only.';
+                document.getElementById('keyInput').value = '';
+            }
+        }
+    </script>
+</body>
+</html>
