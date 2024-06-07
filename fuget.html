@@ -55,21 +55,21 @@
 </head>
 <body>
     <div class="container">
-        <img src="WhBr-Rabbit-logo-golden-220609-v1.png" alt="Logo" class="logo">
+        <img src="WhBr-Rabbit-logo-golden-220609-v1.png">
         <h1>Through the Keyhole</h1>
         <h2>Lock IV</h2>
         <p>The bride of justice, go stand beside<br>
-        Twixt two faces fuget,<br> behind whose hands they hide.<br>
-        For we're all late or early<br> from time to time,<br>
-        But it's the difference you seek<br> here in this rhyme.<br>
+        Twixt two faces fuget, behind whose hands they hide.<br>
+        For we're all late or early from time to time,<br>
+        But it's the difference you seek here in this rhyme.<br>
         Between the river and rails of the track,<br>
-        Time flows onward<br> but does not turn back.<br>
+        Time flows onward but does not turn back.<br>
         Perhaps one runs right and one runs slow,<br>
         The secret counts on you to know.<br>
         For time ticks on, look and you’ll see.<br>
         The space between shall reveal the key.</p>
         <input type="text" id="keyInput" placeholder="Enter the number">
-        <button onclick="navigate()">Submit</button>
+        <button id="playButton">Play Audio</button>
         <p id="error-message" class="error-message"></p>
     </div>
 
@@ -77,11 +77,10 @@
     <audio id="background-audio" src="old-fashioned-clock-sound-37729.mp3" type="audio/mpeg"></audio>
 
     <script>
-        // Play audio when the page loads
-        window.onload = function() {
+        document.getElementById('playButton').addEventListener('click', function() {
             var audio = document.getElementById('background-audio');
             audio.play();
-        };
+        });
 
         function navigate() {
             const enteredValue = parseInt(document.getElementById('keyInput').value.trim());
