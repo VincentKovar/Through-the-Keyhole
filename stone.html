@@ -95,7 +95,7 @@
         <p>How many years did they share?</p>
         <input type="text" id="keyInput" placeholder="enter numbers">
         <button onclick="navigate()">Submit</button>
-        <p id="error-message">Look at the dates by their feet.</p>
+        <p id="error-message">Their overlapping years were quite grounded.</p>
     </div>
 
     <script>
@@ -117,12 +117,13 @@
         function handleOrientation(event) {
             const needle = document.getElementById('needle');
             const alpha = event.alpha || 0; // Compass direction in degrees
+            const adjustedAlpha = (alpha + 180) % 360; // Adjust for holding phone in front
 
             // Set rotation of the needle
-            needle.style.transform = `translateX(-50%) rotate(${alpha}deg)`;
+            needle.style.transform = `translateX(-50%) rotate(${adjustedAlpha}deg)`;
 
             // Change needle color based on orientation
-            if (alpha > 157.5 && alpha < 202.5) { // South-Southeast (SSE)
+            if (adjustedAlpha > 157.5 && adjustedAlpha < 202.5) { // South-Southeast (SSE)
                 needle.style.backgroundColor = 'green';
             } else {
                 needle.style.backgroundColor = 'red';
