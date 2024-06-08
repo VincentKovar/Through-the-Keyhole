@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Through the Keyhole</title>
-     <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
     <style>
         body {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
             height: 100vh;
-            flex-direction: column;
             font-family: Arial, sans-serif;
             text-align: center;
             margin: 0;
@@ -22,6 +22,7 @@
             max-width: 90%;
             width: 300px;
             text-align: center;
+            margin-top: 20px;
         }
         .logo {
             width: 300px; /* Adjust size as needed */
@@ -49,18 +50,26 @@
         .audio-player {
             margin-bottom: 20px;
         }
+        .bottom-image {
+            width: 200px; /* Adjust size to be smaller than the top image */
+            height: auto;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <img src="IOOF.png" alt="Logo" class="logo">
         <h2>Through the Keyhole</h2>
-         <p>Here is Secret Message A.<br> Write it in your book. </p>
-        <p>5-3-2,    8-5-2,    8-4-4,    3-6-4,<br>2-3-3,    6-7-2,    3-3-2</p>
+        <p>Here is Secret Message A.<br> Write it in your book. </p>
+        <p>5-3-2, 8-5-2, 8-4-4, 3-6-4,<br>2-3-3, 6-7-2, 3-3-2</p>
         <p>You will need it to solve Lock III and Lock IV is hidden at this location</p>
-        <p><i>Remember, hidden clues do no require you to enter or open any physical locations or items</i></p>
+        <p><i>Remember, hidden clues do not require opening or entering any physical locations</i></p>
         <p>(Though you are always welcome to take a break to shop or have a snack)</p>
-        
+    </div>
+    <div>
+        <img src="keyclue.png" class="bottom-image" alt="Key Clue">
     </div>
 </body>
 </html>
+
