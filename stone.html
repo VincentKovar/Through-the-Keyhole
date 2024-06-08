@@ -117,7 +117,7 @@
         function handleOrientation(event) {
             const needle = document.getElementById('needle');
             const alpha = event.alpha || 0; // Compass direction in degrees
-            const adjustedAlpha = (alpha + 180) % 360; // Adjust for holding phone in front
+            const adjustedAlpha = (alpha + 90) % 360; // Adjust for holding phone in front
 
             // Set rotation of the needle
             needle.style.transform = `translateX(-50%) rotate(${adjustedAlpha}deg)`;
