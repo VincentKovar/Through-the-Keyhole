@@ -48,15 +48,14 @@
         .audio-player {
             margin-bottom: 20px;
         }
-#compass {
-    width: 80%; /* Adjust width as needed */
-    max-width: 200px; /* Add a maximum width for larger screens */
-    height: auto; /* Remove fixed height */
-    border: 2px solid black;
-    border-radius: 50%;
-    position: relative;
-    margin: 0 auto; /* Center the compass horizontally */
-    margin-bottom: 20px;
+        #compass {
+            width: 80%; /* Adjust width as needed */
+            max-width: 200px; /* Add a maximum width for larger screens */
+            height: auto; /* Remove fixed height */
+            border: 2px solid black;
+            border-radius: 50%;
+            position: relative;
+            margin: 20px auto; /* Center the compass horizontally and add margin */
         }
         #needle {
             width: 2px;
@@ -68,6 +67,11 @@
             transform-origin: 50% 100%;
             transform: translateX(-50%) rotate(0deg);
         }
+        #error-message {
+            color: red;
+            display: none; /* Initially hidden */
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -78,15 +82,29 @@
         <div id="compass">
             <div id="needle"></div>
         </div>
-            <script>
+        <p>Between the sights familiar there<br>
+        These Gates of Knox a treasure bear<br>
+        Make new friends, but keep the old<br>
+        One is silver and the other is gold<br>
+        In Jasper and granite, never alone<br>
+        The years they shared, etched in stone<br></p>
+        <p>How many years did they share?</p>
+        <input type="text" id="keyInput" placeholder="enter numbers">
+        <button onclick="navigate()">Submit</button>
+        <p id="error-message">Find the hidden bride and consider what the language of flowers says about what month she has chosen for her wedding.</p>
+    </div>
+
+    <script>
         function navigate() {
             const enteredKey = document.getElementById('keyInput').value.trim().toLowerCase(); // Convert entered key to lowercase
-            const comparisonKey = '33'; // Correct answer
+            const comparisonKey1 = '33';
+            const comparisonKey2 = 'thirty-three';
 
-            if (enteredKey === comparisonKey || enteredKey === 'thirty-three') {
+            if (enteredKey === comparisonKey1 || enteredKey === comparisonKey2) {
                 window.location.href = 'turn.html'; // Navigate to turn.html for correct answer
             } else {
-                // Add error message or keep on the same page for incorrect answer
+                document.getElementById('error-message').style.display = 'block'; // Show error message for incorrect answer
+                window.open('https://www.mountvernonwa.gov/550/Jasper-Gates-Statue---First-and-Gates-St', '_blank'); // Open the hint page in a new tab
             }
         }
 
@@ -94,9 +112,6 @@
 
         function handleOrientation(event) {
             const needle = document.getElementById('needle');
-            const compass = document.getElementById('compass');
-
-            // Get device orientation
             const alpha = event.alpha || 0; // Compass direction in degrees
 
             // Set rotation of the needle
@@ -110,19 +125,6 @@
             }
         }
     </script>
-        <p>Between the sights familiar there<br>
-        These Gates of Knox a treasure bear<br>
-        Make new friends, but keep the old<br>
-        One is silver and the other is gold<br>
-        In Jasper and granite, never alone<br>
-        The years they shared, etched in stone<br>
-            <br>
-        <p>How many years did they share?</p>
-        <input type="text" id="keyInput" placeholder="enter numbers">
-        <button onclick="navigate()">Submit</button>
-
-    
-    </div>
-
 </body>
 </html>
+
