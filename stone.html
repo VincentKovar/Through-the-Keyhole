@@ -75,6 +75,9 @@
         <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo">
         <h1>Through the Keyhole</h1>
         <h2>Lock V</h2>
+        <div id="compass">
+            <div id="needle"></div>
+        </div>
             <script>
         function navigate() {
             const enteredKey = document.getElementById('keyInput').value.trim().toLowerCase(); // Convert entered key to lowercase
@@ -117,9 +120,7 @@
         <p>How many years did they share?</p>
         <input type="text" id="keyInput" placeholder="enter numbers">
         <button onclick="navigate()">Submit</button>
-        <div id="compass">
-            <div id="needle"></div>
-        </div>
+
     
     </div>
 
