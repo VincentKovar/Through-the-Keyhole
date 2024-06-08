@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Through the Keyhole</title>
-     <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
         body {
@@ -13,27 +13,22 @@
             align-items: center;
             height: 100vh;
             flex-direction: column;
-            font-family: Alice, sans-serif;
+            font-family: 'Alice', serif;
             text-align: center;
             margin: 0;
             padding: 0;
-            background: #ffe4b5; /* Add background here */
+            background: #ffe4b5; /* Background color */
         }
         .container {
             max-width: 90%;
-            width: 300px;
+            width: 100%;
             text-align: center;
+            padding: 20px; /* Padding for better mobile view */
         }
         .logo {
             width: 150px; /* Adjust size as needed */
             height: auto;
             margin-bottom: 20px;
-        }
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            box-sizing: border-box;
         }
         button {
             width: 100%;
@@ -48,33 +43,42 @@
             background-color: #0056b3;
         }
         .audio-player {
+            width: 100%;
             margin-bottom: 20px;
+        }
+        .bottom-image {
+            width: 90%; /* Slightly smaller than the window width */
+            max-width: 100%; /* Ensure it fits within the container */
+            height: auto;
+            margin: 0 auto; /* Center the image */
+        }
+        p {
+            margin: 20px 0; /* Margin for paragraphs */
         }
     </style>
 </head>
 <body>
     <div class="container">
-      <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo">
+        <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo">
         <h1>Through the Keyhole</h1>
-         <h2>Lock VII</h2>
-       <br>
-    <p>How have you been doing so far? Are you writing down all the keys in your book?<br>
-        You'll find the rhymes hint at the general location you should be in<br>
-        But they also might suggest what thing(s) you’re looking for.<br>
-        The decorative images at the top of each lock in this book hint at the theme of each lock<br>
-        but don't forget to look up at your real-world surroundings, too.<br>
-      <br>
-      When you're ready to hop along, turn to Lock VIII in your book for the next location,<br>
-      next puzzle, and next key. 
-      <br>
-      Or, if you're ready for a little break, pop into a local cafe, grab a bit to eat,<br>
-      or maybe pick yourself up something nice from a local merchant.<br>
-      Puzzle solving is hard. You deserve it!
-    <img src="relaxingrabbit.jpeg">
-    
-
-        
-      </p>
-
+        <h2>Lock VII</h2>
+        <p>How have you been doing so far? Are you writing down all the keys in your book?<br>
+            You'll find the rhymes hint at the general location you should be in<br>
+            But they also might suggest what thing(s) you’re looking for.<br>
+            The decorative images at the top of each lock in this book hint at the theme of each lock<br>
+            but don't forget to look up at your real-world surroundings, too.<br>
+        </p>
+        <p>When you're ready to hop along, turn to Lock VIII in your book for the next location,<br>
+            next puzzle, and next key.<br>
+            Or, if you're ready for a little break, pop into a local cafe, grab a bit to eat,<br>
+            or maybe pick yourself up something nice from a local merchant.<br>
+            Puzzle solving is hard. You deserve it!
+        </p>
+        <audio class="audio-player" controls>
+            <source src="Adventure in Swingtime.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <img src="relaxingrabbit.jpeg" class="bottom-image">
+    </div>
 </body>
 </html>
