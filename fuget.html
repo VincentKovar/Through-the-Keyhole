@@ -59,16 +59,16 @@
         <img src="WhBr-Rabbit-logo-golden-220609-v1.png">
         <h1>Through the Keyhole</h1>
         <h2>Lock IV</h2>
-        <p>The bride of justice, go stand beside<br>
-        Twixt two faces fuget,<br> behind whose hands they hide.<br>
+        <p>Two faces fuget,<br> behind whose hands they hide<br>
+        <br>To see them both,<br> stand across and aside.<br>
         For we're all late or early<br> from time to time,<br>
         But it's the difference you seek<br> here in this rhyme.<br>
         Between the river and rails of the track,<br>
         Time flows onward<br> but does not turn back.<br>
         Perhaps one runs right and one runs slow,<br>
-        The secret counts on you to know.<br>
+        The secret <i>counts</i> on you to know.<br>
         For time ticks on, look and you’ll see.<br>
-        The space between shall reveal the key.</p>
+        The space <i>between</i> shall reveal your key.</p>
         <input type="text" id="keyInput" placeholder="Enter the number">
         <button onclick="checkAnswer()">Submit</button>
         <p id="error-message" class="error-message"></p>
@@ -85,8 +85,8 @@
 
         function checkAnswer() {
             const enteredValue = parseInt(document.getElementById('keyInput').value.trim());
-            const minValue = 222 - 8;
-            const maxValue = 222 + 8;
+            const minValue = 222 - 9;
+            const maxValue = 222 + 9;
             const errorMessage = document.getElementById('error-message');
 
             if (!isNaN(enteredValue) && enteredValue >= minValue && enteredValue <= maxValue) {
