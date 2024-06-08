@@ -11,7 +11,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
             flex-direction: column;
             font-family: 'Alice', serif;
             text-align: center;
@@ -20,10 +19,11 @@
             background: #ffe4b5; /* Background color */
         }
         .container {
-            max-width: 90%;
-            width: 100%;
+            width: 90%;
+            max-width: 600px; /* Adjust the max-width as needed */
             text-align: center;
             padding: 20px; /* Padding for better mobile view */
+            box-sizing: border-box; /* Ensure padding doesn't affect width */
         }
         .logo {
             width: 150px; /* Adjust size as needed */
