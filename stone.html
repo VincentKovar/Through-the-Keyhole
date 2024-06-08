@@ -117,13 +117,13 @@
         function handleOrientation(event) {
             const needle = document.getElementById('needle');
             const alpha = event.alpha || 0; // Compass direction in degrees
-            const adjustedAlpha = (alpha + 90) % 360; // Adjust for holding phone in front
+            const adjustedAlpha = (alpha + 180) % 360; // Adjust for holding phone in front
 
             // Set rotation of the needle
             needle.style.transform = `translateX(-50%) rotate(${adjustedAlpha}deg)`;
 
             // Change needle color based on orientation
-            if (adjustedAlpha > 157.5 && adjustedAlpha < 202.5) { // South-Southeast (SSE)
+            if ((alpha > 157.5 && alpha < 202.5) || (alpha > 337.5 || alpha < 22.5)) { // South-Southeast (SSE)
                 needle.style.backgroundColor = 'green';
             } else {
                 needle.style.backgroundColor = 'red';
