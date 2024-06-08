@@ -4,14 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Through the Keyhole</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
         body {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             flex-direction: column;
-            font-family: Arial, sans-serif;
+            font-family: 'Alice', serif;
             text-align: center;
             margin: 0;
             padding: 0;
@@ -51,18 +53,20 @@
         #compass {
             width: 80%; /* Adjust width as needed */
             max-width: 200px; /* Add a maximum width for larger screens */
-            height: auto; /* Remove fixed height */
+            height: 0; /* Set height to 0 to maintain aspect ratio */
+            padding-bottom: 80%; /* Adjust this to maintain the circle */
             border: 2px solid black;
             border-radius: 50%;
             position: relative;
             margin: 20px auto; /* Center the compass horizontally and add margin */
+            box-sizing: border-box;
         }
         #needle {
             width: 2px;
-            height: 40px;
+            height: 40%;
             background-color: red;
             position: absolute;
-            top: 50%;
+            top: 10%;
             left: 50%;
             transform-origin: 50% 100%;
             transform: translateX(-50%) rotate(0deg);
@@ -91,7 +95,7 @@
         <p>How many years did they share?</p>
         <input type="text" id="keyInput" placeholder="enter numbers">
         <button onclick="navigate()">Submit</button>
-        <p id="error-message">look down</p>
+        <p id="error-message">Look at the dates by their feet.</p>
     </div>
 
     <script>
@@ -127,4 +131,3 @@
     </script>
 </body>
 </html>
-
