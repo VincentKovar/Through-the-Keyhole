@@ -50,6 +50,10 @@
         .audio-player {
             margin-bottom: 20px;
         }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -61,6 +65,7 @@
         <p>Please enter "Key Five" into the text box below.</p>
         <input type="text" id="keyInput" placeholder="Enter the month">
         <button onclick="navigate()">Submit</button>
+        <p id="errorMessage" class="error-message" style="display: none;">Find the hidden bride and consider what the language of flowers says about what month she has chosen for her wedding.</p>
     </div>
    <script>
     function navigate() {
@@ -68,13 +73,12 @@
         const comparisonKey = 'march'.toLowerCase(); // Convert comparison key to lowercase
 
         if (enteredKey === comparisonKey) {
-            window.location.href = 'goddess.html';
+            window.location.href = 'stone.html';
         } else {
-            window.location.href = 'forbiddenway.html'; // Navigate to hint2 page for wrong input
+            document.getElementById('errorMessage').style.display = 'block'; // Show error message
         }
     }
 </script>
-
-
 </body>
 </html>
+
