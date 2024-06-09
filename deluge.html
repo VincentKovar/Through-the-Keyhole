@@ -73,23 +73,37 @@
         <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo">
         <h1>Through the Keyhole</h1>
         <h2>Lock VII</h2>
-        <p>What is the next number in this sequence?</p>
+        <p>Can you find the next number in this sequence of Noah's foe?</p>
         <input type="text" id="keyInput" placeholder="three digits">
         <button onclick="navigate()">Submit</button>
+        <br>
         <p id="error-message">Apres moi, le deluge.</p>
         <img src="deluge.jpg" class="bottom-image">
     </div>
 
     <script>
+        let incorrectAttempts = 0;
+
         function navigate() {
             const enteredKey = document.getElementById('keyInput').value.trim().toLowerCase(); // Convert entered key to lowercase
             const comparisonKey1 = '021';
+            const errorMessage = document.getElementById('error-message');
 
             if (enteredKey === comparisonKey1) {
                 window.location.href = 'myrtle.html'; // Navigate to myrtle.html for correct answer
             } else {
-                document.getElementById('error-message').style.display = 'block'; // Show error message for incorrect answer
-                window.open('https://skagittalk.com/2021/03/24/a-brief-look-at-historic-skagit-river-floods/', '_blank'); // Open the hint page in a new tab
+                incorrectAttempts++;
+
+                if (incorrectAttempts === 1) {
+                    errorMessage.textContent = 'Apres moi, le deluge.';
+                } else if (incorrectAttempts === 2) {
+                    errorMessage.textContent = 'Placeholder text for second incorrect guess.';
+                } else if (incorrectAttempts >= 3) {
+                    errorMessage.textContent = 'Another placeholder text for third incorrect guess.';
+                    window.open('https://skagittalk.com/2021/03/24/a-brief-look-at-historic-skagit-river-floods/', '_blank'); // Open the hint page in a new tab
+                }
+
+                errorMessage.style.display = 'block'; // Show error message for incorrect answer
             }
         }
     </script>
