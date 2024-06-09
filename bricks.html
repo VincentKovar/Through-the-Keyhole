@@ -36,6 +36,7 @@
             padding: 10px;
             margin: 10px 0;
             box-sizing: border-box;
+            font-size: 16px; /* Increase font size for better readability on mobile */
         }
         button {
             width: 100%;
@@ -45,6 +46,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 16px; /* Increase font size for better readability on mobile */
         }
         button:hover {
             background-color: #0056b3;
@@ -52,6 +54,7 @@
         #error-message {
             color: red;
             margin-top: 10px;
+            font-size: 14px; /* Adjust font size for mobile */
         }
         iframe {
             width: 100%;
@@ -61,6 +64,18 @@
         }
         p {
             margin: 20px 0; /* Margin for paragraphs */
+            font-size: 16px; /* Increase font size for better readability on mobile */
+        }
+        @media (max-width: 600px) {
+            h1, h2 {
+                font-size: 24px; /* Adjust font size for smaller screens */
+            }
+            input[type="text"] {
+                font-size: 14px; /* Adjust input font size for smaller screens */
+            }
+            button {
+                font-size: 14px; /* Adjust button font size for smaller screens */
+            }
         }
     </style>
 </head>
