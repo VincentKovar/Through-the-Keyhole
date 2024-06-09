@@ -63,6 +63,16 @@
             display: none; /* Initially hidden */
             margin-top: 10px;
         }
+        #error-image {
+            display: none; /* Initially hidden */
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 10px;
+            transition: transform 0.3s ease-in-out; /* Smooth zoom effect */
+        }
+        #error-image.zoomed {
+            transform: scale(1.5); /* Zoom to 1.5 times original size */
+        }
         p {
             margin: 20px 0; /* Margin for paragraphs */
         }
@@ -80,11 +90,10 @@
             But don’t stop just on precedent,<br>
             On king’s corner now sleeps a President.<br>
         </p>
+        <img id="error-image" src="" class="bottom-image">
         <p id="error-message"></p>
-        <input type="text" id="keyInput" placeholder="four characters">
+        <input type="text" id="keyInput" placeholder="enter any guess for hints">
         <button onclick="navigate()">Submit</button>
-        <br>
-        <img id="error-image" src="" class="bottom-image" style="display: none;">
     </div>
 
     <script>
@@ -107,7 +116,7 @@
                 } else if (incorrectAttempts === 2) {
                     errorMessage.textContent = 'The maps in the book help you find not only where things are, but where they were. Keep your chins up and you might see hints you\'re going the right way.';
                 } else if (incorrectAttempts === 3) {
-                    window.open('Windsor.jpeg', '_blank'); // Open the image in a new tab
+                    window.open('https://maps.app.goo.gl/7za688hPRM4rCAB76', '_blank'); // Open the Google Maps link in a new tab
                 } else if (incorrectAttempts >= 4) {
                     errorImage.style.display = 'block';
                     errorImage.src = 'Windsor.jpeg'; // Display the image
@@ -115,6 +124,14 @@
                 }
             }
         }
+
+        document.getElementById('error-image').addEventListener('touchstart', function() {
+            this.classList.add('zoomed');
+        });
+
+        document.getElementById('error-image').addEventListener('touchend', function() {
+            this.classList.remove('zoomed');
+        });
     </script>
 </body>
 </html>
