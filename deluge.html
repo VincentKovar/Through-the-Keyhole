@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Through the Keyhole</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background: #ffe4b5; /* Add background here */
+        }
+        .container {
+            max-width: 90%;
+            width: 300px;
+            text-align: center;
+        }
+        .logo {
+            width: 150px; /* Adjust size as needed */
+            height: auto;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .audio-player {
+            margin-bottom: 20px;
+        }
+       
+        }
+        #error-message {
+            color: red;
+            display: none; /* Initially hidden */
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo">
+        <h1>Through the Keyhole</h1>
+        <h2>Lock VII</h2>
+            </div>
+                <p>What is the next number in this sequence?</p>
+        <input type="text" id="keyInput" placeholder="three digits">
+        <button onclick="navigate()">Submit</button>
+        <p id="error-message">Apres moi, le deluge.</p>
+    </div>
+
+    <script>
+        function navigate() {
+            const enteredKey = document.getElementById('keyInput').value.trim().toLowerCase(); // Convert entered key to lowercase
+            const comparisonKey1 = '021';
+
+            if (enteredKey === comparisonKey1) {
+                window.location.href = 'myrtle.html'; // Navigate to myrtle.html for correct answer
+            } else {
+                document.getElementById('error-message').style.display = 'block'; // Show error message for incorrect answer
+                window.open('https://skagittalk.com/2021/03/24/a-brief-look-at-historic-skagit-river-floods/', '_blank'); // Open the hint page in a new tab
+            }
+        }
+
+       
+            }
+        }
+    </script>
+</body>
+</html>
