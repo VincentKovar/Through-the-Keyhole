@@ -90,7 +90,11 @@
             const comparisonKey1 = '021';
             const errorMessage = document.getElementById('error-message');
 
+            console.log('Entered Key:', enteredKey); // Debugging
+            console.log('Correct Key:', comparisonKey1); // Debugging
+
             if (enteredKey === comparisonKey1) {
+                console.log('Navigating to myrtle.html'); // Debugging
                 window.location.href = 'myrtle.html'; // Navigate to myrtle.html for correct answer
             } else {
                 incorrectAttempts++;
@@ -100,7 +104,7 @@
                 } else if (incorrectAttempts === 2) {
                     errorMessage.textContent = 'The riddle will guide you to this key.';
                 } else if (incorrectAttempts >= 3) {
-                    errorMessage.textContent = 'Here's some history to help.';
+                    errorMessage.textContent = 'Here\'s some history to help.';
                     window.open('https://skagittalk.com/2021/03/24/a-brief-look-at-historic-skagit-river-floods/', '_blank'); // Open the hint page in a new tab
                 }
 
