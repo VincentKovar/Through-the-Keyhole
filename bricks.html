@@ -1,1 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Through the Keyhole</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Use min-height for scrollable content */
+            flex-direction: column;
+            font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background: #ffe4b5; /* Background color */
+        }
+        .container {
+            width: 90%;
+            max-width: 600px; /* Adjust width */
+            text-align: center;
+            padding: 20px; /* Padding for better mobile view */
+            box-sizing: border-box; /* Ensure padding doesn't affect width */
+        }
+        .logo {
+            width: 150px; /* Adjust size as needed */
+            height: auto;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #error-message {
+            color: red;
+            margin-top: 10px;
+        }
+        iframe {
+            width: 100%;
+            height: 300px;
+            border: none;
+            margin-bottom: 20px; /* Add margin for spacing */
+        }
+        p {
+            margin: 20px 0; /* Margin for paragraphs */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Through the Keyhole</h1>
+        <h2>Lock IX</h2>
+        <!-- Embedded frame containing the provided website -->
+        <iframe src="https://www.historylink.org/File/9537"></iframe>
+        <p id="error-message"></p>
+        <input type="text" id="buildingInput" placeholder="What was this building?">
+        <input type="text" id="addressInput" placeholder="What was its address number?">
+        <button onclick="navigate()">Submit</button>
+    </div>
+    <script>
+        function navigate() {
+            const buildingInput = document.getElementById('buildingInput').value.trim().toLowerCase();
+            const addressInput = document.getElementById('addressInput').value.trim();
+            const errorMessage = document.getElementById('error-message');
+            const correctBuilding = 'courthouse';
+            const correctAddress = '707';
+
+            if (buildingInput === correctBuilding && addressInput === correctAddress) {
+                document.querySelector('.container').innerHTML = `
+                    <h1>Through the Keyhole</h1>
+                    <h2>Lock IX</h2>
+                    <p>Decatur’s house rolled away,<br>
+                       to make room for a grander day.<br>
+                       Here the city’s voice held the stage,<br>
+                       Until dawned silver’s golden age.<br>
+                       Walk behind that name of sorrow,<br>
+                       One who ended our President’s tomorrow,<br>
+                       On this we talk, and we see,<br>
+                       Using it you’ll find lock and key.</p>
+                `;
+            } else {
+                errorMessage.textContent = 'Remember the maps in your book.';
+            }
+        }
+    </script>
+</body>
+</html>
 
