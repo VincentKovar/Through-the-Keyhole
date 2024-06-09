@@ -56,11 +56,14 @@
             margin-top: 10px;
             font-size: 14px; /* Adjust font size for mobile */
         }
-        iframe {
+        .image-container {
             width: 100%;
-            height: 300px;
-            border: none;
+            max-width: 600px; /* Adjust maximum width for better display */
             margin-bottom: 20px; /* Add margin for spacing */
+        }
+        .image-container img {
+            width: 100%;
+            height: auto;
         }
         p {
             margin: 20px 0; /* Margin for paragraphs */
@@ -83,8 +86,9 @@
     <div class="container">
         <h1>Through the Keyhole</h1>
         <h2>Lock IX</h2>
-        <!-- Embedded frame containing the provided website -->
-        <iframe src="https://www.historylink.org/File/9537"></iframe>
+        <div class="image-container">
+            <img src="bricks.jpeg" alt="Bricks Image">
+        </div>
         <p id="error-message"></p>
         <input type="text" id="buildingInput" placeholder="What was this building?">
         <input type="text" id="addressInput" placeholder="What was its address number?">
@@ -107,10 +111,12 @@
                        Here the city’s voice held the stage,<br>
                        Until dawned silver’s golden age.<br>
                        Walk behind that name of sorrow,<br>
-                       One who ended our President’s tomorrow,</p>
+                       One who ended our President’s tomorrow,<br>
+                       On this we talk, and we see,<br>
+                       Using it you’ll find lock and key.</p>
                 `;
             } else {
-                errorMessage.textContent = 'Sic semper tyrannis.';
+                errorMessage.textContent = 'Remember the maps in your book.';
             }
         }
     </script>
