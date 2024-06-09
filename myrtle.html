@@ -1,1 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Through the Keyhole</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Use min-height for scrollable content */
+            flex-direction: column;
+            font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background: #ffe4b5; /* Background color */
+        }
+        .container {
+            width: 90%;
+            max-width: 300px; /* Adjust width */
+            text-align: center;
+            padding: 20px; /* Padding for better mobile view */
+            box-sizing: border-box; /* Ensure padding doesn't affect width */
+        }
+        .logo {
+            width: 150px; /* Adjust size as needed */
+            height: auto;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .audio-player {
+            margin-bottom: 20px;
+        }
+        .bottom-image {
+            width: 90%; /* Slightly smaller than the window width */
+            max-width: 100%; /* Ensure it fits within the container */
+            height: auto;
+            margin: 0 auto; /* Center the image */
+        }
+        #error-message {
+            color: red;
+            display: none; /* Initially hidden */
+            margin-top: 10px;
+        }
+        #frame-container {
+            width: 100%;
+            height: 300px; /* Adjust height as needed */
+            margin-top: 20px;
+            display: none; /* Initially hidden */
+        }
+        #frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        p {
+            margin: 20px 0; /* Margin for paragraphs */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo">
+        <h1>Through the Keyhole</h1>
+        <h2>Lock VIII</h2>
+        <p>The blossom path sweetly declares,<br>
+            Good luck and the love of someone who cares.<br>
+            Walk west away from the waters’ wall,<br>
+            Look and listen for the Trumpeter’s call.<br>
+            But don’t stop just on precedent,<br>
+            On king’s corner now sleeps a President.<br>
+        </p>
+        <p>Hidden here was quite the amount.<br>
+            What four characters were the account?
+        </p>
+        <input type="text" id="keyInput" placeholder="four characters">
+        <button onclick="navigate()">Submit</button>
+        <br>
+        <p id="error-message"></p>
+        <div id="frame-container">
+            <iframe id="frame"></iframe>
+        </div>
+        <img id="error-image" src="" class="bottom-image" style="display: none;">
+    </div>
+
+    <script>
+        let incorrectAttempts = 0;
+
+        function navigate() {
+            const enteredKey = document.getElementById('keyInput').value.trim().toLowerCase(); // Convert entered key to lowercase
+            const comparisonKey = '45nd';
+            const errorMessage = document.getElementById('error-message');
+            const frameContainer = document.getElementById('frame-container');
+            const errorImage = document.getElementById('error-image');
+
+            if (enteredKey === comparisonKey) {
+                window.location.href = 'bricks.html'; // Navigate to bricks.html for correct answer
+            } else {
+                incorrectAttempts++;
+
+                if (incorrectAttempts === 1) {
+                    errorMessage.textContent = 'The image of the rabbit in your book contains several visual clues about which path you should take to your next location.';
+                } else if (incorrectAttempts === 2) {
+                    errorMessage.textContent = 'The maps in the book help you find not only where things are, but where they were. Keep your chins up and you might see hints you\'re going the right way.';
+                } else if (incorrectAttempts === 3) {
+                    errorMessage.style.display = 'none';
+                    frameContainer.style.display = 'block';
+                    document.getElementById('frame').src = 'https://maps.app.goo.gl/zHjj5qZzpavkgoecA'; // Display the external link in a frame
+                } else if (incorrectAttempts >= 4) {
+                    frameContainer.style.display = 'none';
+                    errorImage.style.display = 'block';
+                    errorImage.src = 'Windsor.jpeg'; // Display the image
+                }
+
+                errorMessage.style.display = 'block'; // Show error message for incorrect answer
+            }
+        }
+    </script>
+</body>
+</html>
 
