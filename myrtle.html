@@ -93,12 +93,12 @@
             const comparisonKey = '45nd';
             const errorMessage = document.getElementById('error-message');
             const trumpeterImage = document.getElementById('trumpeter-image');
-            const WindsorImage = document.getElementById('Windsor-image');
+            const windsorImage = document.getElementById('Windsor-image');
 
             // Reset error message and hide images
             errorMessage.textContent = '';
             trumpeterImage.style.display = 'none';
-            WindsorImage.style.display = 'none';
+            windsorImage.style.display = 'none';
 
             if (enteredKey === comparisonKey) {
                 window.location.href = 'bricks.html'; // Navigate to bricks.html for correct answer
@@ -111,7 +111,7 @@
                 } else if (incorrectAttempts === 3) {
                     trumpeterImage.style.display = 'block';
                 } else if (incorrectAttempts >= 4) {
-                    WindsorImage.style.display = 'block';
+                    windsorImage.style.display = 'block';
                 }
             }
         }
