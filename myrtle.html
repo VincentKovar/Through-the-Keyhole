@@ -82,7 +82,7 @@
         <button onclick="navigate()">Submit</button>
         <br>
         <img src="trumpeter.png" id="trumpeter-image" class="zoomable-image">
-        <img src="Windsor.jpg" id="windsor-image" class="zoomable-image">
+        <img src="Windsor.jpg" id="Windsor-image" class="zoomable-image">
     </div>
 
     <script>
@@ -93,12 +93,12 @@
             const comparisonKey = '45nd';
             const errorMessage = document.getElementById('error-message');
             const trumpeterImage = document.getElementById('trumpeter-image');
-            const windsorImage = document.getElementById('windsor-image');
+            const WindsorImage = document.getElementById('Windsor-image');
 
             // Reset error message and hide images
             errorMessage.textContent = '';
             trumpeterImage.style.display = 'none';
-            windsorImage.style.display = 'none';
+            WindsorImage.style.display = 'none';
 
             if (enteredKey === comparisonKey) {
                 window.location.href = 'bricks.html'; // Navigate to bricks.html for correct answer
@@ -111,7 +111,7 @@
                 } else if (incorrectAttempts === 3) {
                     trumpeterImage.style.display = 'block';
                 } else if (incorrectAttempts >= 4) {
-                    windsorImage.style.display = 'block';
+                    WindsorImage.style.display = 'block';
                 }
             }
         }
