@@ -11,18 +11,20 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh; /* Use min-height for scrollable content */
             flex-direction: column;
             font-family: 'Alice', serif;
             text-align: center;
             margin: 0;
             padding: 0;
-            background: #ffe4b5; /* Add background here */
+            background: #ffe4b5; /* Background color */
         }
         .container {
-            max-width: 90%;
-            width: 300px;
+            width: 90%;
+            max-width: 300px; /* Adjust width */
             text-align: center;
+            padding: 20px; /* Padding for better mobile view */
+            box-sizing: border-box; /* Ensure padding doesn't affect width */
         }
         .logo {
             width: 150px; /* Adjust size as needed */
@@ -50,12 +52,19 @@
         .audio-player {
             margin-bottom: 20px;
         }
-       
+        .bottom-image {
+            width: 90%; /* Slightly smaller than the window width */
+            max-width: 100%; /* Ensure it fits within the container */
+            height: auto;
+            margin: 0 auto; /* Center the image */
         }
         #error-message {
             color: red;
             display: none; /* Initially hidden */
             margin-top: 10px;
+        }
+        p {
+            margin: 20px 0; /* Margin for paragraphs */
         }
     </style>
 </head>
@@ -64,11 +73,11 @@
         <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo">
         <h1>Through the Keyhole</h1>
         <h2>Lock VII</h2>
-            </div>
-                <p>What is the next number in this sequence?</p>
+        <p>What is the next number in this sequence?</p>
         <input type="text" id="keyInput" placeholder="three digits">
         <button onclick="navigate()">Submit</button>
         <p id="error-message">Apres moi, le deluge.</p>
+        <img src="deluge.jpg" class="bottom-image">
     </div>
 
     <script>
@@ -81,10 +90,6 @@
             } else {
                 document.getElementById('error-message').style.display = 'block'; // Show error message for incorrect answer
                 window.open('https://skagittalk.com/2021/03/24/a-brief-look-at-historic-skagit-river-floods/', '_blank'); // Open the hint page in a new tab
-            }
-        }
-
-          <img src="deluge.jpg" class="bottom-image">
             }
         }
     </script>
