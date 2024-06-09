@@ -72,17 +72,16 @@
         <h1>Through the Keyhole</h1>
         <h2>Lock VIII</h2>
         <p>The blossom path sweetly declares,<br>
-           Good luck and love of someone who cares.<br>
-           Walk west from waters’ wall,<br>
-           Look for the Trumpeter’s call<br>
+           Good luck and the love of someone who cares.<br>
+           Walk west away from the waters’ wall,<br>
+           Look and listen for the Trumpeter’s call<br>
            But don’t stop just on precedent<br>
            On king’s corner now sleeps a President</p>
         <p id="error-message"></p>
+        <img src="trumpeter.png" id="trumpeter-image" class="zoomable-image">
+        <img src="Windsor.jpg" id="windsor-image" class="zoomable-image">
         <input type="text" id="keyInput" placeholder="four characters">
         <button onclick="navigate()">Submit</button>
-        <br>
-        <img src="trumpeter.png" id="trumpeter-image" class="zoomable-image">
-        <img src="Windsor.jpg" id="Windsor-image" class="zoomable-image">
     </div>
 
     <script>
@@ -93,10 +92,11 @@
             const comparisonKey = '45nd';
             const errorMessage = document.getElementById('error-message');
             const trumpeterImage = document.getElementById('trumpeter-image');
-            const windsorImage = document.getElementById('Windsor-image');
+            const windsorImage = document.getElementById('windsor-image');
 
             // Reset error message and hide images
             errorMessage.textContent = '';
+            errorMessage.style.display = 'none';
             trumpeterImage.style.display = 'none';
             windsorImage.style.display = 'none';
 
@@ -106,8 +106,10 @@
                 incorrectAttempts++;
                 if (incorrectAttempts === 1) {
                     errorMessage.textContent = 'The image of the rabbit in your book contains several visual clues about which path you should take to your next location.';
+                    errorMessage.style.display = 'block';
                 } else if (incorrectAttempts === 2) {
                     errorMessage.textContent = 'The maps in the book help you find not only where things are, but where they were. Keep your chins up and you might see hints you\'re going the right way.';
+                    errorMessage.style.display = 'block';
                 } else if (incorrectAttempts === 3) {
                     trumpeterImage.style.display = 'block';
                 } else if (incorrectAttempts >= 4) {
