@@ -21,6 +21,7 @@ function startGame() {
     } else {
         alert("Device orientation is not supported by this browser.");
     }
+    console.log("Game started");
 }
 
 function stopGame() {
@@ -34,6 +35,7 @@ function stopGame() {
     beepAudio.pause();
     beepAudio.currentTime = 0;
     logo.style.animationDuration = "1s";
+    console.log("Game stopped");
 }
 
 function updatePosition(position) {
@@ -41,6 +43,8 @@ function updatePosition(position) {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude
     };
+
+    console.log("Current location:", currentLocation);
 
     let distance = calculateDistance(currentLocation, targetLocation);
     distanceDisplay.textContent = `Distance to target: ${distance.toFixed(2)} meters`;
@@ -74,12 +78,16 @@ function handleOrientation(event) {
     let adjustedAlpha = (alpha + 180) % 360; // Adjust for holding phone in front
     let directionToTarget = calculateBearing(event.latitude, event.longitude, targetLocation.latitude, targetLocation.longitude);
 
+    console.log("Alpha:", alpha);
+    console.log("Direction to target:", directionToTarget);
+
     if (Math.abs(adjustedAlpha - directionToTarget) < 10) {
         instructionsDisplay.textContent = "You're facing the right direction!";
         logo.style.animationDuration = "0.5s";
         beepAudio.play();
         if (navigator.vibrate) {
             navigator.vibrate([200, 100, 200]);
+            console.log("Vibrating");
         }
     } else {
         instructionsDisplay.textContent = "Adjust your direction.";
@@ -106,11 +114,13 @@ function adjustBeep(distance) {
     beepAudio.playbackRate = rate;
     beepAudio.volume = Math.min(1, 1 / distance); // Adjust the volume based on distance
     beepAudio.play();
+    console.log("Beep adjusted: rate =", rate, "volume =", beepAudio.volume);
 }
 
 function adjustLogoBlink(distance) {
     let blinkRate = Math.max(0.5, 5 - distance / 20); // Adjust the blink rate based on distance
     logo.style.animationDuration = `${blinkRate}s`;
+    console.log("Blink rate adjusted:", blinkRate);
 }
 
 function handleError(error) {
