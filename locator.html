@@ -3,99 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Through the Keyhole</title>
+    <title>Through the Keyhole - Locator</title>
     <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #ffe4b5; /* Set the background color */
-        }
-        .container {
-            text-align: center;
-        }
-        .logo {
-            width: 150px; /* Reduce the size of the logo */
-            height: auto;
-            margin-bottom: 20px;
-        }
-        h1, h2 {
-            margin: 10px 0;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        #compass {
-            width: 200px;
-            height: 200px;
-            margin: 20px auto;
-            position: relative;
-        }
-        #arrow {
-            width: 0;
-            height: 0;
-            border-left: 20px solid transparent;
-            border-right: 20px solid transparent;
-            border-bottom: 40px solid red;
-            position: absolute;
-            top: 50px;
-            left: 75px;
-            transform-origin: bottom center;
-            transform: rotate(0deg);
-            transition: transform 0.5s;
-        }
-        #arrow.pulse {
-            animation: pulse 1s infinite;
-        }
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.2);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-        #distance {
-            font-size: 1.2em;
-            margin-top: 20px;
-        }
-        #error-message {
-            color: red;
-            margin-top: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css"> <!-- Include external CSS file for styling -->
 </head>
 <body>
     <div class="container">
         <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
-        <h1>Through the Keyhole</h1>
-        <h2>Lock TBA</h2>
+        <h1>Through the Keyhole - Locator</h1>
         <div id="compass">
             <div id="arrow"></div>
         </div>
         <div id="distance">Distance to target: Calculating...</div>
         <button id="startButton">Start</button>
         <button id="stopButton">Stop</button>
-        <p id="error-message"></p>
+        <audio id="beepAudio" src="beep.mp3"></audio>
+        <p id="errorMessage"></p>
     </div>
-    <audio id="beep-audio" src="beep.mp3"></audio>
-    <script src="beep.js"></script>
+    <script src="locator.js"></script> <!-- Include external JavaScript file -->
 </body>
 </html>
