@@ -8,7 +8,6 @@ let logo = document.getElementById('logo');
 let distanceDisplay = document.getElementById('distance');
 let instructionsDisplay = document.getElementById('instructions');
 let previousDistance = null;
-let beepInterval;
 
 function startGame() {
     if (navigator.geolocation) {
@@ -39,7 +38,6 @@ function stopGame() {
     }
     beepAudio.pause();
     beepAudio.currentTime = 0;
-    clearInterval(beepInterval);
     logo.style.animationDuration = "1s";
     logo.style.animationName = "none";
     console.log("Game stopped");
@@ -126,28 +124,10 @@ function calculateBearing(lat1, lon1, lat2, lon2) {
 }
 
 function adjustBeep(distance) {
-    let interval;
-
-    if (distance < 50) {
-        interval = 200; // Beep every 0.2 seconds
-    } else if (distance < 100) {
-        interval = 400; // Beep every 0.4 seconds
-    } else if (distance < 200) {
-        interval = 600; // Beep every 0.6 seconds
-    } else if (distance < 300) {
-        interval = 800; // Beep every 0.8 seconds
-    } else if (distance < 400) {
-        interval = 1000; // Beep every 1 second
-    } else {
-        interval = 2000; // Beep every 2 seconds
-    }
-
-    if (beepInterval) clearInterval(beepInterval);
-    beepInterval = setInterval(() => {
-        beepAudio.play().catch(error => console.error("Audio play error:", error));
-    }, interval);
-
-    console.log("Beep adjusted: interval =", interval, "distance =", distance);
+    let rate = Math.max(1, 100 - distance / 10); // Adjust the rate based on distance
+    beepAudio.playbackRate = rate;
+    beepAudio.volume = Math.min(1, 1 / distance); // Adjust the volume based on distance
+    console.log("Beep adjusted: rate =", rate, "volume =", beepAudio.volume);
 }
 
 function adjustLogoBlink(distance) {
