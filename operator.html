@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Through the Keyhole</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
+            background: #ffe4b5;
+        }
+        .container {
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .logo {
+            width: 150px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            margin: 10px 0;
+        }
+        #dial-button {
+            width: 100px;
+            height: 100px;
+            background: url('telephone-icon.png') no-repeat center center;
+            background-size: contain;
+            border: none;
+            cursor: pointer;
+        }
+        .digit-boxes {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .digit-box {
+            width: 50px;
+            height: 50px;
+            border: 2px solid black;
+            margin: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+            background: white;
+        }
+        #error-message {
+            color: red;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
+        <h1>Through the Keyhole</h1>
+        <h2>Lock TBA</h2>
+        <button id="dial-button" onclick="startDialing()"></button>
+        <div id="dial-sequence" style="display:none;">
+            <div class="digit-boxes" id="row1"></div>
+            <div class="digit-boxes" id="row2"></div>
+            <div class="digit-boxes" id="row3"></div>
+        </div>
+        <p id="error-message"></p>
+    </div>
+
+    <script>
+        const correctSequence = "78438768632667269";
+        let inputSequence = "";
+
+        function startDialing() {
+            document.getElementById('dial-button').style.display = 'none';
+            document.getElementById('dial-sequence').style.display = 'block';
+            // Insert sound effect for button press here
+            playSound('button-press.mp3');
+        }
+
+        function playSound(sound) {
+            let audio = new Audio(sound);
+            audio.play();
+        }
+
+        window.addEventListener('keydown', function(event) {
+            let digit = event.key;
+            if (!isNaN(digit) && digit !== ' ') {
+                inputSequence += digit;
+                updateBoxes(digit);
+                if (inputSequence.length === correctSequence.length) {
+                    if (inputSequence === correctSequence) {
+                        window.location.href = 'legend.html';
+                    } else {
+                        inputSequence = "";
+                        clearBoxes();
+                        document.getElementById('error-message').textContent = "Please dial again";
+                        // Insert error sound effect here
+                        playSound('error-sound.mp3');
+                    }
+                }
+            }
+        });
+
+        function updateBoxes(digit) {
+            let boxes = document.querySelectorAll('.digit-box');
+            boxes[inputSequence.length - 1].textContent = digit;
+        }
+
+        function clearBoxes() {
+            let boxes = document.querySelectorAll('.digit-box');
+            boxes.forEach(box => box.textContent = "");
+       
