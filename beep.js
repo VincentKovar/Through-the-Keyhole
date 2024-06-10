@@ -83,7 +83,14 @@ function updateCompass(heading) {
         // Check if the device is facing SSE (150-210 degrees)
         if (heading >= 150 && heading <= 210) {
             compassNeedle.style.backgroundColor = 'green';
+            compassNeedle.classList.add('pulse');
         } else {
+            compassNeedle.style.backgroundColor = 'red';
+            compassNeedle.classList.remove('pulse');
+        }
+    }
+}
+
             compassNeedle.style.backgroundColor = 'red';
         }
     }
