@@ -58,12 +58,6 @@
         .hidden {
             display: none;
         }
-        iframe {
-            width: 100%;
-            height: 300px;
-            border: none;
-            margin-top: 20px;
-        }
         @keyframes fadeOut {
             from { opacity: 1; }
             to { opacity: 0; }
@@ -75,7 +69,7 @@
 </head>
 <body>
     <div class="container">
-        <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
+        <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo" id="logo">
         <h1>Through the Keyhole</h1>
         <h2>Lock XI</h2>
         <!-- Insert animated GIF here -->
@@ -83,18 +77,16 @@
         <input type="text" id="textInput" placeholder="the most prized variety">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
-        <iframe id="hintFrame" class="hidden" src="https://www.bbc.com/culture/article/20160419-tulip-mania-the-flowers-that-cost-more-than-houses"></iframe>
     </div>
     <script>
         const correctAnswer = "Semper Augustus";
         let errorCount = 0;
-        
+
         function checkAnswer() {
             const userInput = document.getElementById('textInput').value.trim();
             const errorMessage = document.getElementById('errorMessage');
             const animatedGif = document.getElementById('animatedGif');
-            const hintFrame = document.getElementById('hintFrame');
-            
+
             if (userInput.toLowerCase() === correctAnswer.toLowerCase()) {
                 document.querySelector('.container').classList.add('fade-out');
                 setTimeout(() => {
@@ -111,7 +103,7 @@
                     errorMessage.textContent = "It's not time to leaf, try once more.";
                 } else if (errorCount >= 3) {
                     animatedGif.classList.add('hidden');
-                    hintFrame.classList.remove('hidden');
+                    window.open('https://www.bbc.com/culture/article/20160419-tulip-mania-the-flowers-that-cost-more-than-houses', '_blank');
                     errorMessage.classList.add('hidden');
                 }
                 errorMessage.classList.remove('hidden');
