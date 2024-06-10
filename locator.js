@@ -1,16 +1,15 @@
 let targetLocation = {
-    latitude: 47.742861812462706,
-    longitude: -122.17931280667916
+    latitude: 48.41888808828569,
+    longitude: -122.33687937826562
 };
 let watchID;
-let beepAudio;
+let beepAudio = new Audio('beep.mp3');
 let logo = document.getElementById('logo');
 let distanceDisplay = document.getElementById('distance');
 let instructionsDisplay = document.getElementById('instructions');
 let previousDistance = null;
 
 function startGame() {
-    beepAudio = document.getElementById('beep-audio');
     if (navigator.geolocation) {
         watchID = navigator.geolocation.watchPosition(updatePosition, handleError, { enableHighAccuracy: true });
     } else {
@@ -20,6 +19,12 @@ function startGame() {
         window.addEventListener('deviceorientation', handleOrientation, true);
     } else {
         alert("Device orientation is not supported by this browser.");
+    }
+    // Play audio and vibrate on user interaction
+    beepAudio.loop = true;
+    beepAudio.play().catch(error => console.error("Audio play error:", error));
+    if (navigator.vibrate) {
+        navigator.vibrate(200);
     }
     console.log("Game started");
 }
@@ -31,10 +36,10 @@ function stopGame() {
     if (window.DeviceOrientationEvent) {
         window.removeEventListener('deviceorientation', handleOrientation);
     }
-    clearInterval(beepInterval);
     beepAudio.pause();
     beepAudio.currentTime = 0;
     logo.style.animationDuration = "1s";
+    logo.style.animationName = "none";
     console.log("Game stopped");
 }
 
@@ -83,15 +88,18 @@ function handleOrientation(event) {
 
     if (Math.abs(adjustedAlpha - directionToTarget) < 10) {
         instructionsDisplay.textContent = "You're facing the right direction!";
+        logo.style.animationName = "blink";
         logo.style.animationDuration = "0.5s";
-        beepAudio.play();
+        if (beepAudio.paused) {
+            beepAudio.play().catch(error => console.error("Audio play error:", error));
+        }
         if (navigator.vibrate) {
             navigator.vibrate([200, 100, 200]);
             console.log("Vibrating");
         }
     } else {
         instructionsDisplay.textContent = "Adjust your direction.";
-        logo.style.animationDuration = "1s";
+        logo.style.animationName = "none";
         beepAudio.pause();
     }
 }
@@ -113,7 +121,6 @@ function adjustBeep(distance) {
     let rate = Math.max(1, 100 - distance / 10); // Adjust the rate based on distance
     beepAudio.playbackRate = rate;
     beepAudio.volume = Math.min(1, 1 / distance); // Adjust the volume based on distance
-    beepAudio.play();
     console.log("Beep adjusted: rate =", rate, "volume =", beepAudio.volume);
 }
 
