@@ -1,0 +1,67 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ensure full viewport height */
+    margin: 0;
+    background-color: #ffe4b5; /* Background color */
+    font-family: 'Alice', serif;
+}
+
+.container {
+    width: 90%;
+    max-width: 600px; /* Adjust width */
+    text-align: center;
+    padding: 20px; /* Padding for better mobile view */
+    box-sizing: border-box; /* Ensure padding doesn't affect width */
+}
+
+h1, h2 {
+    margin: 10px 0; /* Adjust margins */
+}
+
+#compass {
+    width: 200px;
+    height: 200px;
+    margin: 20px auto;
+    position: relative;
+}
+
+#arrow {
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 40px solid red; /* Initial arrow color */
+    position: absolute;
+    top: 50px;
+    left: 90px;
+    transform-origin: bottom center;
+    transform: rotate(0deg);
+    transition: transform 0.5s, border-bottom-color 0.5s; /* Add transition for animation */
+}
+
+#distance {
+    font-size: 1.2em;
+    margin-top: 20px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#error-message {
+    color: red;
+    margin-top: 10px;
+}
