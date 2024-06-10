@@ -86,11 +86,36 @@
             document.getElementById('dial-sequence').style.display = 'block';
             // Insert sound effect for button press here
             playSound('button-press.mp3');
+            createBoxes();
         }
 
         function playSound(sound) {
             let audio = new Audio(sound);
             audio.play();
+        }
+
+        function createBoxes() {
+            let row1 = document.getElementById('row1');
+            let row2 = document.getElementById('row2');
+            let row3 = document.getElementById('row3');
+
+            for (let i = 0; i < 5; i++) {
+                let box = document.createElement('div');
+                box.className = 'digit-box';
+                row1.appendChild(box);
+            }
+
+            for (let i = 0; i < 5; i++) {
+                let box = document.createElement('div');
+                box.className = 'digit-box';
+                row2.appendChild(box);
+            }
+
+            for (let i = 0; i < 6; i++) {
+                let box = document.createElement('div');
+                box.className = 'digit-box';
+                row3.appendChild(box);
+            }
         }
 
         window.addEventListener('keydown', function(event) {
@@ -120,4 +145,7 @@
         function clearBoxes() {
             let boxes = document.querySelectorAll('.digit-box');
             boxes.forEach(box => box.textContent = "");
-       
+        }
+    </script>
+</body>
+</html>
