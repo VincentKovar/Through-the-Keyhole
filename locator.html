@@ -46,33 +46,24 @@
         button:hover {
             background-color: #0056b3;
         }
-        #distance {
-            font-size: 1.2em;
-            margin-top: 20px;
-        }
-        #instructions {
-            font-size: 1em;
-            margin-top: 10px;
-        }
         @keyframes blink {
             0% { opacity: 1; }
-            50% { opacity: 0.1; }
+            50% { opacity: 0; }
             100% { opacity: 1; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <img src="WhBr-Rabbit-logo-golden-220609-v1.png" id="logo" class="logo" alt="Logo">
+        <img id="logo" src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
         <h1>Through the Keyhole</h1>
         <h2>Lock TBA</h2>
         <div id="distance">Distance to target: Calculating...</div>
-        <div id="instructions">Face the right direction to start.</div>
+        <div id="instructions">Please start walking in any direction to get started.</div>
         <button onclick="startGame()">Start</button>
         <button onclick="stopGame()">Stop</button>
         <audio id="beep-audio" src="beep.mp3"></audio>
-        <p id="error-message"></p>
     </div>
-    <script src="locator.js"></script>
+    <script src="beep.js"></script>
 </body>
 </html>
