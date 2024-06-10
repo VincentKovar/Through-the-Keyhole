@@ -75,9 +75,29 @@
         <h2>Lock TBA</h2>
         <button id="startButton"></button>
         <div id="numberContainer" class="hidden">
-            <div class="number-boxes" id="row1"></div>
-            <div class="number-boxes" id="row2"></div>
-            <div class="number-boxes" id="row3"></div>
+            <div class="number-boxes" id="row1">
+                <div class="number-box"></div>
+                <div class="number-box"></div>
+                <div class="number-box"></div>
+                <div class="number-box"></div>
+                <div class="number-box"></div>
+            </div>
+            <div class="number-boxes" id="row2">
+                <div class="number-box"></div>
+                <div class="number-box"></div>
+                <div class="number-box"></div>
+                <div class="number-box"></div>
+                <div class="number-box"></div>
+            </div>
+            <div class="number-boxes" id="row3">
+                <div class="number-box"></div>
+                <div class="number-box"></div>
+                <div class="number-box"></div>
+                <div class="number-box"></div>
+                <div class="number-box"></div>
+                <div class="number-box"></div>
+                <div class="number-box"></div>
+            </div>
         </div>
         <p id="errorMessage" class="error-message hidden">Please dial again</p>
     </div>
@@ -116,19 +136,13 @@
         });
 
         function updateNumberBoxes() {
-            for (let i = 0; i < correctSequence.length; i++) {
-                let row = Math.floor(i / 5);
-                let col = i % 5;
-                if (row === 2) col = i % 6;
-                let box = document.createElement('div');
-                box.className = 'number-box';
-                box.textContent = inputSequence[i] || '';
-                if (rows[row].children[col]) {
-                    rows[row].replaceChild(box, rows[row].children[col]);
-                } else {
-                    rows[row].appendChild(box);
-                }
-            }
+            let index = 0;
+            rows.forEach(row => {
+                Array.from(row.children).forEach(box => {
+                    box.textContent = inputSequence[index] || '';
+                    index++;
+                });
+            });
         }
 
         function checkSequence() {
@@ -147,7 +161,7 @@
         }
 
         function clearNumberBoxes() {
-            rows.forEach(row => row.innerHTML = '');
+            rows.forEach(row => Array.from(row.children).forEach(box => box.textContent = ''));
         }
 
         // Hide error message when user starts typing again
