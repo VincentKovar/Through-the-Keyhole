@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Through the Keyhole</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
+            background: #ffe4b5;
+        }
+        .container {
+            width: 90%;
+            max-width: 300px;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .logo {
+            width: 150px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            margin: 10px 0;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+        .hidden {
+            display: none;
+        }
+        iframe {
+            width: 100%;
+            height: 300px;
+            border: none;
+            margin-top: 20px;
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        .fade-out {
+            animation: fadeOut 1s forwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
+        <h1>Through the Keyhole</h1>
+        <h2>Lock XI</h2>
+        <!-- Insert animated GIF here -->
+        <img src="path_to_animated_gif.gif" id="animatedGif" alt="Animated GIF" class="hidden">
+        <input type="text" id="textInput" placeholder="the most prized variety">
+        <button onclick="checkAnswer()">Submit</button>
+        <p id="errorMessage" class="error-message hidden"></p>
+        <iframe id="hintFrame" class="hidden" src="https://www.bbc.com/culture/article/20160419-tulip-mania-the-flowers-that-cost-more-than-houses"></iframe>
+    </div>
+    <script>
+        const correctAnswer = "Semper Augustus";
+        let errorCount = 0;
+        
+        function checkAnswer() {
+            const userInput = document.getElementById('textInput').value.trim();
+            const errorMessage = document.getElementById('errorMessage');
+            const animatedGif = document.getElementById('animatedGif');
+            const hintFrame = document.getElementById('hintFrame');
+            
+            if (userInput.toLowerCase() === correctAnswer.toLowerCase()) {
+                document.querySelector('.container').classList.add('fade-out');
+                setTimeout(() => {
+                    document.querySelector('.container').innerHTML = `
+                        <h2>Your first secret word is EAGLES.</h2>
+                        <p>Write it down then look in your book for the next Lock.</p>
+                    `;
+                }, 1000);
+            } else {
+                errorCount++;
+                if (errorCount === 1) {
+                    errorMessage.textContent = "Don't petal off yet, try again.";
+                } else if (errorCount === 2) {
+                    errorMessage.textContent = "It's not time to leaf, try once more.";
+                } else if (errorCount >= 3) {
+                    animatedGif.classList.add('hidden');
+                    hintFrame.classList.remove('hidden');
+                    errorMessage.classList.add('hidden');
+                }
+                errorMessage.classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
