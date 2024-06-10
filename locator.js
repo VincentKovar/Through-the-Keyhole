@@ -3,7 +3,7 @@ let targetLocation = {
     longitude: -122.33687937826562
 };
 let watchID;
-let beepAudio = new Audio('beep.mp3');
+let beepAudio = document.getElementById('beep-audio');
 let logo = document.getElementById('logo');
 let distanceDisplay = document.getElementById('distance');
 let instructionsDisplay = document.getElementById('instructions');
