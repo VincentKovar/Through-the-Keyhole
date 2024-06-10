@@ -105,7 +105,7 @@
         window.addEventListener('keydown', (event) => {
             if (numberContainer.classList.contains('hidden')) return;
 
-            if (inputSequence.length < correctSequence.length) {
+            if (!isNaN(event.key) && inputSequence.length < correctSequence.length) {
                 inputSequence += event.key;
                 updateNumberBoxes();
             }
@@ -141,10 +141,21 @@
                 inputSequence = '';
                 setTimeout(() => {
                     errorMessage.classList.add('hidden');
-                    updateNumberBoxes();
+                    clearNumberBoxes();
                 }, 2000);
             }
         }
+
+        function clearNumberBoxes() {
+            rows.forEach(row => row.innerHTML = '');
+        }
+
+        // Hide error message when user starts typing again
+        window.addEventListener('keydown', () => {
+            if (!errorMessage.classList.contains('hidden')) {
+                errorMessage.classList.add('hidden');
+            }
+        });
     </script>
 </body>
 </html>
