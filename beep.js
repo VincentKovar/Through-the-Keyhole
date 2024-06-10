@@ -1,17 +1,27 @@
-// beep.js
-
 let targetLocation = {
-    latitude: 47.8105591297596, // Replace with your target latitude, 
-    longitude:-122.36506298761152 // Replace with your target longitude
+    latitude: 47.8105591297596, // Replace with your target latitude
+    longitude: -122.36506298761152 // Replace with your target longitude
 };
 let beepInterval;
-let beepAudio = new Audio('beep.mp3'); // Ensure you have a beep.mp3 file
+let beepAudio = new Audio('beep.mp3');
+let watchID;
+let compassNeedle = document.getElementById('needle');
+let previousDistance = null;
 
 function startGame() {
     if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(updatePosition, handleError, { enableHighAccuracy: true });
+        watchID = navigator.geolocation.watchPosition(updatePosition, handleError, { enableHighAccuracy: true });
     } else {
         alert("Geolocation is not supported by this browser.");
+    }
+}
+
+function stopGame() {
+    if (navigator.geolocation) {
+        navigator.geolocation.clearWatch(watchID);
+        clearInterval(beepInterval);
+        beepAudio.pause();
+        beepAudio.currentTime = 0;
     }
 }
 
@@ -19,11 +29,20 @@ function updatePosition(position) {
     let userLat = position.coords.latitude;
     let userLon = position.coords.longitude;
     let distance = calculateDistance(userLat, userLon, targetLocation.latitude, targetLocation.longitude);
-    
+
     document.getElementById('distance').textContent = `Distance to target: ${distance.toFixed(2)} meters`;
+
+    if (previousDistance !== null && distance < previousDistance) {
+        beepAudio.volume = Math.min(1, beepAudio.volume + 0.1); // Increase volume when moving towards the target
+    } else {
+        beepAudio.volume = Math.max(0.2, beepAudio.volume - 0.1); // Decrease volume when moving away from the target
+    }
+    previousDistance = distance;
 
     let interval = calculateBeepInterval(distance);
     updateBeeping(interval);
+
+    updateCompass(position.coords.heading);
 }
 
 function handleError(error) {
@@ -55,4 +74,17 @@ function calculateBeepInterval(distance) {
 function updateBeeping(interval) {
     if (beepInterval) clearInterval(beepInterval);
     beepInterval = setInterval(() => beepAudio.play(), interval);
+}
+
+function updateCompass(heading) {
+    if (typeof heading === 'number') {
+        compassNeedle.style.transform = `rotate(${heading}deg)`;
+
+        // Check if the device is facing SSE (150-210 degrees)
+        if (heading >= 150 && heading <= 210) {
+            compassNeedle.style.backgroundColor = 'green';
+        } else {
+            compassNeedle.style.backgroundColor = 'red';
+        }
+    }
 }
