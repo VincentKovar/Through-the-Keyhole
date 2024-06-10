@@ -20,7 +20,7 @@
         }
         .container {
             width: 90%;
-            max-width: 600px;
+            max-width: 300px;
             text-align: center;
             padding: 20px;
             box-sizing: border-box;
@@ -33,118 +33,112 @@
         h1, h2 {
             margin: 10px 0;
         }
-        #dial-button {
+        button {
             width: 100px;
             height: 100px;
-            background: url('telephone-icon.png') no-repeat center center;
-            background-size: contain;
+            background: url('Phone-Icon-PNG-Isolated-HD.png') no-repeat center center;
+            background-size: cover;
             border: none;
+            border-radius: 5px;
             cursor: pointer;
+            margin-top: 20px;
         }
-        .digit-boxes {
+        .hidden {
+            display: none;
+        }
+        .number-boxes {
             display: flex;
             justify-content: center;
-            margin-top: 10px;
+            margin-top: 20px;
         }
-        .digit-box {
-            width: 50px;
-            height: 50px;
-            border: 2px solid black;
-            margin: 5px;
+        .number-box {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #000;
+            margin: 2px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1.5em;
-            background: white;
         }
-        #error-message {
+        .error-message {
             color: red;
-            margin-top: 20px;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
+        <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo" id="logo">
         <h1>Through the Keyhole</h1>
         <h2>Lock TBA</h2>
-        <button id="dial-button" onclick="startDialing()"></button>
-        <div id="dial-sequence" style="display:none;">
-            <div class="digit-boxes" id="row1"></div>
-            <div class="digit-boxes" id="row2"></div>
-            <div class="digit-boxes" id="row3"></div>
+        <button id="startButton"></button>
+        <div id="numberContainer" class="hidden">
+            <div class="number-boxes" id="row1"></div>
+            <div class="number-boxes" id="row2"></div>
+            <div class="number-boxes" id="row3"></div>
         </div>
-        <p id="error-message"></p>
+        <p id="errorMessage" class="error-message hidden">Please dial again</p>
     </div>
-
+    <audio id="successSound" src="rotary-phone-31815.mp3"></audio>
+    <audio id="errorSound" src="your-call-cannot-be-completed-as-dialed-please-check-the-number-and-dial-again-103202.mp3"></audio>
     <script>
+        const startButton = document.getElementById('startButton');
+        const numberContainer = document.getElementById('numberContainer');
+        const errorMessage = document.getElementById('errorMessage');
+        const successSound = document.getElementById('successSound');
+        const errorSound = document.getElementById('errorSound');
+        const rows = [document.getElementById('row1'), document.getElementById('row2'), document.getElementById('row3')];
         const correctSequence = "78438768632667269";
         let inputSequence = "";
 
-        function startDialing() {
-            document.getElementById('dial-button').style.display = 'none';
-            document.getElementById('dial-sequence').style.display = 'block';
-            // Insert sound effect for button press here
-            playSound('rotary-phone-31815.mp3');
-            createBoxes();
-        }
+        startButton.addEventListener('click', () => {
+            startButton.classList.add('hidden');
+            numberContainer.classList.remove('hidden');
+            // Play start sound effect (Insert the start sound effect here)
+        });
 
-        function playSound(sound) {
-            let audio = new Audio(sound);
-            audio.play();
-        }
+        window.addEventListener('keydown', (event) => {
+            if (numberContainer.classList.contains('hidden')) return;
 
-        function createBoxes() {
-            let row1 = document.getElementById('row1');
-            let row2 = document.getElementById('row2');
-            let row3 = document.getElementById('row3');
-
-            for (let i = 0; i < 5; i++) {
-                let box = document.createElement('div');
-                box.className = 'digit-box';
-                row1.appendChild(box);
+            if (inputSequence.length < correctSequence.length) {
+                inputSequence += event.key;
+                updateNumberBoxes();
             }
 
-            for (let i = 0; i < 5; i++) {
-                let box = document.createElement('div');
-                box.className = 'digit-box';
-                row2.appendChild(box);
-            }
-
-            for (let i = 0; i < 6; i++) {
-                let box = document.createElement('div');
-                box.className = 'digit-box';
-                row3.appendChild(box);
-            }
-        }
-
-        window.addEventListener('keydown', function(event) {
-            let digit = event.key;
-            if (!isNaN(digit) && digit !== ' ') {
-                inputSequence += digit;
-                updateBoxes(digit);
-                if (inputSequence.length === correctSequence.length) {
-                    if (inputSequence === correctSequence) {
-                        window.location.href = 'legend.html';
-                    } else {
-                        inputSequence = "";
-                        clearBoxes();
-                        document.getElementById('error-message').textContent = "Please dial again";
-                        // Insert error sound effect here
-                        playSound('your-call-cannot-be-completed-as-dialed-please-check-the-number-and-dial-again-103202.mp3');
-                    }
-                }
+            if (inputSequence.length === correctSequence.length) {
+                checkSequence();
             }
         });
 
-        function updateBoxes(digit) {
-            let boxes = document.querySelectorAll('.digit-box');
-            boxes[inputSequence.length - 1].textContent = digit;
+        function updateNumberBoxes() {
+            for (let i = 0; i < correctSequence.length; i++) {
+                let row = Math.floor(i / 5);
+                let col = i % 5;
+                if (row === 2) col = i % 6;
+                let box = document.createElement('div');
+                box.className = 'number-box';
+                box.textContent = inputSequence[i] || '';
+                if (rows[row].children[col]) {
+                    rows[row].replaceChild(box, rows[row].children[col]);
+                } else {
+                    rows[row].appendChild(box);
+                }
+            }
         }
 
-        function clearBoxes() {
-            let boxes = document.querySelectorAll('.digit-box');
-            boxes.forEach(box => box.textContent = "");
+        function checkSequence() {
+            if (inputSequence === correctSequence) {
+                successSound.play();
+                window.location.href = 'legend.html';
+            } else {
+                errorMessage.classList.remove('hidden');
+                errorSound.play();
+                inputSequence = '';
+                setTimeout(() => {
+                    errorMessage.classList.add('hidden');
+                    updateNumberBoxes();
+                }, 2000);
+            }
         }
     </script>
 </body>
