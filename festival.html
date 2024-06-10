@@ -58,55 +58,61 @@
         .hidden {
             display: none;
         }
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
-        }
         .fade-out {
-            animation: fadeOut 1s forwards;
+            animation: fadeOut 2s forwards;
+        }
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo" id="logo">
+        <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
         <h1>Through the Keyhole</h1>
         <h2>Lock XI</h2>
-        <!-- Insert animated GIF here -->
-        <img src="path_to_animated_gif.gif" id="animatedGif" alt="Animated GIF" class="hidden">
-        <input type="text" id="textInput" placeholder="the most prized variety">
+        <!-- Placeholder for the animated GIF -->
+        <div id="gif-container">[Animated GIF goes here]</div>
+        <input type="text" id="answerInput" placeholder="the most prized variety">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
     </div>
+    <audio id="successSound" src="path/to/success-sound.mp3"></audio>
+    <audio id="errorSound" src="path/to/error-sound.mp3"></audio>
     <script>
-        const correctAnswer = "Semper Augustus";
-        let errorCount = 0;
+        let attempts = 0;
+        const correctAnswer = "semper augustus";
 
         function checkAnswer() {
-            const userInput = document.getElementById('textInput').value.trim();
+            const answerInput = document.getElementById('answerInput');
             const errorMessage = document.getElementById('errorMessage');
-            const animatedGif = document.getElementById('animatedGif');
+            const gifContainer = document.getElementById('gif-container');
+            const successSound = document.getElementById('successSound');
+            const errorSound = document.getElementById('errorSound');
 
-            if (userInput.toLowerCase() === correctAnswer.toLowerCase()) {
+            if (answerInput.value.trim().toLowerCase() === correctAnswer) {
                 document.querySelector('.container').classList.add('fade-out');
                 setTimeout(() => {
                     document.querySelector('.container').innerHTML = `
                         <h2>Your first secret word is EAGLES.</h2>
                         <p>Write it down then look in your book for the next Lock.</p>
                     `;
-                }, 1000);
+                    successSound.play();
+                }, 2000);
             } else {
-                errorCount++;
-                if (errorCount === 1) {
-                    errorMessage.textContent = "Don't petal off yet, try again.";
-                } else if (errorCount === 2) {
-                    errorMessage.textContent = "It's not time to leaf, try once more.";
-                } else if (errorCount >= 3) {
-                    animatedGif.classList.add('hidden');
+                attempts++;
+                errorSound.play();
+                if (attempts === 1) {
+                    errorMessage.textContent = "don't petal off yet, try again.";
+                } else if (attempts === 2) {
+                    errorMessage.textContent = "it's not time to leaf, try once more.";
+                } else if (attempts >= 3) {
                     window.open('https://www.bbc.com/culture/article/20160419-tulip-mania-the-flowers-that-cost-more-than-houses', '_blank');
-                    errorMessage.classList.add('hidden');
                 }
                 errorMessage.classList.remove('hidden');
+                answerInput.value = '';
             }
         }
     </script>
