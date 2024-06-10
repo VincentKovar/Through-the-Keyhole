@@ -1,8 +1,8 @@
 // beep.js
 
 let targetLocation = {
-    latitude: 48.4212, // Replace with your target latitude
-    longitude: -122.3341 // Replace with your target longitude
+    latitude: 47.8105591297596, // Replace with your target latitude, 
+    longitude:-122.36506298761152 // Replace with your target longitude
 };
 let beepInterval;
 let beepAudio = new Audio('beep.mp3'); // Ensure you have a beep.mp3 file
