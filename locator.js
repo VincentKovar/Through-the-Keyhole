@@ -8,6 +8,7 @@ let logo = document.getElementById('logo');
 let distanceDisplay = document.getElementById('distance');
 let instructionsDisplay = document.getElementById('instructions');
 let previousDistance = null;
+let beepInterval; // Add a variable for the beep interval
 
 function startGame() {
     if (navigator.geolocation) {
@@ -21,8 +22,10 @@ function startGame() {
         alert("Device orientation is not supported by this browser.");
     }
     // Play audio and vibrate on user interaction
-    beepAudio.loop = true;
-    beepAudio.play().catch(error => console.error("Audio play error:", error));
+    if (beepAudio) {
+        beepAudio.loop = false; // Set loop to false to control beeping manually
+        beepAudio.play().catch(error => console.error("Audio play error:", error));
+    }
     if (navigator.vibrate) {
         navigator.vibrate(200);
     }
@@ -36,10 +39,17 @@ function stopGame() {
     if (window.DeviceOrientationEvent) {
         window.removeEventListener('deviceorientation', handleOrientation);
     }
-    beepAudio.pause();
-    beepAudio.currentTime = 0;
-    logo.style.animationDuration = "1s";
-    logo.style.animationName = "none";
+    if (beepAudio) {
+        beepAudio.pause();
+        beepAudio.currentTime = 0;
+    }
+    if (beepInterval) {
+        clearInterval(beepInterval); // Clear the beep interval
+    }
+    if (logo) {
+        logo.style.animationDuration = "1s";
+        logo.style.animationName = "none";
+    }
     console.log("Game stopped");
 }
 
@@ -52,7 +62,9 @@ function updatePosition(position) {
     console.log("Current location:", currentLocation);
 
     let distance = calculateDistance(currentLocation, targetLocation);
-    distanceDisplay.textContent = `Distance to target: ${distance.toFixed(2)} meters`;
+    if (distanceDisplay) {
+        distanceDisplay.textContent = `Distance to target: ${distance.toFixed(2)} meters`;
+    }
 
     if (distance < previousDistance || previousDistance === null) {
         adjustBeep(distance);
@@ -93,18 +105,29 @@ function handleOrientation(event) {
             console.log("Direction to target:", directionToTarget);
 
             if (Math.abs(adjustedAlpha - directionToTarget) < 10) {
-                instructionsDisplay.textContent = "You're facing the right direction!";
-                logo.style.animationName = "blink";
-                logo.style.animationDuration = "0.5s";
-                beepAudio.play().catch(error => console.error("Audio play error:", error));
+                if (instructionsDisplay) {
+                    instructionsDisplay.textContent = "You're facing the right direction!";
+                }
+                if (logo) {
+                    logo.classList.add('blink');
+                }
+                if (beepAudio) {
+                    beepAudio.play().catch(error => console.error("Audio play error:", error));
+                }
                 if (navigator.vibrate) {
                     navigator.vibrate([200, 100, 200]);
                     console.log("Vibrating");
                 }
             } else {
-                instructionsDisplay.textContent = "Adjust your direction.";
-                logo.style.animationName = "none";
-                beepAudio.pause();
+                if (instructionsDisplay) {
+                    instructionsDisplay.textContent = "Adjust your direction.";
+                }
+                if (logo) {
+                    logo.classList.remove('blink');
+                }
+                if (beepAudio) {
+                    beepAudio.pause();
+                }
             }
         });
     }
@@ -120,23 +143,46 @@ function calculateBearing(lat1, lon1, lat2, lon2) {
             Math.sin(φ1)*Math.cos(φ2)*Math.cos(λ2-λ1);
     let θ = Math.atan2(y, x);
     let bearing = (θ*180/Math.PI + 360) % 360; // in degrees
+    if (isNaN(bearing)) bearing = 0; // Check if bearing is NaN and set to 0 if true
     return bearing;
 }
 
 function adjustBeep(distance) {
-    let rate = Math.max(1, 100 - distance / 10); // Adjust the rate based on distance
-    beepAudio.playbackRate = rate;
-    beepAudio.volume = Math.min(1, 1 / distance); // Adjust the volume based on distance
-    console.log("Beep adjusted: rate =", rate, "volume =", beepAudio.volume);
+    let interval;
+
+    if (distance < 50) {
+        interval = 200; // Beep every 0.2 seconds
+    } else if (distance < 100) {
+        interval = 400; // Beep every 0.4 seconds
+    } else if (distance < 200) {
+        interval = 600; // Beep every 0.6 seconds
+    } else if (distance < 300) {
+        interval = 800; // Beep every 0.8 seconds
+    } else if (distance < 400) {
+        interval = 1000; // Beep every 1 second
+    } else {
+        interval = 2000; // Beep every 2 seconds
+    }
+
+    if (beepInterval) clearInterval(beepInterval);
+    beepInterval = setInterval(() => {
+        if (beepAudio) beepAudio.play().catch(error => console.error("Audio play error:", error));
+    }, interval);
+
+    console.log("Beep adjusted: interval =", interval, "distance =", distance);
 }
 
 function adjustLogoBlink(distance) {
     let blinkRate = Math.max(0.5, 5 - distance / 20); // Adjust the blink rate based on distance
-    logo.style.animationDuration = `${blinkRate}s`;
+    if (logo) {
+        logo.style.animationDuration = `${blinkRate}s`;
+    }
     console.log("Blink rate adjusted:", blinkRate);
 }
 
 function handleError(error) {
     console.error("Error with geolocation: ", error);
-    instructionsDisplay.textContent = "Unable to retrieve your location.";
+    if (instructionsDisplay) {
+        instructionsDisplay.textContent = "Unable to retrieve your location.";
+    }
 }
