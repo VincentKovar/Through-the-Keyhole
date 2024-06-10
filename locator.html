@@ -3,23 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Through the Keyhole - Locator</title>
+    <title>Through the Keyhole</title>
     <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
-    <link rel="stylesheet" href="styles.css"> <!-- Include external CSS file for styling -->
+    <link rel="stylesheet" href="styles.css"> <!-- Link to external CSS file -->
 </head>
 <body>
     <div class="container">
-        <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
-        <h1>Through the Keyhole - Locator</h1>
+        <h1>Through the Keyhole</h1>
+        <h2>Locator</h2>
         <div id="compass">
             <div id="arrow"></div>
         </div>
         <div id="distance">Distance to target: Calculating...</div>
-        <button id="startButton">Start</button>
-        <button id="stopButton">Stop</button>
-        <audio id="beepAudio" src="beep.mp3"></audio>
-        <p id="errorMessage"></p>
+        <button onclick="startGame()">Start</button>
+        <button onclick="stopGame()">Stop</button>
+        <p id="error-message"></p>
     </div>
-    <script src="locator.js"></script> <!-- Include external JavaScript file -->
+    <script src="locator.js"></script> <!-- Link to external JavaScript file -->
 </body>
 </html>
