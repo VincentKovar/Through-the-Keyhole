@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haptic Test</title>
+    <style>
+        button {
+            padding: 20px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <button onclick="vibrate()">Test Vibration</button>
+    <script>
+        function vibrate() {
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200]);
+                console.log("Vibrating");
+            } else {
+                console.log("Vibration not supported");
+            }
+        }
+    </script>
+</body>
+</html>
