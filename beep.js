@@ -1,6 +1,6 @@
 let targetLocation = {
-    latitude: 47.8105591297596, // Replace with your target latitude
-    longitude: -122.36506298761152 // Replace with your target longitude
+    latitude: 47.74286175416171, // Replace with your target latitude , 
+    longitude: -122.17929670340072 // Replace with your target longitude
 };
 let beepInterval;
 let beepAudio = new Audio('beep.mp3');
