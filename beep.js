@@ -50,6 +50,8 @@ function updatePosition(position) {
 
     let interval = calculateBeepInterval(distance);
     updateBeeping(interval);
+
+    updateCompass(position.coords.heading);
 }
 
 function handleError(error) {
@@ -83,22 +85,41 @@ function updateBeeping(interval) {
     beepInterval = setInterval(() => beepAudio.play(), interval);
 }
 
-function handleOrientation(event) {
-    let alpha = event.alpha; // Alpha is the compass direction
-    if (alpha !== null) {
-        compassNeedle.style.transform = `rotate(${alpha}deg)`;
+function updateCompass(heading) {
+    if (typeof heading === 'number') {
+        compassNeedle.style.transform = `rotate(${heading}deg)`;
 
-        let userLat = position.coords.latitude;
-        let userLon = position.coords.longitude;
-        let distance = calculateDistance(userLat, userLon, targetLocation.latitude, targetLocation.longitude);
-
-        // Check if the device is facing SSE (150-210 degrees) and moving towards the target
-        if (alpha >= 150 && alpha <= 210 && distance < previousDistance) {
-            compassNeedle.style.borderBottomColor = 'green';
+        // Check if the device is facing towards the target direction
+        let bearing = calculateBearing(targetLocation.latitude, targetLocation.longitude);
+        if (Math.abs(heading - bearing) <= 10) {
+            compassNeedle.style.backgroundColor = 'green';
             compassNeedle.classList.add('pulse');
         } else {
-            compassNeedle.style.borderBottomColor = 'red';
+            compassNeedle.style.backgroundColor = 'red';
             compassNeedle.classList.remove('pulse');
         }
     }
+}
+
+function handleOrientation(event) {
+    if (event.alpha !== null) {
+        let alpha = event.alpha; // Compass direction in degrees
+        updateCompass(alpha);
+    }
+}
+
+function calculateBearing(targetLat, targetLon) {
+    let userLat = targetLat; // Replace with user's latitude if available
+    let userLon = targetLon; // Replace with user's longitude if available
+
+    let φ1 = userLat * Math.PI / 180;
+    let φ2 = targetLat * Math.PI / 180;
+    let Δλ = (targetLon - userLon) * Math.PI / 180;
+
+    let y = Math.sin(Δλ) * Math.cos(φ2);
+    let x = Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
+
+    let bearing = Math.atan2(y, x) * 180 / Math.PI;
+    bearing = (bearing + 360) % 360; // Normalize bearing to 0-360 degrees
+    return bearing;
 }
