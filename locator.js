@@ -1,6 +1,6 @@
 let targetLocation = {
-    latitude: 48.41888808828569,
-    longitude: -122.33687937826562
+    latitude: 47.742861812462706,
+    longitude: -122.17931280667916
 };
 let watchID;
 let beepAudio;
