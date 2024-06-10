@@ -79,12 +79,14 @@
         </div>
         <p id="errorMessage" class="error-message hidden">Please dial again</p>
     </div>
-    <audio id="successSound" src="rotary-phone-31815.mp3"></audio>
+    <audio id="rotarySound" src="rotary-phone-31815.mp3"></audio>
+    <audio id="successSound" src="path_to_success_sound.mp3"></audio>
     <audio id="errorSound" src="your-call-cannot-be-completed-as-dialed-please-check-the-number-and-dial-again-103202.mp3"></audio>
     <script>
         const startButton = document.getElementById('startButton');
         const numberContainer = document.getElementById('numberContainer');
         const errorMessage = document.getElementById('errorMessage');
+        const rotarySound = document.getElementById('rotarySound');
         const successSound = document.getElementById('successSound');
         const errorSound = document.getElementById('errorSound');
         const rows = [document.getElementById('row1'), document.getElementById('row2'), document.getElementById('row3')];
@@ -94,7 +96,8 @@
         startButton.addEventListener('click', () => {
             startButton.classList.add('hidden');
             numberContainer.classList.remove('hidden');
-            // Play start sound effect (Insert the start sound effect here)
+            // Play rotary phone sound effect
+            rotarySound.play().catch(error => console.error("Audio play error:", error));
         });
 
         window.addEventListener('keydown', (event) => {
