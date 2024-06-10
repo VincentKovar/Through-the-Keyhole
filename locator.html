@@ -29,12 +29,9 @@
             width: 150px;
             height: auto;
             margin-bottom: 20px;
-            animation: blink 1s infinite;
         }
-        @keyframes blink {
-            0% { opacity: 1; }
-            50% { opacity: 0; }
-            100% { opacity: 1; }
+        h1, h2 {
+            margin: 10px 0;
         }
         button {
             width: 100%;
@@ -57,18 +54,24 @@
             font-size: 1em;
             margin-top: 10px;
         }
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.1; }
+            100% { opacity: 1; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" id="logo" alt="Logo">
+        <img src="WhBr-Rabbit-logo-golden-220609-v1.png" id="logo" class="logo" alt="Logo">
         <h1>Through the Keyhole</h1>
         <h2>Lock TBA</h2>
         <div id="distance">Distance to target: Calculating...</div>
-        <div id="instructions">Instructions will appear here...</div>
+        <div id="instructions">Face the right direction to start.</div>
         <button onclick="startGame()">Start</button>
         <button onclick="stopGame()">Stop</button>
         <audio id="beep-audio" src="beep.mp3"></audio>
+        <p id="error-message"></p>
     </div>
     <script src="locator.js"></script>
 </body>
