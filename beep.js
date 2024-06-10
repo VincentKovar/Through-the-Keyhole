@@ -1,14 +1,15 @@
 let targetLocation = {
-    latitude: 47.7426886199104 // Replace with your target latitude  
-    longitude: -122.1798975139412 // Replace with your target longitude  
+    latitude: 47.7426886199104, // Replace with your target latitude
+    longitude: -122.1798975139412 // Replace with your target longitude
 };
 let beepInterval;
-let beepAudio = new Audio('beep.mp3');
 let watchID;
 let compassNeedle = document.getElementById('needle');
 let previousDistance = null;
+let beepAudio;
 
 function startGame() {
+    beepAudio = new Audio('beep.mp3');
     if (navigator.geolocation) {
         watchID = navigator.geolocation.watchPosition(updatePosition, handleError, { enableHighAccuracy: true });
     } else {
@@ -80,18 +81,17 @@ function updateCompass(heading) {
     if (typeof heading === 'number') {
         compassNeedle.style.transform = `rotate(${heading}deg)`;
 
-        // Check if the device is facing SSE (150-210 degrees)
-        if (heading >= 150 && heading <= 210) {
-            compassNeedle.style.backgroundColor = 'green';
+        let userLat = position.coords.latitude;
+        let userLon = position.coords.longitude;
+        let distance = calculateDistance(userLat, userLon, targetLocation.latitude, targetLocation.longitude);
+
+        // Check if the device is facing SSE (150-210 degrees) and moving towards the target
+        if (heading >= 150 && heading <= 210 && distance < previousDistance) {
+            compassNeedle.style.borderBottomColor = 'green';
             compassNeedle.classList.add('pulse');
         } else {
-            compassNeedle.style.backgroundColor = 'red';
+            compassNeedle.style.borderBottomColor = 'red';
             compassNeedle.classList.remove('pulse');
-        }
-    }
-}
-
-            compassNeedle.style.backgroundColor = 'red';
         }
     }
 }
