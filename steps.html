@@ -83,7 +83,7 @@
         <input type="text" id="cuba" placeholder="Enter location">
         <input type="text" id="portorico" placeholder="Enter location">
         <input type="text" id="philippine-islands" placeholder="Enter location">
-        <input type="text" id="usa" placeholder="Enter location">
+        <input type="text" id="usa" placeholder="USA">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
         <div id="secret-message" class="hidden">
@@ -133,7 +133,7 @@
                 attempts++;
                 errorSound.play();
                 if (attempts === 1) {
-                    errorMessage.textContent = "Check the order of your entries";
+                    errorMessage.textContent = "Check the N.E.W.S. of your entries";
                 } else if (attempts === 2) {
                     errorMessage.textContent = "And use the spelling on the monument";
                 } else if (attempts >= 3) {
