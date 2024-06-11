@@ -66,6 +66,11 @@
                 opacity: 0;
             }
         }
+        /* Add this CSS rule to change the GIF size */
+        .gif-image {
+            width: 150px;
+            height: auto;
+        }
     </style>
 </head>
 <body>
@@ -75,7 +80,7 @@
         <h2>Lock XI</h2>
         <!-- Placeholder for the animated GIF -->
         <div id="gif-container">
-            <img src="animatedduutch.gif" alt="Animated GIF">
+            <img src="animatedduutch.gif" alt="Animated GIF" class="gif-image">
         </div>
         <input type="text" id="answerInput" placeholder="the most prized variety">
         <button onclick="checkAnswer()">Submit</button>
