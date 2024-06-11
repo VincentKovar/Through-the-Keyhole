@@ -121,10 +121,7 @@
                 container.classList.add('fade-out');
                 container.addEventListener('animationend', function handleFadeOut() {
                     container.removeEventListener('animationend', handleFadeOut); // Clean up the event listener
-                    container.innerHTML = `
-                        <h2>Your first secret word is TRAGEDY.</h2>
-                        <p>Write it down then look in your book for the next Lock.</p>
-                    `;
+                    secretMessage.classList.remove('hidden');
                     container.classList.remove('fade-out');
                     container.style.opacity = '1';
                     successSound.play();
