@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Through the Keyhole</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
+            background: #ffe4b5;
+        }
+        .container {
+            width: 90%;
+            max-width: 300px;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .logo {
+            width: 150px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            margin: 10px 0;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+        .hidden {
+            display: none;
+        }
+        .fade-out {
+            animation: fadeOut 2s forwards;
+        }
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
+        <h1>Through the Keyhole</h1>
+        <h2>Lock XIII</h2>
+        <!-- Placeholder for the animated GIF -->
+        <div id="gif-container">[Animated GIF goes here]</div>
+        <input type="text" id="answerInput" placeholder="Enter your answer">
+        <button onclick="checkAnswer()">Submit</button>
+        <p id="errorMessage" class="error-message hidden"></p>
+        <div id="secret-message" class="hidden">
+            <h2>Your third secret word is CREDENTIAL</h2>
+            <p>Write it down then open the QR code for Lock XIV in your book. Enter the three secret words, in order, to discover the location of your next lock.</p>
+        </div>
+    </div>
+    <audio id="successSound" src="badge-coin-win-14675.mp3"></audio>
+    <audio id="errorSound" src="wah-wah-sad-trombone-6347.mp3"></audio>
+    <script>
+        let attempts = 0;
+        const correctAnswer = "star";
+
+        function checkAnswer() {
+            const answerInput = document.getElementById('answerInput');
+            const errorMessage = document.getElementById('errorMessage');
+            const gifContainer = document.getElementById('gif-container');
+            const successSound = document.getElementById('successSound');
+            const errorSound = document.getElementById('errorSound');
+            const container = document.querySelector('.container');
+            const secretMessage = document.getElementById('secret-message');
+
+            if (answerInput.value.trim().toLowerCase() === correctAnswer) {
+                container.classList.add('fade-out');
+                container.addEventListener('animationend', function handleFadeOut() {
+                    container.removeEventListener('animationend', handleFadeOut); // Clean up the event listener
+                    container.innerHTML = `
+                        <h2>Your third secret word is CREDENTIAL</h2>
+                        <p>Write it down then open the QR code for Lock XIV in your book. Enter the three secret words, in order, to discover the location of your next lock.</p>
+                    `;
+                    container.classList.remove('fade-out');
+                    container.style.opacity = '1';
+                    successSound.play();
+                });
+            } else {
+                attempts++;
+                errorSound.play();
+                if (attempts === 1) {
+                    errorMessage.textContent = "don't petal off yet, try again.";
+                } else if (attempts === 2) {
+                    errorMessage.textContent = "it's not time to leaf, try once more.";
+                } else if (attempts >= 3) {
+                    window.open('https://www.bbc.com/culture/article/20160419-tulip-mania-the-flowers-that-cost-more-than-houses', '_blank');
+                }
+                errorMessage.classList.remove('hidden');
+                answerInput.value = '';
+            }
+        }
+    </script>
+</body>
+</html>
