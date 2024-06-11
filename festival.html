@@ -74,7 +74,7 @@
         <h1>Through the Keyhole</h1>
         <h2>Lock XI</h2>
         <!-- Placeholder for the animated GIF -->
-        <div id="gif-container">[Animated GIF goes here]</div>
+        <div id="gif-container">animatedduutch.gif</div>
         <input type="text" id="answerInput" placeholder="the most prized variety">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
@@ -109,9 +109,9 @@
                 attempts++;
                 errorSound.play();
                 if (attempts === 1) {
-                    errorMessage.textContent = "don't petal off yet, try again.";
+                    errorMessage.textContent = "Don't petal off yet, try again.";
                 } else if (attempts === 2) {
-                    errorMessage.textContent = "it's not time to leaf, try once more.";
+                    errorMessage.textContent = Iit's not time to leaf, try once more.";
                 } else if (attempts >= 3) {
                     window.open('https://www.bbc.com/culture/article/20160419-tulip-mania-the-flowers-that-cost-more-than-houses', '_blank');
                 }
