@@ -84,7 +84,7 @@
         </div>
     </div>
     <audio id="successSound" src="badge-coin-win-14675.mp3"></audio>
-    <audio id="errorSound" src="wah-wah-sad-trombone-6347.mp3"></audio>
+    <audio id="errorSound" src="cannon-shot-6153.mp3"></audio>
     <script>
         let attempts = 0;
         const correctAnswer = "star";
@@ -114,11 +114,11 @@
                 attempts++;
                 errorSound.play();
                 if (attempts === 1) {
-                    errorMessage.textContent = "don't petal off yet, try again.";
+                    errorMessage.textContent = "Not quite";
                 } else if (attempts === 2) {
-                    errorMessage.textContent = "it's not time to leaf, try once more.";
+                    errorMessage.textContent = "Four letters...";
                 } else if (attempts >= 3) {
-                    window.open('https://www.bbc.com/culture/article/20160419-tulip-mania-the-flowers-that-cost-more-than-houses', '_blank');
+                    errorMessage.textContent = "Political power grows out of the barrel of a gun...";
                 }
                 errorMessage.classList.remove('hidden');
                 answerInput.value = '';
