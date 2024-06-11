@@ -76,8 +76,8 @@
         <!-- Placeholder for the animated GIF -->
         <div id="gif-container">[Animated GIF goes here]</div>
         <input type="text" id="cuba" placeholder="Enter location">
-        <input type="text" id="philippine-islands" placeholder="Enter location">
         <input type="text" id="portorico" placeholder="Enter location">
+        <input type="text" id="philippine islands" placeholder="Enter location">
         <input type="text" id="usa" placeholder="Enter location">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
@@ -90,7 +90,7 @@
     <audio id="errorSound" src="wah-wah-sad-trombone-6347.mp3"></audio>
     <script>
         let attempts = 0;
-        const correctAnswers = ["cuba", "philippine islands", "portorico", "usa"];
+        const correctAnswers = ["cuba", "portorico", "philippine islands", "usa"];
 
         function checkAnswer() {
             const cubaInput = document.getElementById('cuba');
