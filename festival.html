@@ -78,10 +78,6 @@
         <input type="text" id="answerInput" placeholder="the most prized variety">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
-        <div id="secret-message" class="hidden">
-            <h2>Your first secret word is EAGLES.</h2>
-            <p>Write it down then look in your book for the next Lock.</p>
-        </div>
     </div>
     <audio id="successSound" src="badge-coin-win-14675.mp3"></audio>
     <audio id="errorSound" src="wah-wah-sad-trombone-6347.mp3"></audio>
@@ -95,16 +91,18 @@
             const gifContainer = document.getElementById('gif-container');
             const successSound = document.getElementById('successSound');
             const errorSound = document.getElementById('errorSound');
-            const secretMessage = document.getElementById('secret-message');
             const container = document.querySelector('.container');
 
             if (answerInput.value.trim().toLowerCase() === correctAnswer) {
                 container.classList.add('fade-out');
                 container.addEventListener('animationend', function handleFadeOut() {
                     container.removeEventListener('animationend', handleFadeOut); // Clean up the event listener
-                    container.style.opacity = '1'; // Reset opacity to make sure new content is visible
-                    container.innerHTML = ''; // Clear the container
-                    secretMessage.classList.remove('hidden'); // Display the secret message
+                    container.innerHTML = `
+                        <h2>Your first secret word is EAGLES.</h2>
+                        <p>Write it down then look in your book for the next Lock.</p>
+                    `;
+                    container.classList.remove('fade-out');
+                    container.style.opacity = '1';
                     successSound.play();
                 });
             } else {
