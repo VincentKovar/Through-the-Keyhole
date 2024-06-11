@@ -103,10 +103,8 @@
                 container.addEventListener('animationend', function handleFadeOut() {
                     container.removeEventListener('animationend', handleFadeOut); // Clean up the event listener
                     container.style.opacity = '1'; // Reset opacity to make sure new content is visible
-                    container.innerHTML = `
-                        <h2>Your first secret word is EAGLES.</h2>
-                        <p>Write it down then look in your book for the next Lock.</p>
-                    `;
+                    container.innerHTML = ''; // Clear the container
+                    secretMessage.classList.remove('hidden'); // Display the secret message
                     successSound.play();
                 });
             } else {
