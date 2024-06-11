@@ -78,6 +78,10 @@
         <input type="text" id="answerInput" placeholder="the most prized variety">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
+        <div id="secret-message" class="hidden">
+            <h2>Your first secret word is EAGLES.</h2>
+            <p>Write it down then look in your book for the next Lock.</p>
+        </div>
     </div>
     <audio id="successSound" src="path/to/success-sound.mp3"></audio>
     <audio id="errorSound" src="path/to/error-sound.mp3"></audio>
@@ -91,14 +95,15 @@
             const gifContainer = document.getElementById('gif-container');
             const successSound = document.getElementById('successSound');
             const errorSound = document.getElementById('errorSound');
+            const secretMessage = document.getElementById('secret-message');
+            const container = document.querySelector('.container');
 
             if (answerInput.value.trim().toLowerCase() === correctAnswer) {
-                document.querySelector('.container').classList.add('fade-out');
+                container.classList.add('fade-out');
                 setTimeout(() => {
-                    document.querySelector('.container').innerHTML = `
-                        <h2>Your first secret word is EAGLES.</h2>
-                        <p>Write it down then look in your book for the next Lock.</p>
-                    `;
+                    container.classList.remove('fade-out');
+                    container.classList.add('hidden');
+                    secretMessage.classList.remove('hidden');
                     successSound.play();
                 }, 2000);
             } else {
