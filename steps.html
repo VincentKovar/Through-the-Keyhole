@@ -75,10 +75,10 @@
         <h2>Lock XIV</h2>
         <!-- Placeholder for the animated GIF -->
         <div id="gif-container">[Animated GIF goes here]</div>
-        <input type="text" id="cuba" placeholder="Cuba">
-        <input type="text" id="philippine-islands" placeholder="Philippine Islands">
-        <input type="text" id="portorico" placeholder="Portorico">
-        <input type="text" id="usa" placeholder="USA">
+        <input type="text" id="cuba" placeholder="Enter location">
+        <input type="text" id="philippine-islands" placeholder="Enter location">
+        <input type="text" id="portorico" placeholder="Enter location">
+        <input type="text" id="usa" placeholder="Enter location">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
         <div id="secret-message" class="hidden">
@@ -129,9 +129,9 @@
                 attempts++;
                 errorSound.play();
                 if (attempts === 1) {
-                    errorMessage.textContent = "don't petal off yet, try again.";
+                    errorMessage.textContent = "Check the order of your entries";
                 } else if (attempts === 2) {
-                    errorMessage.textContent = "it's not time to leaf, try once more.";
+                    errorMessage.textContent = "And use the spelling on the monument";
                 } else if (attempts >= 3) {
                     window.open('https://www.bbc.com/culture/article/20160419-tulip-mania-the-flowers-that-cost-more-than-houses', '_blank');
                 }
