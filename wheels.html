@@ -67,7 +67,7 @@
             }
         }
         .image {
-            width: 200px; /* Adjust the size of the image as needed */
+            width: 300px; /* Adjust the size of the image as needed */
             height: auto;
             margin: 20px auto;
         }
@@ -78,9 +78,8 @@
         <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
         <h1>Through the Keyhole</h1>
         <h2>Lock XIII</h2>
-        <!-- Placeholder for the static image -->
         <img src="eagle.jpg" alt="Static Image" class="image">
-        <input type="text" id="answerInput" placeholder="Enter your answer">
+        <input type="text" id="answerInput" placeholder="Enter the symbol">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
         <div id="secret-message" class="hidden">
@@ -118,7 +117,7 @@
                 attempts++;
                 errorSound.play();
                 if (attempts === 1) {
-                    errorMessage.textContent = "Not quite";
+                    errorMessage.textContent = "Not quite.";
                 } else if (attempts === 2) {
                     errorMessage.textContent = "Four letters...";
                 } else if (attempts >= 3) {
