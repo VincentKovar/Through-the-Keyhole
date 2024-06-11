@@ -66,6 +66,11 @@
                 opacity: 0;
             }
         }
+        .image {
+            width: 200px; /* Adjust the size of the image as needed */
+            height: auto;
+            margin: 20px auto;
+        }
     </style>
 </head>
 <body>
@@ -73,8 +78,8 @@
         <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
         <h1>Through the Keyhole</h1>
         <h2>Lock XIII</h2>
-        <!-- Placeholder for the animated GIF -->
-        img src='eagle.jpg"
+        <!-- Placeholder for the static image -->
+        <img src="path/to/your/image.jpg" alt="Static Image" class="image">
         <input type="text" id="answerInput" placeholder="Enter your answer">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
@@ -92,7 +97,6 @@
         function checkAnswer() {
             const answerInput = document.getElementById('answerInput');
             const errorMessage = document.getElementById('errorMessage');
-            const gifContainer = document.getElementById('gif-container');
             const successSound = document.getElementById('successSound');
             const errorSound = document.getElementById('errorSound');
             const container = document.querySelector('.container');
