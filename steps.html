@@ -80,7 +80,7 @@
         <h2>Lock XIV</h2>
         <!-- Placeholder for the static image -->
         <img src="path/to/your/image.jpg" alt="Static Image" class="image">
-        <input type="text" id="cuba" placeholder="Enter location">
+        <input type="text" id="cuba" placeholder="Enter first location">
         <input type="text" id="portorico" placeholder="Enter location">
         <input type="text" id="philippine-islands" placeholder="Enter location">
         <input type="text" id="usa" placeholder="USA">
@@ -99,8 +99,8 @@
 
         function checkAnswer() {
             const cubaInput = document.getElementById('cuba');
-            const philippineIslandsInput = document.getElementById('philippine-islands');
             const portoricoInput = document.getElementById('portorico');
+            const philippineIslandsInput = document.getElementById('philippine-islands');
             const usaInput = document.getElementById('usa');
             const errorMessage = document.getElementById('errorMessage');
             const successSound = document.getElementById('successSound');
@@ -110,8 +110,8 @@
 
             const answers = [
                 cubaInput.value.trim().toLowerCase(),
-                philippineIslandsInput.value.trim().toLowerCase(),
                 portoricoInput.value.trim().toLowerCase(),
+                philippineIslandsInput.value.trim().toLowerCase(),
                 usaInput.value.trim().toLowerCase()
             ];
 
@@ -121,7 +121,10 @@
                 container.classList.add('fade-out');
                 container.addEventListener('animationend', function handleFadeOut() {
                     container.removeEventListener('animationend', handleFadeOut); // Clean up the event listener
-                    secretMessage.classList.remove('hidden');
+                    container.innerHTML = `
+                        <h2>Your first secret word is TRAGEDY.</h2>
+                        <p>Write it down then look in your book for the next Lock.</p>
+                    `;
                     container.classList.remove('fade-out');
                     container.style.opacity = '1';
                     successSound.play();
@@ -130,16 +133,16 @@
                 attempts++;
                 errorSound.play();
                 if (attempts === 1) {
-                    errorMessage.textContent = "Check the N.E.W.S. of your entries";
+                    errorMessage.textContent = "Try again using the spelling on the monument";
                 } else if (attempts === 2) {
-                    errorMessage.textContent = "And use the spelling on the monument";
+                    errorMessage.textContent = "Don't forget the N.E.W.S. of the day";
                 } else if (attempts >= 3) {
                     window.open('https://maps.app.goo.gl/vgCTKz2cj638qAZa6', '_blank');
                 }
                 errorMessage.classList.remove('hidden');
                 cubaInput.value = '';
-                philippineIslandsInput.value = '';
                 portoricoInput.value = '';
+                philippineIslandsInput.value = '';
                 usaInput.value = '';
             }
         }
