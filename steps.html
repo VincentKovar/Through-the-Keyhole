@@ -66,6 +66,11 @@
                 opacity: 0;
             }
         }
+        .image {
+            width: 150px; /* Adjust the size of the image as needed */
+            height: auto;
+            margin: 20px auto;
+        }
     </style>
 </head>
 <body>
@@ -73,11 +78,11 @@
         <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
         <h1>Through the Keyhole</h1>
         <h2>Lock XIV</h2>
-        <!-- Placeholder for the animated GIF -->
-        <div id="gif-container">[Animated GIF goes here]</div>
+        <!-- Placeholder for the static image -->
+        <img src="path/to/your/image.jpg" alt="Static Image" class="image">
         <input type="text" id="cuba" placeholder="Enter location">
         <input type="text" id="portorico" placeholder="Enter location">
-        <input type="text" id="philippine islands" placeholder="Enter location">
+        <input type="text" id="philippine-islands" placeholder="Enter location">
         <input type="text" id="usa" placeholder="Enter location">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
@@ -98,7 +103,6 @@
             const portoricoInput = document.getElementById('portorico');
             const usaInput = document.getElementById('usa');
             const errorMessage = document.getElementById('errorMessage');
-            const gifContainer = document.getElementById('gif-container');
             const successSound = document.getElementById('successSound');
             const errorSound = document.getElementById('errorSound');
             const container = document.querySelector('.container');
