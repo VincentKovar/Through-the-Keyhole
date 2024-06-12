@@ -3,30 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page A</title>
+    <title>Through the Keyhole</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
         body {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Alice', serif;
             text-align: center;
+            margin: 0;
+            background: #ffe4b5;
         }
-        .footer-image {
-            position: absolute;
-            bottom: 10px;
-            width: 50px;
-            height: 50px;
+        .container {
+            width: 90%;
+            max-width: 300px;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .logo {
+            width: 150px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            margin: 10px 0;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+        .hidden {
+            display: none;
+        }
+        .fade-out {
+            animation: fadeOut 2s forwards;
+        }
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+            }
+        }
+        .image {
+            width: 200px; /* Adjust the size of the image as needed */
+            height: auto;
+            margin: 20px auto;
         }
     </style>
 </head>
 <body>
-    <h1>No currently used. you should not be here.</h1>
-    <p>This is Page A.</p>
+    <div class="container">
+        <a href="https://www.whitebranches.com" target="_blank">
+            <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
+        </a>
+        <h1>Through the Keyhole</h1>
+    <h2>Friendship, Love, and Truth</h2>
+    <p>On the odd side of the tracks 
+and along the forbidden way
+Walk to the place the <i>strange men</i>
+And enter the founding day
+</p>
     <a href="index.html">Go Back</a>
-    <img src="https://static.wixstatic.com/media/cfee67_19fd25117c35424cb3230af8f9250f54~mv2.png/v1/fill/w_268,h_268,al_c,q_85,usm_1.20_1.00_0.01,enc_auto/WhBr-Rabbit-logo-golden-220609-v1.png" class="footer-image" alt="Footer Image">
+    <img src="WhBr-Rabbit-logo-golden-220609-v1.png">
 </body>
 </html>
