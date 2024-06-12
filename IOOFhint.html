@@ -34,13 +34,19 @@
             margin: 10px 0;
         }
         .image {
-            width: 150px; /* Adjust the size of the image as needed */
+            width: 150px;
             height: auto;
             margin: 20px auto;
+        }
+        .centered {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         a {
             color: #007bff;
             text-decoration: none;
+            margin-top: 10px;
         }
         a:hover {
             text-decoration: underline;
@@ -60,10 +66,12 @@
             Walk to the place the <i>strange men</i> met<br>
             And enter the founding day
         </p>
-        <a href="LOCKII.html">Go Back</a>
-        <a href="forbiddenway.html">
-            <img src="IOOF.png" alt="Image" class="image">
-        </a>
+        <div class="centered">
+            <a href="LOCKII.html">Go Back</a>
+            <a href="forbiddenway.html">
+                <img src="IOOF.png" alt="Image" class="image">
+            </a>
+        </div>
     </div>
 </body>
 </html>
