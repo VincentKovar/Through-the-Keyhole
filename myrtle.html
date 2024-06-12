@@ -82,7 +82,7 @@
         <p id="error-message"></p>
         <img src="trumpeter.png" id="trumpeter-image" class="zoomable-image">
         <img src="Windsor.jpeg" id="windsor-image" class="zoomable-image">
-        <input type="text" id="keyInput" placeholder="four characters">
+        <input type="text" id="keyInput" placeholder="four alphanumeric characters">
         <button onclick="navigate()">Submit</button>
     </div>
 
@@ -91,7 +91,7 @@
 
         function navigate() {
             const enteredKey = document.getElementById('keyInput').value.trim().toLowerCase();
-            const comparisonKey = '45nd';
+            const comparisonKey = 'H5nd';
             const errorMessage = document.getElementById('error-message');
             const trumpeterImage = document.getElementById('trumpeter-image');
             const windsorImage = document.getElementById('windsor-image');
