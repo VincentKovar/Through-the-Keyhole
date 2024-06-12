@@ -13,7 +13,7 @@
             justify-content: space-between;
             align-items: center;
             height: 100vh;
-            font-family: Alice, sans-serif;
+            font-family: 'Alice', serif;
             text-align: center;
             margin: 0;
             padding: 0;
@@ -26,7 +26,7 @@
             margin-top: 20px;
         }
         .logo {
-            width: 300px; /* Adjust size as needed */
+            width: 150px; /* Adjust size as needed */
             height: auto;
             margin-bottom: 20px;
         }
@@ -55,22 +55,40 @@
             width: 200px; /* Adjust size to be smaller than the top image */
             height: auto;
             margin-bottom: 20px;
+            cursor: pointer;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
     </style>
+    <script>
+        function openQRScanner() {
+            alert("Please use your device's QR code scanner to scan the code.");
+            // If using a QR scanner library, initialize it here
+            // Example with a hypothetical library:
+            // QRScanner.open();
+        }
+    </script>
 </head>
 <body>
     <div class="container">
-        <img src="IOOF.png" alt="Logo" class="logo">
+        <a href="https://www.whitebranches.com/keyhole" target="_blank">
+            <img src="WhBr-Rabbit-logo-golden-220609-v1.png" alt="Logo" class="logo">
+        </a>
         <h2>Through the Keyhole</h2>
-        <p>Here is Secret Message A.<br> Write it in your book. </p>
-        <p>5-3-2,   8-5-2,   8-4-4,   3-6-4,<br>2-3-3,   6-7-2,   3-3-2</p>
-        <p>These number patterns will solve Lock III and reveal where Lock IV is hidden.</p>
+        <p>Here is Secret Message A.<br> Write it in your book<br>and turn to Lock III. </p>
+       <b></b> <p>5-3-2,   8-5-2,   8-4-4,   3-6-4,<br>2-3-3,   6-7-2,   3-3-2</p></b>
+        <p>These number patterns are they key to Lock III<br> and is also the location where Lock IV is hidden.</p>
         <p><i>Remember, hidden clues do not require opening or entering any physical locations</i></p>
         <p>(Though you are always welcome to shop or have a snack)</p>
     </div>
     <div>
-        <img src="keyclue.png" class="bottom-image" alt="Key Clue">
+        <img src="keyclue.png" class="bottom-image" alt="Key Clue" onclick="openQRScanner()">
     </div>
 </body>
 </html>
+
 
