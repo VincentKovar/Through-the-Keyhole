@@ -144,7 +144,7 @@
         function animateCompass() {
             const compass = document.querySelector('.logo');
             const secretMessage = document.getElementById('secretMessage');
-            let rotations = [45, 180, 225, 0];
+            let rotations = [45, 225, -180, 0];
             let letters = ["N", "E", "W", "S"];
             let index = 0;
             let rotationCount = 0;
@@ -154,13 +154,16 @@
                 if (rotationCount < 3) {
                     if (index < rotations.length) {
                         compass.style.transform = `rotate(${rotations[index]}deg)`;
+                        console.log(`Rotating to ${rotations[index]} degrees`);
                         keystrokeSound.play();
                         secretMessage.textContent += letters[letterIndex];
-                        letterIndex = (letterIndex + 1) % letters.length;
+                        letterIndex++;
                         index++;
                         setTimeout(rotateAndPulse, 2000);
                     } else {
                         index = 0;
+                        letterIndex = 0;
+                        secretMessage.textContent = ""; // Clear the text for the next sequence
                         rotationCount++;
                         setTimeout(rotateAndPulse, 2000);
                     }
