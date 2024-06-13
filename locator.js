@@ -35,28 +35,6 @@ function startGame() {
     console.log("Game started");
 }
 
-function stopGame() {
-    if (navigator.geolocation) {
-        navigator.geolocation.clearWatch(watchID);
-    }
-    if (window.DeviceOrientationEvent) {
-        window.removeEventListener('deviceorientation', handleOrientation);
-    }
-    if (beepAudio) {
-        beepAudio.pause();
-        beepAudio.currentTime = 0;
-    }
-    if (beepInterval) {
-        clearInterval(beepInterval); // Clear the beep interval
-    }
-    if (logo) {
-        logo.style.animationDuration = "1s";
-        logo.style.animationName = "none";
-    }
-    facingCorrectDirection = false; // Reset the direction tracking
-    console.log("Game stopped");
-}
-
 function updatePosition(position) {
     currentLocation = {
         latitude: position.coords.latitude,
@@ -116,13 +94,6 @@ function handleOrientation(event) {
             logo.classList.add('blink');
         }
         facingCorrectDirection = true;
-        if (beepAudio) {
-            beepAudio.play().catch(error => console.error("Audio play error:", error));
-        }
-        if (navigator.vibrate) {
-            navigator.vibrate([200]); // Single vibration pulse
-            console.log("Vibrating");
-        }
     } else {
         if (instructionsDisplay) {
             instructionsDisplay.textContent = "Adjust your direction.";
@@ -131,9 +102,6 @@ function handleOrientation(event) {
             logo.classList.remove('blink');
         }
         facingCorrectDirection = false;
-        if (beepAudio) {
-            beepAudio.pause();
-        }
     }
 }
 
@@ -172,7 +140,7 @@ function adjustBeep(distance) {
     beepInterval = setInterval(() => {
         if (beepAudio) beepAudio.play().catch(error => console.error("Audio play error:", error));
         if (facingCorrectDirection && navigator.vibrate) {
-            navigator.vibrate(200);
+            navigator.vibrate([200]); // Single vibration pulse
         }
     }, interval);
 
@@ -203,4 +171,11 @@ function displayError(message) {
 
 function showNextButton() {
     document.getElementById('next-container').style.display = 'block';
+}
+
+function navigateToNext() {
+    document.body.classList.add('fade-out');
+    setTimeout(() => {
+        window.location.href = 'operator.html';
+    }, 2000);
 }
