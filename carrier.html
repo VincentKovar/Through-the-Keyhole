@@ -72,9 +72,6 @@
                 opacity: 0;
             }
         }
-        .pulse {
-            animation: pulse 2s infinite;
-        }
         @keyframes pulse {
             0% {
                 transform: scale(1);
@@ -85,6 +82,26 @@
             100% {
                 transform: scale(1);
             }
+        }
+        @keyframes rotateCompass {
+            0% {
+                transform: rotate(0deg);
+            }
+            25% {
+                transform: rotate(-45deg);
+            }
+            50% {
+                transform: rotate(135deg);
+            }
+            75% {
+                transform: rotate(-90deg);
+            }
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+        .rotate-animation {
+            animation: rotateCompass 8s steps(4, end) infinite, pulse 2s infinite;
         }
     </style>
 </head>
@@ -100,7 +117,7 @@
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
     </div>
-    <audio id="successSound" src="yaaas-38411.mp3"></audio>
+    <audio id="successSound" src="yaas-38411.mp3"></audio>
     <audio id="errorSound" src="chapter.mp3"></audio>
     <audio id="keystrokeSound" src="keystroke.mp3"></audio>
     <script>
@@ -120,7 +137,7 @@
                 container.addEventListener('animationend', function handleFadeOut() {
                     container.removeEventListener('animationend', handleFadeOut);
                     container.innerHTML = `
-                        <img src="compass.png" class="logo pulse rotate" alt="Compass" id="compass">
+                        <img src="compass.png" class="logo rotate-animation" alt="Compass" id="compass">
                         <h2 id="secretMessage"></h2>
                     `;
                     container.classList.remove('fade-out');
@@ -145,30 +162,23 @@
         }
 
         function animateCompass() {
-            const compass = document.getElementById('compass');
             const secretMessage = document.getElementById('secretMessage');
-            let rotations = [45, 180, 225, 0];
             let letters = ["N", "E", "W", "S"];
-            let index = 0;
             let rotationCount = 0;
             let letterIndex = 0;
 
-            function rotateAndPulse() {
+            function spellNEWS() {
                 if (rotationCount < 3) {
-                    if (index < rotations.length) {
-                        compass.style.transform = `rotate(${rotations[index]}deg)`;
-                        console.log(`Rotating to ${rotations[index]} degrees`);
-                        keystrokeSound.play();
+                    if (letterIndex < letters.length) {
                         secretMessage.textContent += letters[letterIndex];
+                        keystrokeSound.play();
                         letterIndex++;
-                        index++;
-                        setTimeout(rotateAndPulse, 2000);
+                        setTimeout(spellNEWS, 2000);
                     } else {
-                        index = 0;
+                        secretMessage.textContent = "";
                         letterIndex = 0;
-                        secretMessage.textContent = ""; // Clear the text for the next sequence
                         rotationCount++;
-                        setTimeout(rotateAndPulse, 2000);
+                        setTimeout(spellNEWS, 2000);
                     }
                 } else {
                     secretMessage.textContent = "NEWS";
@@ -178,7 +188,7 @@
                 }
             }
 
-            rotateAndPulse();
+            spellNEWS();
         }
     </script>
 </body>
