@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Through the Keyhole</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
+            background: #ffe4b5;
+            overflow: hidden; /* Prevent scrollbars during animation */
+        }
+        .container {
+            width: 90%;
+            max-width: 300px;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            transition: transform 2s ease-in-out; /* Transition for falling effect */
+        }
+        .logo {
+            width: 150px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            margin: 10px 0;
+        }
+        p {
+            margin: 20px 0;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+        .hidden {
+            display: none;
+        }
+        .fall {
+            animation: fall 2s forwards;
+        }
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container">
+        <a href="https://www.whitebranches.com/keyhole" target="_blank">
+            <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
+        </a>
+        <h1>Through the Keyhole</h1>
+        <h2>Lock XVII</h2>
+        <p>Use the key in your book to convert the name into a sum.</p>
+        <input type="text" id="answerInput" placeholder="Paces to walk.">
+        <button onclick="checkAnswer()">Submit</button>
+        <p id="errorMessage" class="error-message hidden"></p>
+    </div>
+    <audio id="successSound" src="bugle.mp3"></audio>
+    <script>
+        function checkAnswer() {
+            const answerInput = document.getElementById('answerInput');
+            const errorMessage = document.getElementById('errorMessage');
+            const container = document.getElementById('container');
+            const successSound = document.getElementById('successSound');
+            const correctAnswer = "101";
+
+            if (answerInput.value.trim() === correctAnswer) {
+                successSound.play();
+                container.classList.add('fall');
+                setTimeout(() => {
+                    window.location.href = 'locator.html';
+                }, 2000);
+            } else {
+                errorMessage.textContent = "Use the key in your book to convert the name into a sum.";
+                errorMessage.classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
