@@ -97,7 +97,7 @@
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
     </div>
-    <audio id="successSound" src="yaaas-38411.mp3"></audio>
+    <audio id="successSound" src="yaas-38411.mp3"></audio>
     <audio id="errorSound" src="chapter.mp3"></audio>
     <audio id="keystrokeSound" src="keystroke.mp3"></audio>
     <script>
@@ -144,7 +144,7 @@
         function animateCompass() {
             const compass = document.querySelector('.logo');
             const secretMessage = document.getElementById('secretMessage');
-            let rotations = [45, 180, 225];
+            let rotations = [45, 180, 225, 0];
             let letters = ["N", "E", "W", "S"];
             let index = 0;
             let rotationCount = 0;
