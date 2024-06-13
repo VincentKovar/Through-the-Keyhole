@@ -1,6 +1,7 @@
+// Global variables
 let targetLocation = {
-    latitude: 47.7428185240591,
-    longitude: -122.17928062009655
+    latitude: 48.41890859784646,
+    longitude: -122.33687234141873
 };
 let watchID;
 let beepAudio = document.getElementById('beep-audio');
