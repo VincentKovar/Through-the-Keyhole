@@ -36,7 +36,7 @@
         button {
             width: 100%;
             padding: 10px;
-            background-color: #8B0000; /* Brown-red color */
+            background-color: #007bff;
             color: white;
             border: none;
             border-radius: 5px;
@@ -44,6 +44,13 @@
             margin-top: 10px;
         }
         button:hover {
+            background-color: #0056b3;
+        }
+        .next-button {
+            background-color: #8B0000; /* Brown-red color */
+            color: white;
+        }
+        .next-button:hover {
             background-color: #5B0000; /* Darker shade of brown-red */
         }
         @keyframes blink {
@@ -63,7 +70,7 @@
         <button onclick="startGame()">Start</button>
         <div id="next-container" style="display: none;">
             <p>When you've reached your destination, click next.</p>
-            <button onclick="nextPage()">Next</button>
+            <button onclick="nextPage()" class="next-button">Next</button>
         </div>
         <audio id="beep-audio" src="beep.mp3"></audio>
     </div>
