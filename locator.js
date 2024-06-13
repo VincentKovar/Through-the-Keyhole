@@ -10,6 +10,7 @@ let instructionsDisplay = document.getElementById('instructions');
 let previousDistance = null;
 let beepInterval; // Add a variable for the beep interval
 let facingCorrectDirection = false; // Add a variable to track if the user is facing the correct direction
+let currentLocation = { latitude: 0, longitude: 0 }; // Add a variable to store the current location
 
 function startGame() {
     if (navigator.geolocation) {
@@ -56,7 +57,7 @@ function stopGame() {
 }
 
 function updatePosition(position) {
-    let currentLocation = {
+    currentLocation = {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude
     };
@@ -95,53 +96,44 @@ function calculateDistance(loc1, loc2) {
 function handleOrientation(event) {
     let alpha = event.alpha || 0; // Compass direction in degrees
     let adjustedAlpha = (alpha + 180) % 360; // Adjust for holding phone in front
-    if (navigator.geolocation && navigator.geolocation.getCurrentPosition) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            let currentLocation = {
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude
-            };
-            let directionToTarget = calculateBearing(currentLocation.latitude, currentLocation.longitude, targetLocation.latitude, targetLocation.longitude);
 
-            console.log("Alpha:", alpha);
-            console.log("Direction to target:", directionToTarget);
+    let directionToTarget = calculateBearing(currentLocation.latitude, currentLocation.longitude, targetLocation.latitude, targetLocation.longitude);
 
-            if (Math.abs(adjustedAlpha - directionToTarget) < 10) {
-                if (instructionsDisplay) {
-                    instructionsDisplay.textContent = "You're facing the right direction!";
-                }
-                if (logo) {
-                    logo.classList.add('blink');
-                }
-                facingCorrectDirection = true;
-                if (beepAudio) {
-                    beepAudio.play().catch(error => console.error("Audio play error:", error));
-                }
-                if (navigator.vibrate) {
-                    navigator.vibrate([200, 100, 200]);
-                    console.log("Vibrating");
-                }
-            } else {
-                if (instructionsDisplay) {
-                    instructionsDisplay.textContent = "Adjust your direction.";
-                }
-                if (logo) {
-                    logo.classList.remove('blink');
-                }
-                facingCorrectDirection = false;
-                if (beepAudio) {
-                    beepAudio.pause();
-                }
-            }
-        });
+    console.log("Alpha:", alpha);
+    console.log("Direction to target:", directionToTarget);
+
+    if (Math.abs(adjustedAlpha - directionToTarget) < 10) {
+        if (instructionsDisplay) {
+            instructionsDisplay.textContent = "You're facing the right direction!";
+        }
+        if (logo) {
+            logo.classList.add('blink');
+        }
+        facingCorrectDirection = true;
+        if (beepAudio) {
+            beepAudio.play().catch(error => console.error("Audio play error:", error));
+        }
+        if (navigator.vibrate) {
+            navigator.vibrate([200, 100, 200]);
+            console.log("Vibrating");
+        }
     } else {
-        displayError("Unable to retrieve device orientation.");
+        if (instructionsDisplay) {
+            instructionsDisplay.textContent = "Adjust your direction.";
+        }
+        if (logo) {
+            logo.classList.remove('blink');
+        }
+        facingCorrectDirection = false;
+        if (beepAudio) {
+            beepAudio.pause();
+        }
     }
 }
 
 function calculateBearing(lat1, lon1, lat2, lon2) {
     let φ1 = lat1 * Math.PI / 180; // φ, λ in radians
-    let φ2 = lat2.latitude * Math.PI / 180;
+    let φ2 = lat2 * Math.PI / 180;
     let λ1 = lon1 * Math.PI / 180;
     let λ2 = lon2 * Math.PI / 180;
     let y = Math.sin(λ2 - λ1) * Math.cos(φ2);
