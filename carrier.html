@@ -25,26 +25,6 @@
             padding: 20px;
             box-sizing: border-box;
         }
-        .rotate-animation {
-            animation: rotateCompass 8s steps(4, end) infinite, pulse 2s infinite;
-        }
-        @keyframes rotateCompass {
-            0% {
-                transform: rotate(0deg);
-            }
-            25% {
-                transform: rotate(-45deg);
-            }
-            50% {
-                transform: rotate(135deg);
-            }
-            75% {
-                transform: rotate(-90deg);
-            }
-            100% {
-                transform: rotate(0deg);
-            }
-        }
         .pulse {
             animation: pulse 2s infinite;
         }
@@ -112,7 +92,7 @@
         </a>
         <h1>Through the Keyhole</h1>
         <h2>Lock XIII</h2>
-        <p>Look at the words listed in your book under Lock XIII. What important service are they associated with in the Skagit Valley?</p>
+        <p>Look at the words listed in your book under Lock XIII. What important service did they all provide to Skagit Valley communities?</p>
         <input type="text" id="answerInput" placeholder="Enter your answer">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
@@ -137,13 +117,14 @@
                 container.addEventListener('animationend', function handleFadeOut() {
                     container.removeEventListener('animationend', handleFadeOut);
                     container.innerHTML = `
-                        <img src="compass.png" class="logo rotate-animation" alt="Compass" id="compass">
+                        <img src="compass-0deg.png" class="logo pulse" alt="Compass" id="compass">
                         <h2 id="secretMessage"></h2>
                     `;
                     container.classList.remove('fade-out');
                     container.style.opacity = '1';
                     successSound.play();
-                    animateCompass();
+                    rotateCompass();
+                    spellNEWS();
                 });
             } else {
                 attempts++;
@@ -161,24 +142,40 @@
             }
         }
 
-        function animateCompass() {
+        function rotateCompass() {
+            const compass = document.getElementById('compass');
+            const rotations = [
+                'compass-0deg.png',
+                'compass-45deg.png',
+                'compass-135deg.png',
+                'compass-225deg.png',
+            ];
+            let index = 0;
+
+            setInterval(() => {
+                compass.src = rotations[index];
+                index = (index + 1) % rotations.length;
+            }, 2000);
+        }
+
+        function spellNEWS() {
             const secretMessage = document.getElementById('secretMessage');
             let letters = ["N", "E", "W", "S"];
             let rotationCount = 0;
             let letterIndex = 0;
 
-            function spellNEWS() {
+            function spell() {
                 if (rotationCount < 3) {
                     if (letterIndex < letters.length) {
                         secretMessage.textContent += letters[letterIndex];
-                        keystrokeSound.play();
+                        document.getElementById('keystrokeSound').play();
                         letterIndex++;
-                        setTimeout(spellNEWS, 2000);
+                        setTimeout(spell, 2000);
                     } else {
                         secretMessage.textContent = "";
                         letterIndex = 0;
                         rotationCount++;
-                        setTimeout(spellNEWS, 2000);
+                        setTimeout(spell, 2000);
                     }
                 } else {
                     secretMessage.textContent = "NEWS";
@@ -188,7 +185,7 @@
                 }
             }
 
-            spellNEWS();
+            spell();
         }
     </script>
 </body>
