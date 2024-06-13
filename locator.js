@@ -120,7 +120,7 @@ function handleOrientation(event) {
             beepAudio.play().catch(error => console.error("Audio play error:", error));
         }
         if (navigator.vibrate) {
-            navigator.vibrate([200, 100, 200]);
+            navigator.vibrate([200, 100, 200]); // Pattern: vibrate 200ms, pause 100ms, vibrate 200ms
             console.log("Vibrating");
         }
     } else {
@@ -174,7 +174,7 @@ function adjustBeep(distance) {
     beepInterval = setInterval(() => {
         if (beepAudio) beepAudio.play().catch(error => console.error("Audio play error:", error));
         if (facingCorrectDirection && navigator.vibrate) {
-            navigator.vibrate(200);
+            navigator.vibrate([200, 100, 200]); // Pattern: vibrate 200ms, pause 100ms, vibrate 200ms
         }
     }, interval);
 
