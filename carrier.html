@@ -29,7 +29,6 @@
             width: 150px;
             height: auto;
             margin-bottom: 20px;
-            transition: transform 2s ease-in-out;
         }
         h1, h2 {
             margin: 10px 0;
@@ -84,6 +83,9 @@
                 transform: scale(1);
             }
         }
+        .rotate {
+            transition: transform 2s ease-in-out;
+        }
     </style>
 </head>
 <body>
@@ -118,7 +120,7 @@
                 container.addEventListener('animationend', function handleFadeOut() {
                     container.removeEventListener('animationend', handleFadeOut);
                     container.innerHTML = `
-                        <img src="compass.png" class="logo pulse" alt="Compass">
+                        <img src="compass.png" class="logo pulse" alt="Compass" id="compass">
                         <h2 id="secretMessage"></h2>
                     `;
                     container.classList.remove('fade-out');
@@ -143,7 +145,7 @@
         }
 
         function animateCompass() {
-            const compass = document.querySelector('.logo');
+            const compass = document.getElementById('compass');
             const secretMessage = document.getElementById('secretMessage');
             let rotations = [45, 180, 225, 0];
             let letters = ["N", "E", "W", "S"];
@@ -154,6 +156,7 @@
             function rotateAndPulse() {
                 if (rotationCount < 3) {
                     if (index < rotations.length) {
+                        compass.classList.add('rotate');
                         compass.style.transform = `rotate(${rotations[index]}deg)`;
                         console.log(`Rotating to ${rotations[index]} degrees`);
                         keystrokeSound.play();
