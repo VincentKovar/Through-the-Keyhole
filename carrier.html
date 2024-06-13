@@ -91,8 +91,8 @@
             <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
         </a>
         <h1>Through the Keyhole</h1>
-        <h2>Lock XII</h2>
-        <p>Look at the words listed in your book under Lock XII. What important service did they all provide to Skagit Valley communities?</p>
+        <h2>Lock XIII</h2>
+        <p>Look at the words listed in your book under Lock XIII. What important service did they all provide to Skagit Valley communities?</p>
         <input type="text" id="answerInput" placeholder="Enter your answer">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
@@ -124,7 +124,6 @@
                     container.style.opacity = '1';
                     successSound.play();
                     rotateCompass();
-                    spellNEWS();
                 });
             } else {
                 attempts++;
@@ -144,53 +143,47 @@
 
         function rotateCompass() {
             const compass = document.getElementById('compass');
+            const secretMessage = document.getElementById('secretMessage');
             const rotations = [
                 'compass-0deg.png',
                 'compass-45deg.png',
                 'compass-180deg.png',
                 'compass-225deg.png',
             ];
+            const letters = ["N", "E", "W", "S"];
             let index = 0;
-
-            setInterval(() => {
-                compass.src = rotations[index];
-                index = (index + 1) % rotations.length;
-            }, 2000);
-        }
-
-        function spellNEWS() {
-            const secretMessage = document.getElementById('secretMessage');
-            let letters = ["N", "E", "W", "S"];
             let rotationCount = 0;
-            let letterIndex = 0;
 
-            function spell() {
+            function rotateAndSpell() {
                 if (rotationCount < 3) {
-                    if (letterIndex < letters.length) {
-                        secretMessage.textContent += letters[letterIndex];
-                        document.getElementById('keystrokeSound').play();
-                        letterIndex++;
-                        setTimeout(spell, 2000);
-                    } else {
-                        secretMessage.textContent = "";
-                        letterIndex = 0;
+                    compass.src = rotations[index];
+                    secretMessage.textContent += letters[index];
+                    document.getElementById('keystrokeSound').play();
+                    index++;
+                    if (index === rotations.length) {
+                        index = 0;
                         rotationCount++;
                         if (rotationCount < 3) {
-                            rotateCompass(); // Restart the rotation from 0deg
+                            setTimeout(() => {
+                                secretMessage.textContent = "";
+                                rotateAndSpell();
+                            }, 2000);
+                        } else {
+                            setTimeout(() => {
+                                secretMessage.textContent = "NEWS";
+                                setTimeout(() => {
+                                    secretMessage.insertAdjacentHTML('afterend', '<p>Turn to Lock XIV in your book</p>');
+                                }, 2000);
+                            }, 2000);
                         }
-                        setTimeout(spell, 2000);
+                    } else {
+                        setTimeout(rotateAndSpell, 2000);
                     }
-                } else {
-                    secretMessage.textContent = "NEWS";
-                    setTimeout(() => {
-                        secretMessage.insertAdjacentHTML('afterend', '<p>Turn to Lock XIV in your book</p>');
-                    }, 2000);
                 }
             }
 
-            spell();
+            rotateAndSpell();
         }
     </script>
 </body>
 </html>
-// add note to book about moving on to Lock XIII
