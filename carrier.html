@@ -170,6 +170,7 @@
                             }, 2000);
                         } else {
                             setTimeout(() => {
+                                compass.src = rotations[0]; // Reset compass to 0 degrees
                                 secretMessage.textContent = "NEWS";
                                 setTimeout(() => {
                                     secretMessage.insertAdjacentHTML('afterend', '<p>Turn to Lock XIV in your book</p>');
