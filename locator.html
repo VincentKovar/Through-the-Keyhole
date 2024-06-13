@@ -47,16 +47,14 @@
             background-color: #0056b3;
         }
         .next-button {
-            background-color: #8B0000; /* Brown-red color */
-            color: white;
+            background-color: #8B0000; /* Dark red */
         }
         .next-button:hover {
-            background-color: #5B0000; /* Darker shade of brown-red */
+            background-color: #B22222; /* Firebrick */
         }
-        @keyframes blink {
-            0% { opacity: 1; }
-            50% { opacity: 0; }
-            100% { opacity: 1; }
+        #next-container {
+            display: none;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -64,24 +62,16 @@
     <div class="container">
         <img id="logo" src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
         <h1>Through the Keyhole</h1>
-        <h2>Lock XVIII</h2>
+        <h2>Lock TBA</h2>
         <div id="distance">Distance to destination: Calculating...</div>
         <div id="instructions">Push start then begin walking in any direction.</div>
         <button onclick="startGame()">Start</button>
-        <div id="next-container" style="display: none;">
+        <div id="next-container">
             <p>When you've reached your destination, click next.</p>
-            <button onclick="nextPage()" class="next-button">Next</button>
+            <button onclick="location.href='operator.html'" class="next-button">Next</button>
         </div>
         <audio id="beep-audio" src="beep.mp3"></audio>
     </div>
-    <script>
-        function nextPage() {
-            document.body.style.filter = 'pixelate(10px)';
-            setTimeout(() => {
-                window.location.href = 'operator.html';
-            }, 1000);
-        }
-    </script>
     <script src="locator.js"></script>
 </body>
 </html>
