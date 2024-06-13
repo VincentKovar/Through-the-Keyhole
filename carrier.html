@@ -130,11 +130,11 @@
                 attempts++;
                 errorSound.play();
                 if (attempts === 1) {
-                    errorMessage.textContent = "Sometimes it's yellow, sometimes it's lead; sometimes it's extra but some say it's dead.";
+                    errorMessage.textContent = "Sometimes it's yellow, sometimes it's lead, sometimes it's extra but some say it's dead.";
                 } else if (attempts === 2) {
-                    errorMessage.textContent = "No matter if you're with the reds or the blues, both sides sometimes call it, fake ______.";
+                    errorMessage.textContent = "No matter if you're with the reds or the blues, both sides sometimes call it fake ______.";
                 } else if (attempts >= 3) {
-                    errorMessage.textContent = "After morning, after evening but before a stand, those are more clues, the word you're seeking is all that's fit to print in the daily ______.";
+                    errorMessage.textContent = "After morning, after evening, but before a stand, those are more clues. The word you're investigating is all "that's fit to print" in the daily ______.";
                     errorSound.pause();
                 }
                 errorMessage.classList.remove('hidden');
