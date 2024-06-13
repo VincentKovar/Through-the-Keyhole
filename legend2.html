@@ -33,6 +33,13 @@
         h1, h2 {
             margin: 10px 0;
         }
+        .fade-container {
+            position: relative;
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            margin: 0 auto;
+        }
         img {
             width: 100%;
             height: auto;
@@ -42,11 +49,6 @@
         }
         .visible {
             opacity: 1;
-        }
-        .fade-container {
-            position: relative;
-            width: 100%;
-            height: auto;
         }
         .buttons-container {
             display: none;
@@ -85,7 +87,7 @@
         <a href="https://www.whitebranches.com/keyhole" target="_blank">
             <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
         </a>
-        <h2>Lock XXI</h2>
+        <h2>Lock XIX</h2>
         <div class="fade-container">
             <img src="legend1.png" id="image1" class="visible" alt="Legend 1">
             <img src="legend2.png" id="image2" alt="Legend 2">
@@ -102,7 +104,7 @@
         const image2 = document.getElementById('image2');
         const buttonsContainer = document.getElementById('buttons-container');
         const drainAudio = document.getElementById('drain-audio');
-        
+
         let showingImage1 = true;
 
         setInterval(() => {
