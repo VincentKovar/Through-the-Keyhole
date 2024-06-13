@@ -33,52 +33,37 @@
         h1, h2 {
             margin: 10px 0;
         }
-        .fade-container {
-            position: relative;
-            width: 100%;
-            max-width: 300px;
-            height: auto;
-            margin: 0 auto;
+        p {
+            margin: 20px 0;
         }
-        img {
-            width: 100%;
-            height: auto;
-            opacity: 0;
-            position: absolute;
-            transition: opacity 2s;
-        }
-        .visible {
-            opacity: 1;
-        }
-        .buttons-container {
+        .hidden {
             display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            margin-top: 20px;
         }
-        button {
-            width: 100px;
+        .fade {
+            animation: fadeInOut 4s infinite;
+        }
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .button {
+            width: 100%;
             padding: 10px;
-            margin: 5px;
-            color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin-top: 10px;
         }
-        .yes-button {
-            background-color: green;
+        .button-green {
+            background-color: #28a745;
+            color: white;
         }
-        .no-button {
-            background-color: #8B0000; /* Dark red-brown */
+        .button-red {
+            background-color: #b22222;
+            color: white;
         }
-        .fade-out {
-            animation: fadeOut 2s forwards;
-        }
-        @keyframes fadeOut {
-            to {
-                opacity: 0;
-            }
+        .button:hover {
+            opacity: 0.8;
         }
     </style>
 </head>
@@ -88,56 +73,49 @@
             <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
         </a>
         <h2>Lock XIX</h2>
-        <div class="fade-container">
-            <img src="legend1.png" id="image1" class="visible" alt="Legend 1">
-            <img src="legend2.png" id="image2" alt="Legend 2">
+        <div id="image-container">
+            <img id="image1" src="legend1.png" class="fade" alt="Legend 1">
+            <img id="image2" src="legend2.png" class="fade hidden" alt="Legend 2">
         </div>
-        <div class="buttons-container" id="buttons-container">
-            <p>did you find the legend?</p>
-            <button class="yes-button" onclick="navigateToMural()">Yes</button>
-            <button class="no-button" onclick="openNewTab()">No</button>
+        <div id="question-container" class="hidden">
+            <p>Did you find the legend?</p>
+            <button class="button button-green" onclick="navigateToMural()">Yes</button>
+            <button class="button button-red" onclick="navigateToExternal()">No</button>
         </div>
-        <audio id="drain-audio" src="drain.mp3"></audio>
     </div>
+    <audio id="drainSound" src="drain.mp3"></audio>
     <script>
-        const image1 = document.getElementById('image1');
-        const image2 = document.getElementById('image2');
-        const buttonsContainer = document.getElementById('buttons-container');
-        const drainAudio = document.getElementById('drain-audio');
-
-        let showingImage1 = true;
-
-        setInterval(() => {
-            if (showingImage1) {
-                image1.classList.remove('visible');
-                image2.classList.add('visible');
-            } else {
-                image1.classList.add('visible');
-                image2.classList.remove('visible');
-            }
-            showingImage1 = !showingImage1;
-        }, 2000);
+        document.addEventListener('DOMContentLoaded', function() {
+            let image1 = document.getElementById('image1');
+            let image2 = document.getElementById('image2');
+            setInterval(() => {
+                image1.classList.toggle('hidden');
+                image2.classList.toggle('hidden');
+            }, 2000);
+        });
 
         setTimeout(() => {
-            buttonsContainer.style.display = 'flex';
+            document.getElementById('question-container').classList.remove('hidden');
         }, 120000);
 
         function navigateToMural() {
-            drainAudio.play().then(() => {
-                document.body.classList.add('fade-out');
-                setTimeout(() => {
-                    window.location.href = 'mural.html';
-                }, 2000);
-            }).catch(error => console.error("Audio play error:", error));
+            playSoundAndNavigate('mural.html');
         }
 
-        function openNewTab() {
-            drainAudio.play().then(() => {
-                document.body.classList.add('fade-out');
-                setTimeout(() => {
-                    window.open('https://meyersign.com/2021/09/tales-from-the-magic-skagit-from-these-waters/', '_blank');
-                }, 2000);
-            }).catch(error => console.error("Audio play error:", error));
+        function navigateToExternal() {
+            playSoundAndNavigate('https://meyersign.com/2021/09/tales-from-the-magic-skagit-from-these-waters/', true);
+        }
+
+        function playSoundAndNavigate(url, external = false) {
+            let drainSound = document.getElementById('drainSound');
+            drainSound.play();
+            setTimeout(() => {
+                if (external) {
+                    window.open(url, '_blank');
+                } else {
+                    window.location.href = url;
+                }
+            }, 2000);
         }
     </script>
 </body>
