@@ -25,8 +25,39 @@
             padding: 20px;
             box-sizing: border-box;
         }
-        .rotate {
-            transition: transform 2s ease-in-out;
+        .rotate-animation {
+            animation: rotateCompass 8s steps(4, end) infinite, pulse 2s infinite;
+        }
+        @keyframes rotateCompass {
+            0% {
+                transform: rotate(0deg);
+            }
+            25% {
+                transform: rotate(-45deg);
+            }
+            50% {
+                transform: rotate(135deg);
+            }
+            75% {
+                transform: rotate(-90deg);
+            }
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
         }
         .logo {
             width: 150px;
@@ -71,37 +102,6 @@
             to {
                 opacity: 0;
             }
-        }
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-        @keyframes rotateCompass {
-            0% {
-                transform: rotate(0deg);
-            }
-            25% {
-                transform: rotate(-45deg);
-            }
-            50% {
-                transform: rotate(135deg);
-            }
-            75% {
-                transform: rotate(-90deg);
-            }
-            100% {
-                transform: rotate(0deg);
-            }
-        }
-        .rotate-animation {
-            animation: rotateCompass 8s steps(4, end) infinite, pulse 2s infinite;
         }
     </style>
 </head>
