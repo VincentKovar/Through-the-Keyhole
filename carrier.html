@@ -83,6 +83,19 @@
                 opacity: 0;
             }
         }
+        .close-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .close-button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -91,11 +104,12 @@
             <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
         </a>
         <h1>Through the Keyhole</h1>
-        <h2>Lock XII</h2>
-        <p>Look at the words listed in your book under Lock XII. What important service did they all provide to Skagit Valley communities?</p>
+        <h2>Lock XIII</h2>
+        <p>Look at the words listed in your book under Lock XIII. What important service did they all provide to Skagit Valley communities?</p>
         <input type="text" id="answerInput" placeholder="Enter your answer">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
+        <button onclick="closeTab()" class="close-button">Close This Tab</button>
     </div>
     <audio id="successSound" src="yaaas-38411.mp3"></audio>
     <audio id="errorSound" src="chapter.mp3"></audio>
@@ -173,7 +187,7 @@
                                 compass.src = rotations[0]; // Reset compass to 0 degrees
                                 secretMessage.textContent = "NEWS";
                                 setTimeout(() => {
-                                    secretMessage.insertAdjacentHTML('afterend', '<p>Turn to Lock XIII in your book</p>');
+                                    secretMessage.insertAdjacentHTML('afterend', '<p>Turn to Lock XIV in your book</p>');
                                 }, 2000);
                             }, 2000);
                         }
@@ -184,6 +198,10 @@
             }
 
             rotateAndSpell();
+        }
+
+        function closeTab() {
+            window.close();
         }
     </script>
 </body>
