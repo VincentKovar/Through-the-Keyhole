@@ -175,6 +175,9 @@
                         secretMessage.textContent = "";
                         letterIndex = 0;
                         rotationCount++;
+                        if (rotationCount < 3) {
+                            rotateCompass(); // Restart the rotation from 0deg
+                        }
                         setTimeout(spell, 2000);
                     }
                 } else {
