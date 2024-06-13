@@ -83,19 +83,6 @@
                 opacity: 0;
             }
         }
-        .close-button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .close-button:hover {
-            background-color: #0056b3;
-        }
     </style>
 </head>
 <body>
@@ -109,7 +96,6 @@
         <input type="text" id="answerInput" placeholder="Enter your answer">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
-        <button onclick="closeTab()" class="close-button">Close This Tab</button>
     </div>
     <audio id="successSound" src="yaaas-38411.mp3"></audio>
     <audio id="errorSound" src="chapter.mp3"></audio>
@@ -198,10 +184,6 @@
             }
 
             rotateAndSpell();
-        }
-
-        function closeTab() {
-            window.close();
         }
     </script>
 </body>
