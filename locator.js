@@ -1,3 +1,4 @@
+// Global variables
 let targetLocation = {
     latitude: 48.41890859784646,
     longitude: -122.33687234141873
@@ -8,10 +9,11 @@ let logo = document.getElementById('logo');
 let distanceDisplay = document.getElementById('distance');
 let instructionsDisplay = document.getElementById('instructions');
 let previousDistance = null;
-let beepInterval; // Add a variable for the beep interval
-let facingCorrectDirection = false; // Add a variable to track if the user is facing the correct direction
-let currentLocation = { latitude: 0, longitude: 0 }; // Add a variable to store the current location
+let beepInterval;
+let facingCorrectDirection = false;
+let currentLocation = { latitude: 0, longitude: 0 };
 
+// Start game function
 function startGame() {
     if (navigator.geolocation) {
         watchID = navigator.geolocation.watchPosition(updatePosition, handleError, { enableHighAccuracy: true });
@@ -34,6 +36,7 @@ function startGame() {
     console.log("Game started");
 }
 
+// Stop game function
 function stopGame() {
     if (navigator.geolocation) {
         navigator.geolocation.clearWatch(watchID);
@@ -56,6 +59,7 @@ function stopGame() {
     console.log("Game stopped");
 }
 
+// Update position function
 function updatePosition(position) {
     currentLocation = {
         latitude: position.coords.latitude,
@@ -77,6 +81,7 @@ function updatePosition(position) {
     previousDistance = distance;
 }
 
+// Calculate distance function
 function calculateDistance(loc1, loc2) {
     let R = 6371e3; // metres
     let φ1 = loc1.latitude * Math.PI / 180; // φ, λ in radians
@@ -93,6 +98,7 @@ function calculateDistance(loc1, loc2) {
     return d;
 }
 
+// Handle orientation function
 function handleOrientation(event) {
     let alpha = event.alpha || 0; // Compass direction in degrees
     let adjustedAlpha = (alpha + 180) % 360; // Adjust for holding phone in front
@@ -131,6 +137,7 @@ function handleOrientation(event) {
     }
 }
 
+// Calculate bearing function
 function calculateBearing(lat1, lon1, lat2, lon2) {
     let φ1 = lat1 * Math.PI / 180; // φ, λ in radians
     let φ2 = lat2 * Math.PI / 180;
@@ -145,6 +152,7 @@ function calculateBearing(lat1, lon1, lat2, lon2) {
     return bearing;
 }
 
+// Adjust beep function
 function adjustBeep(distance) {
     let interval;
 
@@ -173,6 +181,7 @@ function adjustBeep(distance) {
     console.log("Beep adjusted: interval =", interval, "distance =", distance);
 }
 
+// Adjust logo blink function
 function adjustLogoBlink(distance) {
     let blinkRate = Math.max(0.5, 5 - distance / 20); // Adjust the blink rate based on distance
     if (logo) {
@@ -181,6 +190,7 @@ function adjustLogoBlink(distance) {
     console.log("Blink rate adjusted:", blinkRate);
 }
 
+// Handle error function
 function handleError(error) {
     console.error("Error with geolocation: ", error);
     if (instructionsDisplay) {
@@ -188,6 +198,7 @@ function handleError(error) {
     }
 }
 
+// Display error function
 function displayError(message) {
     if (instructionsDisplay) {
         instructionsDisplay.textContent = message;
