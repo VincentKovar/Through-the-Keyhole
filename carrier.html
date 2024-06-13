@@ -92,8 +92,8 @@
         </a>
         <h1>Through the Keyhole</h1>
         <h2>Lock XIII</h2>
-        <p>Look at the words listed in your book under Lock XIII. What important service did they all provide to Skagit Valley communities?</p>
-        <input type="text" id="answerInput" placeholder="Enter your answer here">
+        <p>Look at the words listed in your book under Lock XIII. What important service did they all provide to Skagit Valley Communities?</p>
+        <input type="text" id="answerInput" placeholder="Enter your answer">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
     </div>
@@ -148,17 +148,18 @@
             let letters = ["N", "E", "W", "S"];
             let index = 0;
             let rotationCount = 0;
+            let letterIndex = 0;
 
             function rotateAndPulse() {
                 if (rotationCount < 3) {
                     if (index < rotations.length) {
                         compass.style.transform = `rotate(${rotations[index]}deg)`;
-                        secretMessage.textContent += letters[index];
                         keystrokeSound.play();
+                        secretMessage.textContent += letters[letterIndex];
+                        letterIndex = (letterIndex + 1) % letters.length;
                         index++;
                         setTimeout(rotateAndPulse, 2000);
                     } else {
-                        secretMessage.textContent = "";
                         index = 0;
                         rotationCount++;
                         setTimeout(rotateAndPulse, 2000);
