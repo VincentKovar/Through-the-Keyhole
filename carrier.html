@@ -92,8 +92,8 @@
         </a>
         <h1>Through the Keyhole</h1>
         <h2>Lock XII</h2>
-        <p>Look at the words listed in your book under Lock XII. What important service did they all provide to Skagit Valley communities?</p>
-        <input type="text" id="answerInput" placeholder="Enter your answer">
+        <p>Look at the words listed in your book under Lock XII and enter the answer to the question here. </p>
+        <input type="text" id="answerInput" placeholder="Enter Key XII">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
     </div>
@@ -173,7 +173,7 @@
                                 compass.src = rotations[0]; // Reset compass to 0 degrees
                                 secretMessage.textContent = "NEWS";
                                 setTimeout(() => {
-                                    secretMessage.insertAdjacentHTML('afterend', '<p>Turn to Lock XIII in your book</p>');
+                                    secretMessage.insertAdjacentHTML('afterend', '<p>Turn to Lock XIII in your book and close this tab.</p>');
                                 }, 2000);
                             }, 2000);
                         }
