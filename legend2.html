@@ -33,37 +33,53 @@
         h1, h2 {
             margin: 10px 0;
         }
-        p {
-            margin: 20px 0;
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
         }
         .hidden {
             display: none;
         }
         .fade {
-            animation: fadeInOut 4s infinite;
+            position: absolute;
+            width: 300px;
+            height: 275px;
+            animation: crossfade 4s infinite;
         }
-        @keyframes fadeInOut {
+        @keyframes crossfade {
             0%, 100% { opacity: 1; }
             50% { opacity: 0; }
         }
-        .button {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
+        #image2 {
+            animation-delay: 2s;
         }
-        .button-green {
-            background-color: #28a745;
-            color: white;
-        }
-        .button-red {
-            background-color: #b22222;
-            color: white;
-        }
-        .button:hover {
-            opacity: 0.8;
+        @keyframes ripple {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
         }
     </style>
 </head>
@@ -72,50 +88,49 @@
         <a href="https://www.whitebranches.com/keyhole" target="_blank">
             <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
         </a>
-        <h2>Lock XIX</h2>
-        <div id="image-container">
-            <img id="image1" src="legend1.png" class="fade" alt="Legend 1">
-            <img id="image2" src="legend2.png" class="fade hidden" alt="Legend 2">
+        <h1>Through the Keyhole</h1>
+        <h2>Lock XXI</h2>
+        <div style="position: relative; width: 300px; height: 275px;">
+            <img src="legend1.png" class="fade" alt="Legend 1" id="image1">
+            <img src="legend2.png" class="fade" alt="Legend 2" id="image2">
         </div>
-        <div id="question-container" class="hidden">
-            <p>Did you find the legend?</p>
-            <button class="button button-green" onclick="navigateToMural()">Yes</button>
-            <button class="button button-red" onclick="navigateToExternal()">No</button>
-        </div>
+        <input type="text" id="keyInput" placeholder="Enter Key XXI">
+        <button onclick="checkAnswer()">Submit</button>
+        <p id="errorMessage" class="error-message hidden"></p>
     </div>
     <audio id="drainSound" src="drain.mp3"></audio>
+    <audio id="triumphSound" src="triumph.mp3" preload="auto"></audio>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            let image1 = document.getElementById('image1');
-            let image2 = document.getElementById('image2');
-            setInterval(() => {
-                image1.classList.toggle('hidden');
-                image2.classList.toggle('hidden');
-            }, 2000);
-        });
+        let attempts = 0;
+        const correctAnswer = "TULIP";
 
-        setTimeout(() => {
-            document.getElementById('question-container').classList.remove('hidden');
-        }, 120000);
+        function checkAnswer() {
+            const keyInput = document.getElementById('keyInput');
+            const errorMessage = document.getElementById('errorMessage');
+            const drainSound = document.getElementById('drainSound');
+            const input = keyInput.value.trim().toUpperCase();
 
-        function navigateToMural() {
-            playSoundAndNavigate('mural.html');
-        }
-
-        function navigateToExternal() {
-            playSoundAndNavigate('https://meyersign.com/2021/09/tales-from-the-magic-skagit-from-these-waters/', true);
-        }
-
-        function playSoundAndNavigate(url, external = false) {
-            let drainSound = document.getElementById('drainSound');
-            drainSound.play();
-            setTimeout(() => {
-                if (external) {
-                    window.open(url, '_blank');
-                } else {
-                    window.location.href = url;
+            if (input === correctAnswer) {
+                window.location.href = 'final.html';
+                playTriumphSound();
+            } else {
+                attempts++;
+                drainSound.play();
+                if (attempts === 1) {
+                    errorMessage.textContent = "Try again";
+                } else if (attempts === 2) {
+                    errorMessage.textContent = "Use your book to decode the key.";
+                } else if (attempts >= 3) {
+                    errorMessage.textContent = "Opening a new tab for help.";
+                    window.open('https://meyersign.com/2021/09/tales-from-the-magic-skagit-from-these-waters/', '_blank');
                 }
-            }, 2000);
+                errorMessage.classList.remove('hidden');
+            }
+        }
+
+        function playTriumphSound() {
+            const triumphSound = document.getElementById('triumphSound');
+            triumphSound.play();
         }
     </script>
 </body>
