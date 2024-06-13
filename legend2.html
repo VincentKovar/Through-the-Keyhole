@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Through the Keyhole</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
+            background: #ffe4b5;
+        }
+        .container {
+            width: 90%;
+            max-width: 300px;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .logo {
+            width: 150px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            margin: 10px 0;
+        }
+        img {
+            width: 100%;
+            height: auto;
+            opacity: 0;
+            position: absolute;
+            transition: opacity 2s;
+        }
+        .visible {
+            opacity: 1;
+        }
+        .fade-container {
+            position: relative;
+            width: 100%;
+            height: auto;
+        }
+        .buttons-container {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+        button {
+            width: 100px;
+            padding: 10px;
+            margin: 5px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .yes-button {
+            background-color: green;
+        }
+        .no-button {
+            background-color: #8B0000; /* Dark red-brown */
+        }
+        .fade-out {
+            animation: fadeOut 2s forwards;
+        }
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="https://www.whitebranches.com/keyhole" target="_blank">
+            <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
+        </a>
+        <h2>Lock XIX</h2>
+        <div class="fade-container">
+            <img src="legend1.png" id="image1" class="visible" alt="Legend 1">
+            <img src="legend2.png" id="image2" alt="Legend 2">
+        </div>
+        <div class="buttons-container" id="buttons-container">
+            <p>did you find the legend?</p>
+            <button class="yes-button" onclick="navigateToMural()">Yes</button>
+            <button class="no-button" onclick="openNewTab()">No</button>
+        </div>
+        <audio id="drain-audio" src="drain.mp3"></audio>
+    </div>
+    <script>
+        const image1 = document.getElementById('image1');
+        const image2 = document.getElementById('image2');
+        const buttonsContainer = document.getElementById('buttons-container');
+        const drainAudio = document.getElementById('drain-audio');
+        
+        let showingImage1 = true;
+
+        setInterval(() => {
+            if (showingImage1) {
+                image1.classList.remove('visible');
+                image2.classList.add('visible');
+            } else {
+                image1.classList.add('visible');
+                image2.classList.remove('visible');
+            }
+            showingImage1 = !showingImage1;
+        }, 2000);
+
+        setTimeout(() => {
+            buttonsContainer.style.display = 'flex';
+        }, 120000);
+
+        function navigateToMural() {
+            drainAudio.play().then(() => {
+                document.body.classList.add('fade-out');
+                setTimeout(() => {
+                    window.location.href = 'mural.html';
+                }, 2000);
+            }).catch(error => console.error("Audio play error:", error));
+        }
+
+        function openNewTab() {
+            drainAudio.play().then(() => {
+                document.body.classList.add('fade-out');
+                setTimeout(() => {
+                    window.open('https://meyersign.com/2021/09/tales-from-the-magic-skagit-from-these-waters/', '_blank');
+                }, 2000);
+            }).catch(error => console.error("Audio play error:", error));
+        }
+    </script>
+</body>
+</html>
