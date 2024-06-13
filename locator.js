@@ -9,6 +9,7 @@ let distanceDisplay = document.getElementById('distance');
 let instructionsDisplay = document.getElementById('instructions');
 let previousDistance = null;
 let beepInterval; // Add a variable for the beep interval
+let facingCorrectDirection = false; // Add a variable to track if the user is facing the correct direction
 
 function startGame() {
     if (navigator.geolocation) {
@@ -111,6 +112,7 @@ function handleOrientation(event) {
                 if (logo) {
                     logo.classList.add('blink');
                 }
+                facingCorrectDirection = true;
                 if (beepAudio) {
                     beepAudio.play().catch(error => console.error("Audio play error:", error));
                 }
@@ -125,6 +127,7 @@ function handleOrientation(event) {
                 if (logo) {
                     logo.classList.remove('blink');
                 }
+                facingCorrectDirection = false;
                 if (beepAudio) {
                     beepAudio.pause();
                 }
@@ -150,23 +153,26 @@ function calculateBearing(lat1, lon1, lat2, lon2) {
 function adjustBeep(distance) {
     let interval;
 
-    if (distance < 50) {
-        interval = 200; // Beep every 0.2 seconds
+    if (distance < 25) {
+        interval = 750; // Beep every 0.75 seconds within 25 meters
+    } else if (distance < 50) {
+        interval = 1000; // Beep every 1 second within 50 meters
     } else if (distance < 100) {
-        interval = 400; // Beep every 0.4 seconds
+        interval = 1500; // Beep every 1.5 seconds within 100 meters
     } else if (distance < 200) {
-        interval = 600; // Beep every 0.6 seconds
-    } else if (distance < 300) {
-        interval = 800; // Beep every 0.8 seconds
+        interval = 2000; // Beep every 2 seconds within 200 meters
     } else if (distance < 400) {
-        interval = 1000; // Beep every 1 second
+        interval = 3000; // Beep every 3 seconds within 400 meters
     } else {
-        interval = 2000; // Beep every 2 seconds
+        interval = 4000; // Beep every 4 seconds beyond 400 meters
     }
 
     if (beepInterval) clearInterval(beepInterval);
     beepInterval = setInterval(() => {
         if (beepAudio) beepAudio.play().catch(error => console.error("Audio play error:", error));
+        if (facingCorrectDirection && navigator.vibrate) {
+            navigator.vibrate(200);
+        }
     }, interval);
 
     console.log("Beep adjusted: interval =", interval, "distance =", distance);
