@@ -53,7 +53,7 @@
             background-color: #0056b3;
         }
         .image {
-            width: 250px; /* Adjust the size of the image as needed */
+            width: 225px; /* Adjust the size of the image as needed */
             height: auto;
             margin: 20px auto;
         }
@@ -73,8 +73,14 @@
             </audio>
         </div>
         <p>You're nearly finished! Don't forget to take a break if you need it. Otherwise, turn to Lock XIX in your book and close this tab.</p>
-        <button onclick="window.close()" class="close-button">Close This Tab</button>
+        <button onclick="closeWindow()" class="close-button">Close This Tab</button>
         <img src="relaxingrabbit3.jpeg" alt="Placeholder Image" class="image">
     </div>
+    <script>
+        function closeWindow() {
+            window.open('', '_self', '');
+            window.close();
+        }
+    </script>
 </body>
 </html>
