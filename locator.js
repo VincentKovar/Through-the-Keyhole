@@ -1,6 +1,6 @@
 let targetLocation = {
-    latitude: 47.7428185240591,
-    longitude: -122.17928062009655
+    latitude: 48.41890859784646,
+    longitude: -122.33687234141873
 };
 let watchID;
 let beepAudio = document.getElementById('beep-audio');
@@ -15,12 +15,12 @@ function startGame() {
     if (navigator.geolocation) {
         watchID = navigator.geolocation.watchPosition(updatePosition, handleError, { enableHighAccuracy: true });
     } else {
-        alert("Geolocation is not supported by this browser.");
+        displayError("Geolocation is not supported by this browser.");
     }
     if (window.DeviceOrientationEvent) {
         window.addEventListener('deviceorientation', handleOrientation, true);
     } else {
-        alert("Device orientation is not supported by this browser.");
+        displayError("Device orientation is not supported by this browser.");
     }
     // Play audio and vibrate on user interaction
     if (beepAudio) {
@@ -133,17 +133,19 @@ function handleOrientation(event) {
                 }
             }
         });
+    } else {
+        displayError("Unable to retrieve device orientation.");
     }
 }
 
 function calculateBearing(lat1, lon1, lat2, lon2) {
     let φ1 = lat1 * Math.PI/180; // φ, λ in radians
-    let φ2 = lat2 * Math.PI/180;
+    let φ2 = lat2.latitude * Math.PI/180;
     let λ1 = lon1 * Math.PI/180;
     let λ2 = lon2 * Math.PI/180;
     let y = Math.sin(λ2-λ1) * Math.cos(φ2);
-    let x = Math.cos(φ1)*Math.sin(φ2) -
-            Math.sin(φ1)*Math.cos(φ2)*Math.cos(λ2-λ1);
+    let x = Math.cos(φ1) * Math.sin(φ2) -
+            Math.sin(φ1) * Math.cos(φ2) * Math.cos(λ2-λ1);
     let θ = Math.atan2(y, x);
     let bearing = (θ*180/Math.PI + 360) % 360; // in degrees
     if (isNaN(bearing)) bearing = 0; // Check if bearing is NaN and set to 0 if true
@@ -191,4 +193,11 @@ function handleError(error) {
     if (instructionsDisplay) {
         instructionsDisplay.textContent = "Unable to retrieve your location.";
     }
+}
+
+function displayError(message) {
+    if (instructionsDisplay) {
+        instructionsDisplay.textContent = message;
+    }
+    console.error(message);
 }
