@@ -51,6 +51,7 @@ function stopGame() {
         logo.style.animationDuration = "1s";
         logo.style.animationName = "none";
     }
+    facingCorrectDirection = false; // Reset the direction tracking
     console.log("Game stopped");
 }
 
@@ -77,15 +78,15 @@ function updatePosition(position) {
 
 function calculateDistance(loc1, loc2) {
     let R = 6371e3; // metres
-    let φ1 = loc1.latitude * Math.PI/180; // φ, λ in radians
-    let φ2 = loc2.latitude * Math.PI/180;
-    let Δφ = (loc2.latitude-loc1.latitude) * Math.PI/180;
-    let Δλ = (loc2.longitude-loc1.longitude) * Math.PI/180;
+    let φ1 = loc1.latitude * Math.PI / 180; // φ, λ in radians
+    let φ2 = loc2.latitude * Math.PI / 180;
+    let Δφ = (loc2.latitude - loc1.latitude) * Math.PI / 180;
+    let Δλ = (loc2.longitude - loc1.longitude) * Math.PI / 180;
 
-    let a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-            Math.cos(φ1) * Math.cos(φ2) *
-            Math.sin(Δλ/2) * Math.sin(Δλ/2);
-    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    let a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+        Math.cos(φ1) * Math.cos(φ2) *
+        Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
     let d = R * c; // in metres
     return d;
@@ -95,7 +96,7 @@ function handleOrientation(event) {
     let alpha = event.alpha || 0; // Compass direction in degrees
     let adjustedAlpha = (alpha + 180) % 360; // Adjust for holding phone in front
     if (navigator.geolocation && navigator.geolocation.getCurrentPosition) {
-        navigator.geolocation.getCurrentPosition(function(position) {
+        navigator.geolocation.getCurrentPosition(function (position) {
             let currentLocation = {
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude
@@ -139,15 +140,15 @@ function handleOrientation(event) {
 }
 
 function calculateBearing(lat1, lon1, lat2, lon2) {
-    let φ1 = lat1 * Math.PI/180; // φ, λ in radians
-    let φ2 = lat2.latitude * Math.PI/180;
-    let λ1 = lon1 * Math.PI/180;
-    let λ2 = lon2 * Math.PI/180;
-    let y = Math.sin(λ2-λ1) * Math.cos(φ2);
+    let φ1 = lat1 * Math.PI / 180; // φ, λ in radians
+    let φ2 = lat2.latitude * Math.PI / 180;
+    let λ1 = lon1 * Math.PI / 180;
+    let λ2 = lon2 * Math.PI / 180;
+    let y = Math.sin(λ2 - λ1) * Math.cos(φ2);
     let x = Math.cos(φ1) * Math.sin(φ2) -
-            Math.sin(φ1) * Math.cos(φ2) * Math.cos(λ2-λ1);
+        Math.sin(φ1) * Math.cos(φ2) * Math.cos(λ2 - λ1);
     let θ = Math.atan2(y, x);
-    let bearing = (θ*180/Math.PI + 360) % 360; // in degrees
+    let bearing = (θ * 180 / Math.PI + 360) % 360; // in degrees
     if (isNaN(bearing)) bearing = 0; // Check if bearing is NaN and set to 0 if true
     return bearing;
 }
