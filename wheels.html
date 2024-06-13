@@ -86,7 +86,7 @@
         <p id="errorMessage" class="error-message hidden"></p>
         <div id="secret-message" class="hidden">
             <h2>Your third secret word is CREDENTIAL</h2>
-            <p>Write it down then open the QR code for Lock XIV in your book. Enter the three secret words, in order, to discover the location of your next lock.</p>
+            <p>Write it down then open the QR code for the next Lock in your book. Enter the three secret words, in order, to discover your next location.</p>
         </div>
     </div>
     <audio id="successSound" src="badge-coin-win-14675.mp3"></audio>
@@ -109,7 +109,7 @@
                     container.removeEventListener('animationend', handleFadeOut); // Clean up the event listener
                     container.innerHTML = `
                         <h2>Your third secret word is CREDENTIAL</h2>
-                        <p>Write it down then open the QR code for Lock XIV in your book. Enter the three secret words, in order, to discover the location of your next lock.</p>
+            <p>Write it down then open the QR code for the next Lock in your book. Enter the three secret words, in order, to discover your next location.</p>
                     `;
                     container.classList.remove('fade-out');
                     container.style.opacity = '1';
