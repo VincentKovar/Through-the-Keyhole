@@ -33,13 +33,15 @@
         h1, h2 {
             margin: 10px 0;
         }
-        input[type="text"], button {
+        input[type="text"] {
             width: 100%;
             padding: 10px;
-            margin: 10px 0;
+            margin: 10px 0 5px; /* Adjust the bottom margin */
             box-sizing: border-box;
         }
         button {
+            width: 100%;
+            padding: 10px;
             background-color: #007bff;
             color: white;
             border: none;
@@ -60,16 +62,13 @@
             position: relative;
             width: 300px;
             height: 275px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            margin: 20px auto; /* Center the image container */
         }
         .fade {
             position: absolute;
-            width: 300px;
-            height: 275px;
-            animation: crossfade 8s infinite;
+            width: 100%;
+            height: 100%;
+            animation: crossfade 4s infinite;
         }
         @keyframes crossfade {
             0%, 100% { opacity: 1; }
@@ -77,6 +76,16 @@
         }
         #image2 {
             animation-delay: 2s;
+        }
+        @keyframes ripple {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
         }
     </style>
 </head>
@@ -108,7 +117,10 @@
             const input = keyInput.value.trim().toUpperCase();
 
             if (input === correctAnswer) {
-                window.location.href = 'final.html';
+                document.body.classList.add('ripple-transition');
+                setTimeout(() => {
+                    window.location.href = 'final.html';
+                }, 1000);
                 playTriumphSound();
             } else {
                 attempts++;
