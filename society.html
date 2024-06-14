@@ -67,7 +67,7 @@
         <h2>Lock XXII</h2>
         <img src="Secretorderlogo2.gif" alt="Secret Order Logo" style="width: 215px;">
         <p>Placeholder text. Placeholder text</p>
-        <input type="text" id="passwordInput" placeholder="Enter the final keys">
+        <input type="text" id="passwordInput" placeholder="Enter the final keys...">
         <button onclick="checkPassword()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
         <audio id="errorSound" src="wah-wah-sad-trombone-6347.mp3"></audio>
@@ -79,7 +79,7 @@
             const errorMessage = document.getElementById('errorMessage');
             const errorSound = document.getElementById('errorSound');
             const successSound = document.getElementById('successSound');
-            const correctPassword = "placeholder. replace this. text";
+            const correctPassword = "vince";
             
             if (input.value.toLowerCase() === correctPassword.toLowerCase()) {
                 successSound.play();
