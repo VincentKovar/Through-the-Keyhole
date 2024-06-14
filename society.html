@@ -16,7 +16,7 @@
             font-family: 'Alice', serif;
             text-align: center;
             margin: 0;
-            background: #ffe4b5; /* Updated background color to match your first request */
+            background: #ffe4b5; /* Background color as per your specification */
         }
         .container {
             width: 90%;
@@ -26,8 +26,8 @@
             box-sizing: border-box;
         }
         img, .logo {
-            width: 150px; /* Adjusted for consistency */
-            margin-bottom: 10px; /* Standard margin as per your specification */
+            width: 150px;
+            margin-bottom: 10px;
         }
         h1, h2 {
             margin: 10px 0;
@@ -35,7 +35,7 @@
         input[type="text"], button {
             width: 100%;
             padding: 10px;
-            margin-top: 10px; /* Space between elements */
+            margin-top: 10px;
             box-sizing: border-box;
         }
         button {
@@ -59,6 +59,7 @@
             display: none; /* Hide audio controls */
         }
     </style>
+    <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body>
     <div class="container">
@@ -72,26 +73,52 @@
         <p id="errorMessage" class="error-message hidden"></p>
         <audio id="errorSound" src="wah-wah-sad-trombone-6347.mp3"></audio>
         <audio id="successSound" src="triumph.mp3"></audio>
+        <!-- QR Code Scanner Container -->
+        <div id="qr-reader" style="width: 100%; display: none"></div>
     </div>
     <script>
+        let correctPasswordEntered = false;
+
         function checkPassword() {
             const input = document.getElementById('passwordInput');
             const errorMessage = document.getElementById('errorMessage');
             const errorSound = document.getElementById('errorSound');
             const successSound = document.getElementById('successSound');
+            const qrReader = document.getElementById('qr-reader');
             const correctPassword = "vince";
             
             if (input.value.toLowerCase() === correctPassword.toLowerCase()) {
                 successSound.play();
+                correctPasswordEntered = true;
                 errorMessage.textContent = 'Scan the QR code now!';
                 errorMessage.classList.remove('hidden');
-                // Additional code to handle QR code logic
+                qrReader.style.display = 'block'; // Show QR scanner
+                startQRScanner();
             } else {
                 errorSound.play();
+                correctPasswordEntered = false;
                 errorMessage.textContent = 'Review all your keys and try again.';
-                errorMessage.classList.remove('hidden');
+                errorMessage.classList.add('hidden');
                 input.value = ''; // Clear input field after error
             }
+        }
+
+        function startQRScanner() {
+            const qrReader = document.getElementById('qr-reader');
+            const html5QrCode = new Html5Qrcode("qr-reader");
+            html5QrCode.start({ facingMode: "environment" }, {
+                fps: 10,
+                qrbox: { width: 250, height: 250 }
+            }, qrCodeMessage => {
+                if (correctPasswordEntered) {
+                    window.location.href = 'https://mywebar.com/p/Project_2_4yicsy6vo9';
+                } else {
+                    window.location.href = 'https://vincentkovar.github.io/Through-the-Keyhole/society.html';
+                }
+                html5QrCode.stop().then(() => {
+                    qrReader.style.display = 'none'; // Hide QR scanner
+                }).catch(err => console.log("Error stopping QR Scanner: " + err));
+            }).catch(err => console.log("Error: " + err));
         }
     </script>
 </body>
