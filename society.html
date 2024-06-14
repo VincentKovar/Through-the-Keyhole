@@ -4,27 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Through the Keyhole</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
     <style>
-        /* Basic styling to center all content and set the background color */
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
         body {
-            background-color: #ffe4b5;
             display: flex;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
+            min-height: 100vh;
             font-family: 'Alice', serif;
+            text-align: center;
             margin: 0;
-            padding: 20px;
-            color: white;
+            background: #007bff; /* Updated background color to match your first request */
         }
-                input[type="text"] {
+        .container {
+            width: 90%;
+            max-width: 300px;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        img, .logo {
+            width: 150px; /* Adjusted for consistency */
+            margin-bottom: 10px; /* Standard margin as per your specification */
+        }
+        h1, h2 {
+            margin: 10px 0;
+        }
+        input[type="text"], button {
             width: 100%;
             padding: 10px;
-            margin: 10px 0;
+            margin-top: 10px; /* Space between elements */
             box-sizing: border-box;
         }
         button {
-            width: 100%;
-            padding: 10px;
             background-color: #007bff;
             color: white;
             border: none;
@@ -34,71 +48,51 @@
         button:hover {
             background-color: #0056b3;
         }
-        /* Ensures that the input and button are full-width on small screens */
-        input, button {
-            width: 90%;
-            padding: 10px;
-            margin-top: 10px; /* Space between elements */
-        }
-        /* Error message styling */
         .error-message {
             color: red;
             margin-top: 10px;
         }
+        .hidden {
+            display: none;
+        }
+        audio {
+            display: none; /* Hide audio controls */
+        }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Alice&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Logo at the top of the page -->
-    <img src="WhBr-Rabbit-logo-golden-220609-v1.png" width="150px" style="margin-bottom: 10px;">
-
-    <!-- Page title -->
-    <h1>Through the Keyhole</h1>
-
-    <!-- Subtitle under the logo -->
-    <h2>Lock XXII</h2>
-
-    <!-- Second logo -->
-    <img src="Secretorderlogo2.gif" width="200px" style="margin-top: 5px; margin-bottom: 5px;">
-
-    <!-- Placeholder text -->
-    <p>Placeholder text. Placeholder text</p>
-
-    <!-- Text input for password -->
-    <input type="text" id="passwordInput" placeholder="Enter the final keys">
-
-    <!-- Submit button -->
-    <button onclick="checkPassword()">Submit</button>
-
-    <!-- Area for error messages -->
-    <div id="errorMessage" class="error-message"></div>
-
-    <!-- Audio elements for feedback -->
-    <audio id="errorSound" src="wah-wah-sad-trombone-6347.mp3"></audio>
-    <audio id="successSound" src="triumph.mp3"></audio>
-
+    <div class="container">
+        <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="White Branches Rabbit Logo">
+        <h1>Through the Keyhole</h1>
+        <h2>Lock XXII</h2>
+        <img src="Secretorderlogo2.gif" alt="Secret Order Logo" style="width: 200px;">
+        <p>Placeholder text. Placeholder text</p>
+        <input type="text" id="passwordInput" placeholder="Enter the final keys">
+        <button onclick="checkPassword()">Submit</button>
+        <p id="errorMessage" class="error-message hidden"></p>
+        <audio id="errorSound" src="wah-wah-sad-trombone-6347.mp3"></audio>
+        <audio id="successSound" src="triumph.mp3"></audio>
+    </div>
     <script>
-        // Function to check the password entered by the user
         function checkPassword() {
             const input = document.getElementById('passwordInput');
             const errorMessage = document.getElementById('errorMessage');
             const errorSound = document.getElementById('errorSound');
             const successSound = document.getElementById('successSound');
-
-            // Correct password for comparison, not case sensitive
-            const correctPassword = "test.test.test.";
-
+            const correctPassword = "placeholder. replace this. text";
+            
             if (input.value.toLowerCase() === correctPassword.toLowerCase()) {
                 successSound.play();
                 errorMessage.textContent = 'Scan the QR code now!';
-                // Redirect or handle QR code visibility here
+                errorMessage.classList.remove('hidden');
+                // Additional code to handle QR code logic
             } else {
                 errorSound.play();
                 errorMessage.textContent = 'Review all your keys and try again.';
+                errorMessage.classList.remove('hidden');
                 input.value = ''; // Clear input field after error
             }
         }
     </script>
 </body>
 </html>
-
