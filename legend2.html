@@ -62,30 +62,30 @@
         .image-container {
             position: relative;
             width: 100%;
-            height: auto;
-            margin: 20px 0;
+            height: 275px;
+            margin: 10px 0;
         }
         .fade {
             position: absolute;
             width: 100%;
             height: 100%;
-            animation: crossfade 8s infinite;
+            animation: crossfade 5s infinite;
         }
         @keyframes crossfade {
             0%, 100% { opacity: 1; }
             50% { opacity: 0; }
         }
         #image2 {
-            animation-delay: 4s;
+            animation-delay: 2.5s;
         }
-        @keyframes fallOff {
+        .fade-out {
+            animation: fadeOut 2s forwards;
+        }
+        @keyframes fadeOut {
             to {
-                transform: translateY(-100%);
                 opacity: 0;
+                transform: translateY(-100%);
             }
-        }
-        .fall-off {
-            animation: fallOff 1s forwards;
         }
     </style>
 </head>
@@ -117,12 +117,12 @@
             const input = keyInput.value.trim().toUpperCase();
 
             if (input === correctAnswer) {
-                document.querySelector('.container').classList.add('fall-off');
+                document.querySelector('.container').classList.add('fade-out');
                 setTimeout(() => {
                     window.location.href = 'final.html';
-                }, 1000);
+                }, 2000);
                 playTriumphSound();
-                keyInput.value = ""; // Clear input field
+                keyInput.value = ""; /* Clear input field */
             } else {
                 attempts++;
                 drainSound.play();
@@ -134,8 +134,8 @@
                     errorMessage.textContent = "Opening a new tab for help.";
                     window.open('https://meyersign.com/2021/09/tales-from-the-magic-skagit-from-these-waters/', '_blank');
                 }
-                errorMessage.classList.remove('hidden');
-                keyInput.value = ''; // Clear input field
+                errorMessage.style.display = 'block';
+                keyInput.value = ''; // Clear input field on incorrect entry
             }
         }
 
