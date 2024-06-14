@@ -24,6 +24,7 @@
             text-align: center;
             padding: 20px;
             box-sizing: border-box;
+            transition: transform 1s ease-in-out, opacity 1s ease-in-out;
         }
         .logo {
             width: 150px;
@@ -47,6 +48,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin-top: 10px;
         }
         button:hover {
             background-color: #0056b3;
@@ -62,7 +64,7 @@
             position: relative;
             width: 300px;
             height: 275px;
-            margin: 0 auto; /* Center the image container */
+            margin: 20px auto; /* Center the image container */
         }
         .fade {
             position: absolute;
@@ -77,6 +79,9 @@
         #image2 {
             animation-delay: 2s;
         }
+        .ripple-transition {
+            animation: ripple 1s forwards;
+        }
         @keyframes ripple {
             0% {
                 transform: scale(1);
@@ -86,6 +91,10 @@
                 transform: scale(1.5);
                 opacity: 0;
             }
+        }
+        .fall-off {
+            transform: translateY(100vh);
+            opacity: 0;
         }
     </style>
 </head>
@@ -117,7 +126,7 @@
             const input = keyInput.value.trim().toUpperCase();
 
             if (input === correctAnswer) {
-                document.body.classList.add('ripple-transition');
+                document.querySelector('.container').classList.add('fall-off');
                 setTimeout(() => {
                     window.location.href = 'final.html';
                 }, 1000);
