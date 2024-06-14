@@ -33,10 +33,10 @@
         h1, h2 {
             margin: 10px 0;
         }
-        input#keyInput {
+        input[type="text"] {
             width: 100%;
             padding: 10px;
-            margin: 10px 0; /* Adjust the spacing here */
+            margin: 10px 0;
             box-sizing: border-box;
         }
         button {
@@ -47,7 +47,6 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin-top: 10px; /* Ensure uniform spacing */
         }
         button:hover {
             background-color: #0056b3;
@@ -57,9 +56,6 @@
             width: 300px;
             height: 275px;
             margin: 20px auto; /* Center the image container */
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
         .fade {
             position: absolute;
@@ -103,7 +99,7 @@
         </div>
         <input type="text" id="keyInput" placeholder="Enter Key XXI">
         <button onclick="checkAnswer()">Submit</button>
-        <p id="errorMessage" class="error-message hidden"></p>
+        <p id="errorMessage" class="error-message"></p>
     </div>
     <audio id="drainSound" src="drain.mp3"></audio>
     <audio id="triumphSound" src="triumph.mp3" preload="auto"></audio>
@@ -135,7 +131,7 @@
                     errorMessage.textContent = "Opening a new tab for help.";
                     window.open('https://meyersign.com/2021/09/tales-from-the-magic-skagit-from-these-waters/', '_blank');
                 }
-                errorMessage.classList.remove('hidden');
+                errorMessage.style.display = 'block';
             }
         }
 
