@@ -33,15 +33,13 @@
         h1, h2 {
             margin: 10px 0;
         }
-        input[type="text"] {
+        input[type="text"], button {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
             box-sizing: border-box;
         }
         button {
-            width: 100%;
-            padding: 10px;
             background-color: #007bff;
             color: white;
             border: none;
@@ -62,7 +60,7 @@
             position: relative;
             width: 300px;
             height: 275px;
-            margin: 0 auto; /* Center the image container */
+            margin: 0 auto;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -79,16 +77,6 @@
         }
         #image2 {
             animation-delay: 2s;
-        }
-        @keyframes ripple {
-            0% {
-                transform: scale(1);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(1.5);
-                opacity: 0;
-            }
         }
     </style>
 </head>
