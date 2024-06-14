@@ -64,7 +64,7 @@
             position: relative;
             width: 300px;
             height: 275px;
-            margin: 20px auto; /* Center the image container */
+            margin: 0 auto; /* Center the image container */
         }
         .fade {
             position: absolute;
@@ -78,19 +78,6 @@
         }
         #image2 {
             animation-delay: 2s;
-        }
-        .ripple-transition {
-            animation: ripple 1s forwards;
-        }
-        @keyframes ripple {
-            0% {
-                transform: scale(1);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(1.5);
-                opacity: 0;
-            }
         }
         .fall-off {
             transform: translateY(100vh);
