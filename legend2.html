@@ -112,6 +112,23 @@
     let attempts = 0;
     const correctAnswer = "Tulip";
 
-    function checkAnswer() {
-      const answerInput = document.getElementById('answerInput');
-      const errorMessage = document.getElementById('
+   function checkAnswer() {
+  const answerInput = document.getElementById('answerInput');
+  const errorMessage = document.getElementById('errorMessage');
+  const successSound = document.getElementById('successSound');
+  const errorSound = document.getElementById('errorSound');
+  const input = answerInput.value.trim().toUpperCase();
+
+  if (input === correctAnswer) {
+    // Play success sound and show success message
+    successSound.play();
+    errorMessage.textContent = "Correct!";
+    errorMessage.classList.remove('hidden');
+  } else {
+    // Play error sound and show error message
+    errorSound.play();
+    errorMessage.textContent = "Try again!";
+    errorMessage.classList.remove('hidden');
+    attempts++;
+  }
+}
