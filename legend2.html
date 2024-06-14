@@ -30,15 +30,14 @@
             height: auto;
             margin-bottom: 20px;
         }
-        h1, h2 {
-            margin: 10px 0;
+        h1, h2, .image-container, input[type="text"], button {
+            margin-bottom: 10px; /* Standardized margin for all elements */
         }
         .image-container {
             position: relative;
             width: 100%;
             max-width: 300px;
             height: 275px;
-            margin-bottom: 10px; /* Match the spacing model */
             overflow: hidden; /* Ensure images stay within the container */
         }
         .fade {
@@ -59,7 +58,6 @@
         input[type="text"] {
             width: 100%;
             padding: 10px;
-            margin: 10px 0;
             box-sizing: border-box;
         }
         button {
@@ -70,7 +68,6 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin-top: 10px;
         }
         button:hover {
             background-color: #0056b3;
@@ -121,7 +118,7 @@
             const input = keyInput.value.trim().toUpperCase();
 
             if (input === correctAnswer) {
-                document.querySelector('.container').classList.add('fade-out');
+                document.querySelector('.container').classList add('fade-out');
                 setTimeout(() => {
                     window.location.href = 'final.html';
                 }, 2000);
