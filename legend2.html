@@ -6,7 +6,18 @@
     <title>Through the Keyhole</title>
     <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
     <style>
-        /* ... (rest of the code remains the same) */
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
+            background: #ffe4b5;
+        }
         .container {
             width: 90%;
             max-width: 300px;
@@ -14,29 +25,85 @@
             padding: 20px;
             box-sizing: border-box;
         }
-        /* ... (rest of the code remains the same) */
+        .logo {
+            width: 150px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            margin: 10px 0;
+        }
         input#keyInput {
             width: 100%;
             padding: 10px;
-            margin: 20px 0; /* Adjust the spacing here */
+            margin: 10px 0;
             box-sizing: border-box;
         }
-        /* ... (rest of the code remains the same) */
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px; /* Ensure uniform spacing */
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
         .image-container {
             position: relative;
             width: 300px;
             height: 275px;
             margin: 20px auto; /* Add margin to create space around images */
         }
-        /* ... (rest of the code remains the same) */
+        .fade {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            animation: crossfade 4s infinite;
+        }
+        @keyframes crossfade {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        #image2 {
+            animation-delay: 2s;
+        }
+        .fall-off {
+            animation: fallOff 1s forwards;
+        }
+        @keyframes fallOff {
+            to {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
         .error-message {
             color: red;
+            margin-top: 10px;
             display: none; /* Hide error message by default */
         }
     </style>
 </head>
 <body>
-    <!-- ... (rest of the code remains the same) -->
+    <div class="container">
+        <a href="https://www.whitebranches.com/keyhole" target="_blank">
+            <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
+        </a>
+        <h1>Through the Keyhole</h1>
+        <h2>Lock XXI</h2>
+        <div class="image-container">
+            <img src="legend1.png" class="fade" alt="Legend 1" id="image1">
+            <img src="legend2.png" class="fade" alt="Legend 2" id="image2">
+        </div>
+        <input type="text" id="keyInput" placeholder="Enter Key XXI">
+        <button onclick="checkAnswer()">Submit</button>
+        <p id="errorMessage" class="error-message hidden"></p>
+    </div>
+    <audio id="drainSound" src="drain.mp3"></audio>
+    <audio id="triumphSound" src="triumph.mp3" preload="auto"></audio>
     <script>
         let attempts = 0;
         const correctAnswer = "TULIP";
