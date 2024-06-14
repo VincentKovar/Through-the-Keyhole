@@ -36,7 +36,7 @@
         input[type="text"] {
             width: 100%;
             padding: 10px;
-            margin: 10px 0; /* Adjusted the spacing here */
+            margin: 10px 0;
             box-sizing: border-box;
         }
         button {
@@ -47,45 +47,45 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin-top: 10px; /* Ensure there is a consistent margin */
+            margin-top: 10px;
         }
         button:hover {
             background-color: #0056b3;
         }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+        .hidden {
+            display: none;
+        }
         .image-container {
             position: relative;
-            width: 300px;
-            height: 275px;
-            margin: 20px auto; /* Center the image container */
+            width: 100%;
+            height: auto;
+            margin: 20px 0;
         }
         .fade {
             position: absolute;
             width: 100%;
             height: 100%;
-            left: 0;
-            right: 0;
-            animation: crossfade 4s infinite;
+            animation: crossfade 8s infinite;
         }
         @keyframes crossfade {
             0%, 100% { opacity: 1; }
             50% { opacity: 0; }
         }
         #image2 {
-            animation-delay: 2s;
-        }
-        .fall-off {
-            animation: fallOff 1s forwards;
+            animation-delay: 4s;
         }
         @keyframes fallOff {
             to {
-                transform: translateY(100vh);
+                transform: translateY(-100%);
                 opacity: 0;
             }
         }
-        .error-message {
-            color: red;
-            margin-top: 10px;
-            display: none; /* Hide error message by default */
+        .fall-off {
+            animation: fallOff 1s forwards;
         }
     </style>
 </head>
@@ -95,14 +95,14 @@
             <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
         </a>
         <h1>Through the Keyhole</h1>
-        <h2>Lock XXI</h2>
+        <h2>Lock XIX</h2>
         <div class="image-container">
             <img src="legend1.png" class="fade" alt="Legend 1" id="image1">
             <img src="legend2.png" class="fade" alt="Legend 2" id="image2">
         </div>
-        <input type="text" id="keyInput" placeholder="Enter Key XXI">
+        <input type="text" id="keyInput" placeholder="Enter Key XIX">
         <button onclick="checkAnswer()">Submit</button>
-        <p id="errorMessage" class="error-message"></p>
+        <p id="errorMessage" class="error-message hidden"></p>
     </div>
     <audio id="drainSound" src="drain.mp3"></audio>
     <audio id="triumphSound" src="triumph.mp3" preload="auto"></audio>
@@ -122,7 +122,7 @@
                     window.location.href = 'final.html';
                 }, 1000);
                 playTriumphSound();
-                keyInput.value = ""; /* Clear input field */
+                keyInput.value = ""; // Clear input field
             } else {
                 attempts++;
                 drainSound.play();
@@ -134,7 +134,8 @@
                     errorMessage.textContent = "Opening a new tab for help.";
                     window.open('https://meyersign.com/2021/09/tales-from-the-magic-skagit-from-these-waters/', '_blank');
                 }
-                errorMessage.style.display = 'block';
+                errorMessage.classList.remove('hidden');
+                keyInput.value = ''; // Clear input field
             }
         }
 
