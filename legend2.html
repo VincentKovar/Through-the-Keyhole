@@ -30,15 +30,16 @@
             height: auto;
             margin-bottom: 20px;
         }
-        h1, h2, .image-container, input[type="text"], button {
-            margin-bottom: 10px; /* Standardized margin for all elements */
+        h1, h2 {
+            margin: 10px 0;
         }
         .image-container {
             position: relative;
             width: 100%;
             max-width: 300px;
             height: 275px;
-            overflow: hidden; /* Ensure images stay within the container */
+            margin-bottom: 10px;
+            overflow: hidden;
         }
         .fade {
             position: absolute;
@@ -58,6 +59,7 @@
         input[type="text"] {
             width: 100%;
             padding: 10px;
+            margin: 10px 0 10px; /* Set consistent spacing */
             box-sizing: border-box;
         }
         button {
@@ -117,26 +119,30 @@
             const drainSound = document.getElementById('drainSound');
             const input = keyInput.value.trim().toUpperCase();
 
+            keyInput.value = ''; // Reset input field every time submit is clicked
+
             if (input === correctAnswer) {
-                document.querySelector('.container').classList add('fade-out');
+                document.querySelector('.container').classList.add('fade-out');
                 setTimeout(() => {
                     window.location.href = 'final.html';
                 }, 2000);
                 playTriumphSound();
-                keyInput.value = ""; /* Clear input field */
             } else {
                 attempts++;
                 drainSound.play();
-                if (attempts === 1) {
-                    errorMessage.textContent = "Try again";
-                } else if (attempts === 2) {
-                    errorMessage.textContent = "Use your book to decode the key.";
-                } else if (attempts >= 3) {
-                    errorMessage.textContent = "Opening a new tab for help.";
-                    window.open('https://meyersign.com/2021/09/tales-from-the-magic-skagit-from-these-waters/', '_blank');
+                errorMessage.style.display = 'block'; // Ensure error message is visible
+                switch (attempts) {
+                    case 1:
+                        errorMessage.textContent = "Try again";
+                        break;
+                    case 2:
+                        errorMessage.textContent = "Use your book to decode the key.";
+                        break;
+                    case 3:
+                        errorMessage.textContent = "Opening a new tab for help.";
+                        window.open('https://meyersign.com/2021/09/tales-from-the-magic-skagit-from-these-waters/', '_blank');
+                        break;
                 }
-                errorMessage.style.display = 'block';
-                keyInput.value = ''; // Clear input field on incorrect entry
             }
         }
 
