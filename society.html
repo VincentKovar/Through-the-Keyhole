@@ -1,1 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Through the Keyhole</title>
+    <style>
+        /* Basic styling to center all content and set the background color */
+        body {
+            background-color: #007bff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Alice', serif;
+            margin: 0;
+            padding: 20px;
+            color: white;
+        }
+        /* Ensures that the input and button are full-width on small screens */
+        input, button {
+            width: 90%;
+            padding: 10px;
+            margin-top: 10px; /* Space between elements */
+        }
+        /* Error message styling */
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Alice&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Logo at the top of the page -->
+    <img src="WhBr-Rabbit-logo-golden-220609-v1.png" width="150px" style="margin-bottom: 10px;">
+
+    <!-- Page title -->
+    <h1>Through the Keyhole</h1>
+
+    <!-- Subtitle under the logo -->
+    <h2>LockXXII</h2>
+
+    <!-- Second logo -->
+    <img src="Secretorderlogo2.gif" width="200px" style="margin-top: 10px; margin-bottom: 10px;">
+
+    <!-- Placeholder text -->
+    <p>Placeholder text. Placeholder text</p>
+
+    <!-- Text input for password -->
+    <input type="text" id="passwordInput" placeholder="Enter the final keys">
+
+    <!-- Submit button -->
+    <button onclick="checkPassword()">Submit</button>
+
+    <!-- Area for error messages -->
+    <div id="errorMessage" class="error-message"></div>
+
+    <!-- Audio elements for feedback -->
+    <audio id="errorSound" src="wah-wah-sad-trombone-6347.mp3"></audio>
+    <audio id="successSound" src="triumph.mp3"></audio>
+
+    <script>
+        // Function to check the password entered by the user
+        function checkPassword() {
+            const input = document.getElementById('passwordInput');
+            const errorMessage = document.getElementById('errorMessage');
+            const errorSound = document.getElementById('errorSound');
+            const successSound = document.getElementById('successSound');
+
+            // Correct password for comparison, not case sensitive
+            const correctPassword = "placeholder. replace this. text";
+
+            if (input.value.toLowerCase() === correctPassword.toLowerCase()) {
+                successSound.play();
+                errorMessage.textContent = 'Scan the QR code now!';
+                // Redirect or handle QR code visibility here
+            } else {
+                errorSound.play();
+                errorMessage.textContent = 'Review all your keys and try again.';
+                input.value = ''; // Clear input field after error
+            }
+        }
+    </script>
+</body>
+</html>
 
