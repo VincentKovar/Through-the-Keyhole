@@ -11,35 +11,40 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh; /* Ensure the content fits within the viewport height */
+            min-height: 100vh;
             flex-direction: column;
             font-family: 'Alice', serif;
             text-align: center;
             margin: 0;
             padding: 0;
-            background: #ffe4b5; /* Consistent background color */
+            background: #ffe4b5;
         }
         .container {
             width: 90%;
-            max-width: 300px; /* Consistent with previous container max-width */
+            max-width: 300px;
             text-align: center;
-            padding: 20px; /* Consistent padding for spacing */
+            padding: 20px;
             box-sizing: border-box;
-        }
-        h1, h2 {
-            margin: 10px 0; /* Adjusted margins to reduce space */
         }
         .logo {
             width: 150px;
             height: auto;
-            margin-bottom: 5px; /* Smaller margin to bring elements closer */
+            margin-bottom: 5px;
+        }
+        h1, h2 {
+            margin: 10px 0;
+        }
+        .image-container img {
+            width: 100%;
+            height: auto;
+            margin-bottom: 10px; /* Reduced margin between image and input */
         }
         input[type="text"], button {
             width: 100%;
             padding: 10px;
             margin-top: 10px;
             box-sizing: border-box;
-            font-size: 16px; /* Consistent font size for better readability */
+            font-size: 16px;
         }
         button {
             background-color: #007bff;
@@ -47,7 +52,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 16px; /* Ensuring readability on mobile */
+            font-size: 16px;
         }
         button:hover {
             background-color: #0056b3;
@@ -57,60 +62,65 @@
             margin-top: 10px;
             font-size: 14px;
         }
-        .image-container img {
-            width: 100%;
-            height: auto;
-            margin-bottom: 20px; /* Consistent spacing */
-        }
         p {
-            margin: 20px 0; /* Consistent paragraph spacing */
-            font-size: 16px; /* Enhancing mobile readability */
+            margin: 20px 0;
+            font-size: 16px;
         }
-        @media (max-width: 600px) {
-            h1, h2, input[type="text"], button {
-                font-size: 14px; /* Adjust font sizes for smaller screens */
-            }
+        iframe {
+            width: 100%;
+            height: 300px; /* Adjusted for better visibility */
+            display: none; /* Initially hidden */
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <a href="https://www.whitebranches.com/keyhole" target="_blank">
-            <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
-        </a>
         <h1>Through the Keyhole</h1>
         <h2>Lock IX</h2>
         <div class="image-container">
             <img src="bricks.jpeg" alt="Bricks Image">
         </div>
         <p id="error-message"></p>
+        <iframe id="historyFrame" src="https://www.historylink.org/File/9537" frameborder="0"></iframe>
         <input type="text" id="buildingInput" placeholder="What was this building?">
         <input type="text" id="addressInput" placeholder="What was its address number?">
         <button onclick="navigate()">Submit</button>
+        <audio id="gavelSound" src="gavel.mp3"></audio>
     </div>
     <script>
         function navigate() {
             const buildingInput = document.getElementById('buildingInput').value.trim().toLowerCase();
             const addressInput = document.getElementById('addressInput').value.trim();
             const errorMessage = document.getElementById('error-message');
+            const historyFrame = document.getElementById('historyFrame');
+            const gavelSound = document.getElementById('gavelSound');
             const correctBuilding = 'courthouse';
             const correctAddress = '707';
 
+            // Hide previous error messages and the image container initially
+            errorMessage.style.display = 'none';
+            document.querySelector('.image-container').style.display = 'none';
+
             if (buildingInput === correctBuilding && addressInput === correctAddress) {
-                document.querySelector('.container').innerHTML = `
-                    <h1>Through the Keyhole</h1>
-                    <h2>Lock X</h2>
-                    <p>Decatur’s house rolled away,<br>
-                       to make room for a grander day.<br>
-                       Here the city’s voice held the stage,<br>
-                       Until dawned silver’s golden age.<br>
-                       Walk behind that name of sorrow,<br>
-                       One who ended our President’s tomorrow,<br>
-                       On this we talk, and we see,<br>
-                       Using it you’ll find lock and key.</p>
-                `;
+                gavelSound.play();
+                gavelSound.onended = function() {
+                    document.querySelector('.container').innerHTML = `
+                        <h1>Through the Keyhole</h1>
+                        <h2>Lock X</h2>
+                        <p>Decatur’s house rolled away,<br>
+                            to make room for a grander day.<br>
+                            Here the city’s voice held the stage,<br>
+                            Until dawned silver’s golden age.<br>
+                            Walk behind that name of sorrow,<br>
+                            One who ended our President’s tomorrow,<br>
+                            On this we talk, and we see,<br>
+                            Using it you’ll find lock and key.</p>
+                    `;
+                };
             } else {
                 errorMessage.textContent = 'Remember the maps in your book.';
+                errorMessage.style.display = 'block';
+                historyFrame.style.display = 'block'; // Show the iframe after the first incorrect attempt
             }
         }
     </script>
