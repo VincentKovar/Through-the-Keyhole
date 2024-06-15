@@ -11,42 +11,43 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh; /* Use min-height for scrollable content */
+            min-height: 100vh; /* Ensure the content fits within the viewport height */
             flex-direction: column;
             font-family: 'Alice', serif;
             text-align: center;
             margin: 0;
             padding: 0;
-            background: #ffe4b5; /* Background color */
+            background: #ffe4b5; /* Consistent background color */
         }
         .container {
             width: 90%;
-            max-width: 600px; /* Adjust width */
+            max-width: 300px; /* Consistent with previous container max-width */
             text-align: center;
-            padding: 20px; /* Padding for better mobile view */
-            box-sizing: border-box; /* Ensure padding doesn't affect width */
+            padding: 20px; /* Consistent padding for spacing */
+            box-sizing: border-box;
+        }
+        h1, h2 {
+            margin: 10px 0; /* Adjusted margins to reduce space */
         }
         .logo {
-            width: 150px; /* Adjust size as needed */
+            width: 150px;
             height: auto;
-            margin-bottom: 20px;
+            margin-bottom: 5px; /* Smaller margin to bring elements closer */
         }
-        input[type="text"] {
+        input[type="text"], button {
             width: 100%;
             padding: 10px;
-            margin: 10px 0;
+            margin-top: 10px;
             box-sizing: border-box;
-            font-size: 16px; /* Increase font size for better readability on mobile */
+            font-size: 16px; /* Consistent font size for better readability */
         }
         button {
-            width: 100%;
-            padding: 10px;
             background-color: #007bff;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 16px; /* Increase font size for better readability on mobile */
+            font-size: 16px; /* Ensuring readability on mobile */
         }
         button:hover {
             background-color: #0056b3;
@@ -54,36 +55,29 @@
         #error-message {
             color: red;
             margin-top: 10px;
-            font-size: 14px; /* Adjust font size for mobile */
-        }
-        .image-container {
-            width: 100%;
-            max-width: 600px; /* Adjust maximum width for better display */
-            margin-bottom: 20px; /* Add margin for spacing */
+            font-size: 14px;
         }
         .image-container img {
             width: 100%;
             height: auto;
+            margin-bottom: 20px; /* Consistent spacing */
         }
         p {
-            margin: 20px 0; /* Margin for paragraphs */
-            font-size: 16px; /* Increase font size for better readability on mobile */
+            margin: 20px 0; /* Consistent paragraph spacing */
+            font-size: 16px; /* Enhancing mobile readability */
         }
         @media (max-width: 600px) {
-            h1, h2 {
-                font-size: 24px; /* Adjust font size for smaller screens */
-            }
-            input[type="text"] {
-                font-size: 14px; /* Adjust input font size for smaller screens */
-            }
-            button {
-                font-size: 14px; /* Adjust button font size for smaller screens */
+            h1, h2, input[type="text"], button {
+                font-size: 14px; /* Adjust font sizes for smaller screens */
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <a href="https://www.whitebranches.com/keyhole" target="_blank">
+            <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
+        </a>
         <h1>Through the Keyhole</h1>
         <h2>Lock IX</h2>
         <div class="image-container">
