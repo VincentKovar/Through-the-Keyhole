@@ -29,7 +29,10 @@
         .logo {
             width: 150px; /* Adjust size as needed */
             height: auto;
-            margin-bottom: 10px;
+            margin-bottom: 5px; /* Reduced to half to bring H1 closer */
+        }
+        h1 {
+            margin-top: 5px; /* Reduced top margin */
         }
         input[type="text"] {
             width: 100%;
@@ -101,6 +104,7 @@
             errorMessage.style.display = 'none';
             trumpeterImage.style.display = 'none';
             windsorImage.style.display = 'none';
+            document.getElementById('keyInput').value = ''; // Reset the input box on incorrect attempt
 
             if (enteredKey === comparisonKey) {
                 window.location.href = 'bricks.html'; // Navigate to bricks.html for correct answer
@@ -123,11 +127,11 @@
         // Zoom functionality for images
         document.querySelectorAll('.zoomable-image').forEach(img => {
             img.addEventListener('click', () => {
-                if (img.style.transform === 'scale(2.0)') {
+                if (img.style.transform === 'scale(2.5)') {
                     img.style.transform = 'scale(1)';
                     img.style.cursor = 'zoom-in';
                 } else {
-                    img.style.transform = 'scale(1.5)';
+                    img.style.transform = 'scale(2.5)';
                     img.style.cursor = 'zoom-out';
                 }
             });
