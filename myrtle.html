@@ -29,7 +29,7 @@
         .logo {
             width: 150px; /* Adjust size as needed */
             height: auto;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
         input[type="text"] {
             width: 100%;
@@ -75,14 +75,14 @@
         <h2>Lock VIII</h2>
         <p>The blossom path sweetly declares,<br>
            Love and luck from someone who cares.<br>
-           Walk west from the waters’ wall,<br>
-           And look for the Trumpeter’s call<br>
+           Walk East from the waters’ wall,<br>
+           And go past the Trumpeter’s call<br>
            But don’t stop just on precedent<br>
            On king’s corner now sleeps a President</p>
         <p id="error-message"></p>
         <img src="trumpeter.png" id="trumpeter-image" class="zoomable-image">
         <img src="Windsor.jpeg" id="windsor-image" class="zoomable-image">
-        <input type="text" id="keyInput" placeholder="four alphanumeric characters">
+        <input type="text" id="keyInput" placeholder="four alpha-numeric characters">
         <button onclick="navigate()">Submit</button>
     </div>
 
@@ -123,7 +123,7 @@
         // Zoom functionality for images
         document.querySelectorAll('.zoomable-image').forEach(img => {
             img.addEventListener('click', () => {
-                if (img.style.transform === 'scale(1.5)') {
+                if (img.style.transform === 'scale(2.5)') {
                     img.style.transform = 'scale(1)';
                     img.style.cursor = 'zoom-in';
                 } else {
