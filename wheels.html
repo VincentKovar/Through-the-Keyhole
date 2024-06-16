@@ -79,7 +79,7 @@
         <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
         </a>
         <h1>Through the Keyhole</h1>
-        <h2>Lock XV</h2>
+        <h2>Lock XIII</h2>
         <img src="eagle.jpg" alt="Static Image" class="image">
         <input type="text" id="answerInput" placeholder="Enter the symbol">
         <button onclick="checkAnswer()">Submit</button>
@@ -108,8 +108,8 @@
                 container.addEventListener('animationend', function handleFadeOut() {
                     container.removeEventListener('animationend', handleFadeOut); // Clean up the event listener
                     container.innerHTML = `
-                        <h2>Your third secret word is CREDENTIAL</h2>
-            <p>Write it down then open the QR code for the next Lock in your book. Enter the three secret words, in order, to discover your next location.</p>
+                        <h2>Your second secret word is TRAGEDY</h2>
+            <p>Write it down in your book. Then you may close this tab.</p>
                     `;
                     container.classList.remove('fade-out');
                     container.style.opacity = '1';
