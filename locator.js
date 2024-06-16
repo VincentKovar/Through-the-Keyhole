@@ -49,15 +49,30 @@ function calculateDistance(loc1, loc2) {
 }
 
 function handleOrientation(event) {
-    // Add orientation handling logic here
+    const alpha = event.alpha;
+    const bearing = calculateBearing(currentLocation, targetLocation);
+    facingCorrectDirection = Math.abs(alpha - bearing) <= 7;
+    instructionsDisplay.textContent = facingCorrectDirection ? "Correct direction!" : "Adjust your direction.";
+}
+
+function calculateBearing(loc1, loc2) {
+    // Bearing calculation logic here
 }
 
 function adjustBeep(distance) {
-    // Adjust the beep frequency based on distance
+    clearInterval(beepInterval);
+    let interval = distance < 25 ? 800 : distance < 50 ? 1000 : distance < 100 ? 1500 : distance < 200 ? 2000 : distance < 400 ? 3000 : 4000;
+    beepInterval = setInterval(() => {
+        beepAudio.play();
+        if (facingCorrectDirection && navigator.vibrate) {
+            navigator.vibrate(200); // Haptic feedback when facing the right direction
+        }
+    }, interval);
 }
 
 function adjustLogoBlink(distance) {
-    // Adjust logo blink rate based on proximity
+    let blinkRate = Math.max(0.5, 5 - distance / 80); // Adjust blink rate based on distance
+    document.getElementById('logo').style.animation = `blink ${blinkRate}s steps(5, start) infinite`;
 }
 
 function handleError(error) {
