@@ -7,6 +7,7 @@ let instructionsDisplay = document.getElementById('instructions');
 let previousDistance = null;
 let beepInterval;
 let facingCorrectDirection = false;
+let currentLocation = { latitude: 0, longitude: 0 };  // Global to store current location
 
 function startGame() {
     document.querySelector('button').style.display = 'none'; // Hide the start button
@@ -16,7 +17,7 @@ function startGame() {
 }
 
 function updatePosition(position) {
-    let currentLocation = {
+    currentLocation = {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude
     };
@@ -56,15 +57,19 @@ function handleOrientation(event) {
 }
 
 function calculateBearing(loc1, loc2) {
-    // Bearing calculation logic here
+    let y = Math.sin(loc2.longitude - loc1.longitude) * Math.cos(loc2.latitude);
+    let x = Math.cos(loc1.latitude) * Math.sin(loc2.latitude) - Math.sin(loc1.latitude) * Math.cos(loc2.latitude) * Math.cos(loc2.longitude - loc1.longitude);
+    let bearing = Math.atan2(y, x) * (180 / Math.PI);
+    bearing = (bearing + 360) % 360; // Normalize bearing
+    return bearing;
 }
 
 function adjustBeep(distance) {
     clearInterval(beepInterval);
     let interval = distance < 25 ? 800 : distance < 50 ? 1000 : distance < 100 ? 1500 : distance < 200 ? 2000 : distance < 400 ? 3000 : 4000;
     beepInterval = setInterval(() => {
-        beepAudio.play();
-        if (facingCorrectDirection && navigator.vibrate) {
+        if (facingCorrectDirection) {
+            beepAudio.play();
             navigator.vibrate(200); // Haptic feedback when facing the right direction
         }
     }, interval);
