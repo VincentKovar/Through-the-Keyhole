@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sliding Puzzle</title>
+    <style>
+        #puzzle {
+            width: 300px;
+            height: 300px;
+            margin: 20px auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+        }
+        .tile {
+            background-size: cover;
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+<div id="puzzle"></div>
+<script>
+    const imgSrc = 'pstc.png'; // Replace with your image path
+    const gridSize = 3;
+    let emptyPosition = gridSize * gridSize - 1;
+    const tiles = [];
+
+    function setupPuzzle() {
+        const puzzle = document.getElementById('puzzle');
+        for (let i = 0; i < gridSize * gridSize; i++) {
+            const tile = document.createElement('div');
+            tile.className = 'tile';
+            tile.style.backgroundImage = `url('${imgSrc}')`;
+            const x = -(i % gridSize) * 100;
+            const y = -Math.floor(i / gridSize) * 100;
+            tile.style.backgroundPosition = `${x}px ${y}px`;
+            puzzle.appendChild(tile);
+            tiles.push(tile);
+
+            if (i !== emptyPosition) {
+                tile.addEventListener('click', () => moveTile(i));
+            }
+        }
+        tiles[emptyPosition].style.opacity = '0'; // Hide the last tile
+    }
+
+    function moveTile(index) {
+        const difference = Math.abs(index - emptyPosition);
+        if (difference === 1 || difference === gridSize) {
+            tiles[emptyPosition].style.backgroundPosition = tiles[index].style.backgroundPosition;
+            tiles[index].style.opacity = '0';
+            tiles[emptyPosition].style.opacity = '1';
+            emptyPosition = index;
+            // Add check for puzzle completion here
+        }
+    }
+
+    setupPuzzle();
+</script>
+</body>
+</html>
