@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Through the Keyhole</title>
+    <title>Sliding Puzzle</title>
     <style>
         #puzzle {
             width: 300px;
@@ -13,15 +13,14 @@
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
             gap: 2px;
-            background-color: #ffe4b5; /* Grey background */
+            background-color: #333; /* Grey background for empty space */
         }
         .tile {
-            background-size: 300px 300px; /* Adjust size to fit the container */
             width: 100px;
             height: 100px;
         }
         .hidden {
-            visibility: hidden; /* Hide one tile instead of making it transparent */
+            visibility: hidden; /* Hide one tile to allow movement */
         }
     </style>
 </head>
@@ -48,10 +47,14 @@
             positions.forEach((pos, index) => {
                 const tile = document.createElement('div');
                 tile.className = 'tile';
-                tile.style.backgroundImage = `url('${imgSrc}')`;
-                const x = -((pos % gridSize) * 100);
-                const y = -Math.floor(pos / gridSize) * 100;
-                tile.style.backgroundPosition = `${x}px ${y}px`;
+                const canvas = document.createElement('canvas');
+                canvas.width = 100;
+                canvas.height = 100;
+                const ctx = canvas.getContext('2d');
+
+                // Draw the part of the image corresponding to this tile
+                ctx.drawImage(image, (pos % gridSize) * 100, Math.floor(pos / gridSize) * 100, 100, 100, 0, 0, 100, 100);
+                tile.style.backgroundImage = `url(${canvas.toDataURL()})`;
                 puzzle.appendChild(tile);
                 tiles[pos] = tile;
 
@@ -65,17 +68,14 @@
     }
 
     function moveTile(index) {
-        if (index === emptyPosition) return; // Check if the tile is not the same as the empty tile
         const difference = Math.abs(index - emptyPosition);
         const rowDifference = Math.floor(index / gridSize) - Math.floor(emptyPosition / gridSize);
 
         if (difference === 1 && rowDifference === 0 || difference === gridSize) {
-            [tiles[emptyPosition].style.backgroundPosition, tiles[index].style.backgroundPosition] = 
-            [tiles[index].style.backgroundPosition, tiles[emptyPosition].style.backgroundPosition];
+            [tiles[emptyPosition], tiles[index]] = [tiles[index], tiles[emptyPosition]]; // Swap references
             tiles[emptyPosition].classList.remove('hidden');
             tiles[index].classList.add('hidden');
-            [tiles[emptyPosition], tiles[index]] = [tiles[index], tiles[emptyPosition]];
-            emptyPosition = index;
+            emptyPosition = index; // Update empty position
         }
     }
 
@@ -87,15 +87,16 @@
     }
 
     function isSolvable(array) {
-        if (array.length === 0) return false; // Check if the array is not empty
         let inversions = 0;
-        for (let i = 0; i < array.length - 1; i++) {
-            for (let j = i + 1; j < array.length; j++) {
-                if (array[j] < array[i] && array[j] !== 0) {
-                    inversions++;
+        array.forEach((current, index) => {
+            if (current !== emptyPosition) {
+                for (let j = index + 1; j < array.length; j++) {
+                    if (array[j] !== emptyPosition && array[j] < current) {
+                        inversions++;
+                    }
                 }
             }
-        }
+        });
         return inversions % 2 === 0;
     }
 
