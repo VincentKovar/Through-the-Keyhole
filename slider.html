@@ -11,50 +11,80 @@
             margin: 20px auto;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
             gap: 2px;
+            background-color: #333; /* Grey background */
         }
         .tile {
-            background-size: cover;
+            background-size: 300px 300px; /* Adjust size to fit the container */
             width: 100px;
             height: 100px;
+        }
+        .tile.hidden {
+            visibility: hidden; /* Hide one tile instead of making it transparent */
         }
     </style>
 </head>
 <body>
 <div id="puzzle"></div>
 <script>
-    const imgSrc = 'pstc.png'; // Replace with your image path
+    const imgSrc = 'pstc.png'; // Path to your image
     const gridSize = 3;
-    let emptyPosition = gridSize * gridSize - 1;
+    let emptyPosition = 8; // Starting position of the empty tile
     const tiles = [];
 
     function setupPuzzle() {
         const puzzle = document.getElementById('puzzle');
-        for (let i = 0; i < gridSize * gridSize; i++) {
+        const positions = [...Array(gridSize * gridSize).keys()];
+        shuffleArray(positions); // Shuffle positions to mix the tiles
+
+        positions.forEach((pos, index) => {
             const tile = document.createElement('div');
             tile.className = 'tile';
             tile.style.backgroundImage = `url('${imgSrc}')`;
-            const x = -(i % gridSize) * 100;
-            const y = -Math.floor(i / gridSize) * 100;
+            const x = -((pos % gridSize) * 100); // Adjust to align the background slice
+            const y = -Math.floor(pos / gridSize) * 100;
             tile.style.backgroundPosition = `${x}px ${y}px`;
             puzzle.appendChild(tile);
             tiles.push(tile);
 
-            if (i !== emptyPosition) {
-                tile.addEventListener('click', () => moveTile(i));
+            if (index === emptyPosition) {
+                tile.classList.add('hidden');
+            } else {
+                tile.addEventListener('click', () => moveTile(index));
             }
-        }
-        tiles[emptyPosition].style.opacity = '0'; // Hide the last tile
+        });
     }
 
     function moveTile(index) {
         const difference = Math.abs(index - emptyPosition);
-        if (difference === 1 || difference === gridSize) {
-            tiles[emptyPosition].style.backgroundPosition = tiles[index].style.backgroundPosition;
-            tiles[index].style.opacity = '0';
-            tiles[emptyPosition].style.opacity = '1';
+        const rowDifference = Math.floor(index / gridSize) - Math.floor(emptyPosition / gridSize);
+
+        if (difference === 1 && rowDifference === 0 || difference === gridSize) {
+            tiles[index].style.backgroundPosition = tiles[emptyPosition].style.backgroundPosition;
+            tiles[emptyPosition].classList.remove('hidden');
+            tiles[index].classList.add('hidden');
             emptyPosition = index;
-            // Add check for puzzle completion here
+            checkCompletion();
+        }
+    }
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    function checkCompletion() {
+        const isComplete = tiles.every((tile, i) => {
+            const expectedPos = gridSize * Math.floor(i / gridSize) + i % gridSize;
+            return parseInt(tile.style.backgroundPositionY) === -Math.floor(expectedPos / gridSize) * 100 && 
+                   parseInt(tile.style.backgroundPositionX) === -(expectedPos % gridSize) * 100;
+        });
+
+        if (isComplete) {
+            alert('Puzzle Completed!');
         }
     }
 
