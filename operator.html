@@ -113,20 +113,23 @@
             }
         });
 
-        function checkSequence() {
-            if (inputSequence === correctSequence) {
-                document.getElementById('successSound').play();
-                window.location.href = 'legend.html';
-            } else {
-                errorMessage.style.visibility = 'visible'; // Show the error message
-                document.getElementById('errorSound').play();
-                setTimeout(() => {
-                    errorMessage.style.visibility = 'hidden'; // Hide the error message after 2 seconds
-                    inputSequence = ''; // Reset the input sequence
-                    inputDisplay.textContent = ''; // Clear the display
-                }, 2000);
-            }
-        }
+function checkSequence() {
+    if (inputSequence === correctSequence) {
+        document.getElementById('successSound').play();
+        setTimeout(() => {
+            window.location.href = 'legend.html'; // Redirect after a delay
+        }, 3000); // Increase this value to delay the redirection
+    } else {
+        errorMessage.style.visibility = 'visible'; // Show the error message
+        document.getElementById('errorSound').play();
+        setTimeout(() => {
+            errorMessage.style.visibility = 'hidden'; // Hide the error message after 2 seconds
+            inputSequence = ''; // Reset the input sequence
+            inputDisplay.textContent = ''; // Clear the display
+        }, 2000);
+    }
+}
+
     </script>
 </body>
 </html>
