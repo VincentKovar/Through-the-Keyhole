@@ -17,7 +17,7 @@
         .tile {
             width: 100px;
             height: 100px;
-            background-image: url('pstc.png');
+            background-image: url('pstc.png'); /* Adjust the URL as needed */
             background-size: 300px 300px;
         }
         .hidden {
@@ -38,8 +38,9 @@
         <div class="tile hidden" style="background-position: -200px -200px;"></div>
     </div>
     <script>
-        const tiles = document.querySelectorAll('.tile');
-        let emptyPosition = 8;
+        const puzzle = document.getElementById('puzzle');
+        const tiles = Array.from(puzzle.children);
+        let emptyPosition = 8; // Position of the hidden tile
 
         tiles.forEach((tile, index) => {
             tile.addEventListener('click', () => moveTile(index));
@@ -50,10 +51,35 @@
             const rowDifference = Math.floor(index / 3) - Math.floor(emptyPosition / 3);
 
             if (difference === 1 && rowDifference === 0 || difference === 3) {
-                [tiles[emptyPosition], tiles[index]] = [tiles[index], tiles[emptyPosition]];
-                tiles[emptyPosition].classList.remove('hidden');
-                tiles[index].classList.add('hidden');
-                emptyPosition = index;
+                // Swap the tiles in the DOM
+                swapTiles(index, emptyPosition);
+                checkIfSolved();
+            }
+        }
+
+        function swapTiles(index1, index2) {
+            const temp = tiles[index1].style.backgroundPosition;
+            tiles[index1].style.backgroundPosition = tiles[index2].style.backgroundPosition;
+            tiles[index2].style.backgroundPosition = temp;
+
+            tiles[index2].classList.add('hidden');
+            tiles[index1].classList.remove('hidden');
+
+            emptyPosition = index1; // Update the empty position
+        }
+
+        function checkIfSolved() {
+            const isSolved = tiles.every((tile, i) => {
+                const expectedX = -(i % 3) * 100;
+                const expectedY = -Math.floor(i / 3) * 100;
+                const bgPos = tile.style.backgroundPosition.split(" ");
+                const currentX = parseInt(bgPos[0]);
+                const currentY = parseInt(bgPos[1]);
+                return currentX === expectedX && currentY === expectedY;
+            });
+            if (isSolved) {
+                alert('Puzzle Solved!');
+                // Add additional actions upon solving the puzzle
             }
         }
     </script>
