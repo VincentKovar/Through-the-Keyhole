@@ -45,9 +45,9 @@
         positions.forEach((pos, index) => {
             const tile = document.createElement('div');
             tile.className = 'tile';
-            tile.style.backgroundImage = `url('${imgSrc}')`;
-            const x = -((pos % gridSize) * 100); // Adjust to align the background slice
-            const y = -Math.floor(pos / gridSize) * 100;
+            tile.style.backgroundImage = `url('${imgSrc}')`; // Corrected backgroundImage syntax
+            const x = -((pos % gridSize) * 100); // Correct calculation for x position
+            const y = -Math.floor(pos / gridSize) * 100; // Correct calculation for y position
             tile.style.backgroundPosition = `${x}px ${y}px`;
             puzzle.appendChild(tile);
             tiles[pos] = tile;
@@ -55,22 +55,23 @@
             if (index === emptyPosition) {
                 tile.classList.add('hidden');
             } else {
-                tile.addEventListener('click', () => moveTile(pos));
+                tile.addEventListener('click', () => moveTile(index));
             }
         });
     }
 
-    function moveTile(pos) {
-        const difference = Math.abs(pos - emptyPosition);
-        const rowDifference = Math.floor(pos / gridSize) - Math.floor(emptyPosition / gridSize);
+    function moveTile(index) {
+        const difference = Math.abs(index - emptyPosition);
+        const rowDifference = Math.floor(index / gridSize) - Math.floor(emptyPosition / gridSize);
 
         if (difference === 1 && rowDifference === 0 || difference === gridSize) {
-            tiles[emptyPosition].style.backgroundPosition = tiles[pos].style.backgroundPosition;
+            [tiles[emptyPosition].style.backgroundPosition, tiles[index].style.backgroundPosition] = 
+            [tiles[index].style.backgroundPosition, tiles[emptyPosition].style.backgroundPosition]; // Swap positions
+            
             tiles[emptyPosition].classList.remove('hidden');
-            tiles[pos].classList.add('hidden');
-            tiles[emptyPosition] = tiles[pos];
-            tiles[pos] = null;
-            emptyPosition = pos;
+            tiles[index].classList.add('hidden');
+            [tiles[emptyPosition], tiles[index]] = [tiles[index], tiles[emptyPosition]]; // Swap references in array
+            emptyPosition = index; // Update empty position
         }
     }
 
@@ -83,9 +84,9 @@
 
     function isSolvable(array) {
         let inversions = 0;
-        for (let i = 0; i < array.length; i++) {
+        for (let i = 0; i < array.length - 1; i++) {
             for (let j = i + 1; j < array.length; j++) {
-                if (array[j] > array[i]) {
+                if (array[j] < array[i] && array[j] !== 0) {
                     inversions++;
                 }
             }
