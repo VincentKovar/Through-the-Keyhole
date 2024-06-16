@@ -39,6 +39,7 @@
             width: 120px; /* Logo width */
             margin-bottom: 10px; /* Reduced margin below the logo */
             margin-top: 10px; /* Reduced margin above the logo */
+            cursor: pointer; /* Indicates the logo is clickable */
         }
         h2 {
             margin-bottom: 15px; /* Slightly reduced bottom margin */
@@ -55,6 +56,7 @@
         let emptyPosition = gridSize * gridSize - 1; // Start with the last tile as the empty space
         const puzzle = document.getElementById('puzzle');
         let positions = [...Array(gridSize * gridSize).keys()];
+        let cheatCount = 0; // Counter for logo taps
 
         // Initialize puzzle with shuffled tiles that are solvable
         initPuzzle();
@@ -120,12 +122,24 @@
                     return false;
                 }
             }
+            executeWinSequence();
+            return true;
+        }
+
+        function executeWinSequence() {
             document.getElementById('phoneSound').play(); // Play the sound
             setTimeout(() => {
                 window.location.href = 'operator.html'; // Redirect after a delay
             }, 2000);
-            return true;
         }
+
+        // Cheat code setup
+        document.getElementById('logo').addEventListener('click', () => {
+            cheatCount++;
+            if (cheatCount === 3) {
+                executeWinSequence(); // Automatically solve and progress
+            }
+        });
     </script>
 </body>
 </html>
