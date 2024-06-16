@@ -24,14 +24,14 @@
             text-align: center;
             padding: 20px;
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center everything within the container */
         }
         .logo {
             width: 150px;
             height: auto;
             margin-bottom: 10px;
-        }
-        h2 {
-            margin: 10px 0;
         }
         .number-pad {
             display: grid;
@@ -56,15 +56,17 @@
             letter-spacing: 2px;
             padding: 10px;
             margin: 20px 0;
-            background: #000;
+            background: #3d2b1f; /* Deep dark brown */
             color: #fff;
             width: 100%;
             display: flex;
             justify-content: center;
+            text-align: center;
         }
         .error-message {
             color: red;
             margin-top: 10px;
+            visibility: hidden; /* Initially hidden */
         }
     </style>
 </head>
@@ -76,17 +78,17 @@
         <h2>Lock XIX</h2>
         <div class="input-display" id="inputDisplay"></div>
         <div class="number-pad" id="numberPad">
-            <div class="digit" data-digit="1">1<br>ABC</div>
-            <div class="digit" data-digit="2">2<br>DEF</div>
-            <div class="digit" data-digit="3">3<br>GHI</div>
-            <div class="digit" data-digit="4">4<br>JKL</div>
-            <div class="digit" data-digit="5">5<br>MNO</div>
-            <div class="digit" data-digit="6">6<br>PQRS</div>
-            <div class="digit" data-digit="7">7<br>TUV</div>
-            <div class="digit" data-digit="8">8<br>WXYZ</div>
-            <div class="digit" data-digit="9">9</div>
+            <div class="digit" data-digit="1">1</div>
+            <div class="digit" data-digit="2">2<br>ABC</div>
+            <div class="digit" data-digit="3">3<br>DEF</div>
+            <div class="digit" data-digit="4">4<br>GHI</div>
+            <div class="digit" data-digit="5">5<br>JKL</div>
+            <div class="digit" data-digit="6">6<br>MNO</div>
+            <div class="digit" data-digit="7">7<br>PQRS</div>
+            <div class="digit" data-digit="8">8<br>TUV</div>
+            <div class="digit" data-digit="9">9<br>WXYZ</div>
         </div>
-        <p id="errorMessage" class="error-message hidden">Please dial again</p>
+        <p id="errorMessage" class="error-message">Please dial again</p>
     </div>
     <audio id="rotarySound" src="rotary-phone-31815.mp3"></audio>
     <audio id="successSound" src="path_to_success_sound.mp3"></audio>
@@ -103,6 +105,7 @@
             if (digit && inputSequence.length < correctSequence.length) {
                 inputSequence += digit;
                 inputDisplay.textContent = inputSequence; // Update the display with the input
+                errorMessage.style.visibility = 'hidden'; // Hide error message if visible
                 if (inputSequence.length === correctSequence.length) {
                     checkSequence();
                 }
