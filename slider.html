@@ -35,43 +35,47 @@
 
     function setupPuzzle() {
         const puzzle = document.getElementById('puzzle');
-        const positions = [...Array(gridSize * gridSize).keys()];
+        const image = new Image();
+        image.src = imgSrc;
+        image.onload = function() {
+            const positions = [...Array(gridSize * gridSize).keys()];
 
-        // Shuffle positions for a solvable puzzle
-        do {
-            shuffleArray(positions);
-        } while (!isSolvable(positions));
+            // Shuffle positions for a solvable puzzle
+            do {
+                shuffleArray(positions);
+            } while (!isSolvable(positions));
 
-        positions.forEach((pos, index) => {
-            const tile = document.createElement('div');
-            tile.className = 'tile';
-            tile.style.backgroundImage = `url('${imgSrc}')`; // Corrected backgroundImage syntax
-            const x = -((pos % gridSize) * 100); // Correct calculation for x position
-            const y = -Math.floor(pos / gridSize) * 100; // Correct calculation for y position
-            tile.style.backgroundPosition = `${x}px ${y}px`;
-            puzzle.appendChild(tile);
-            tiles[pos] = tile;
+            positions.forEach((pos, index) => {
+                const tile = document.createElement('div');
+                tile.className = 'tile';
+                tile.style.backgroundImage = `url('${imgSrc}')`;
+                const x = -((pos % gridSize) * 100);
+                const y = -Math.floor(pos / gridSize) * 100;
+                tile.style.backgroundPosition = `${x}px ${y}px`;
+                puzzle.appendChild(tile);
+                tiles[pos] = tile;
 
-            if (index === emptyPosition) {
-                tile.classList.add('hidden');
-            } else {
-                tile.addEventListener('click', () => moveTile(index));
-            }
-        });
+                if (index === emptyPosition) {
+                    tile.classList.add('hidden');
+                } else {
+                    tile.addEventListener('click', () => moveTile(index));
+                }
+            });
+        }
     }
 
     function moveTile(index) {
+        if (index === emptyPosition) return; // Check if the tile is not the same as the empty tile
         const difference = Math.abs(index - emptyPosition);
         const rowDifference = Math.floor(index / gridSize) - Math.floor(emptyPosition / gridSize);
 
         if (difference === 1 && rowDifference === 0 || difference === gridSize) {
             [tiles[emptyPosition].style.backgroundPosition, tiles[index].style.backgroundPosition] = 
-            [tiles[index].style.backgroundPosition, tiles[emptyPosition].style.backgroundPosition]; // Swap positions
-            
+            [tiles[index].style.backgroundPosition, tiles[emptyPosition].style.backgroundPosition];
             tiles[emptyPosition].classList.remove('hidden');
             tiles[index].classList.add('hidden');
-            [tiles[emptyPosition], tiles[index]] = [tiles[index], tiles[emptyPosition]]; // Swap references in array
-            emptyPosition = index; // Update empty position
+            [tiles[emptyPosition], tiles[index]] = [tiles[index], tiles[emptyPosition]];
+            emptyPosition = index;
         }
     }
 
@@ -83,6 +87,7 @@
     }
 
     function isSolvable(array) {
+        if (array.length === 0) return false; // Check if the array is not empty
         let inversions = 0;
         for (let i = 0; i < array.length - 1; i++) {
             for (let j = i + 1; j < array.length; j++) {
@@ -91,7 +96,6 @@
                 }
             }
         }
-        // For a grid that is odd, we need an even number of inversions to be solvable
         return inversions % 2 === 0;
     }
 
