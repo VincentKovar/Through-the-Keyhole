@@ -63,13 +63,13 @@
         <h2>Lock XVIII</h2>
         <div id="distance">Distance to destination: Calculating...</div>
         <div id="instructions">Push start then begin walking in any direction.</div>
-        <button onclick="startGame()">Start</button>
+        <button onclick="startGame()" aria-label="Start navigation">Start</button>
         <div id="next-container">
             <p>When you've reached your destination click next.</p>
-            <button onclick="navigateToNext()" class="next-button">Next</button>
+            <button onclick="navigateToNext()" class="next-button" aria-label="Proceed to next page">Next</button>
         </div>
         <audio id="beep-audio" src="beep.mp3"></audio>
     </div>
-   <script src="locator.js"></script>
+    <script src="locator.js"></script>
 </body>
 </html>
