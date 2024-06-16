@@ -28,7 +28,10 @@
         .logo {
             width: 150px;
             height: auto;
-            margin-bottom: 10px; /* Reduced margin */
+            margin-bottom: 10px;
+        }
+        h2 {
+            margin: 10px 0;
         }
         .number-pad {
             display: grid;
@@ -48,10 +51,20 @@
             border-radius: 30px;
             cursor: pointer;
         }
+        .input-display {
+            font-size: 24px;
+            letter-spacing: 2px;
+            padding: 10px;
+            margin: 20px 0;
+            background: #000;
+            color: #fff;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
         .error-message {
             color: red;
             margin-top: 10px;
-            visibility: hidden; /* Initially hidden */
         }
     </style>
 </head>
@@ -61,24 +74,26 @@
             <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo" id="logo">
         </a>
         <h2>Lock XIX</h2>
+        <div class="input-display" id="inputDisplay"></div>
         <div class="number-pad" id="numberPad">
             <div class="digit" data-digit="1">1<br>ABC</div>
             <div class="digit" data-digit="2">2<br>DEF</div>
             <div class="digit" data-digit="3">3<br>GHI</div>
             <div class="digit" data-digit="4">4<br>JKL</div>
-           <div class="digit" data-digit="5">5<br>MNO</div>
+            <div class="digit" data-digit="5">5<br>MNO</div>
             <div class="digit" data-digit="6">6<br>PQRS</div>
             <div class="digit" data-digit="7">7<br>TUV</div>
             <div class="digit" data-digit="8">8<br>WXYZ</div>
             <div class="digit" data-digit="9">9</div>
         </div>
-        <p id="errorMessage" class="error-message">Please dial again</p>
+        <p id="errorMessage" class="error-message hidden">Please dial again</p>
     </div>
     <audio id="rotarySound" src="rotary-phone-31815.mp3"></audio>
-    <audio id="successSound" src="yaaas-38411.mp3"></audio>
+    <audio id="successSound" src="path_to_success_sound.mp3"></audio>
     <audio id="errorSound" src="your-call-cannot-be-completed-as-dialed-please-check-the-number-and-dial-again-103202.mp3"></audio>
     <script>
         const numberPad = document.getElementById('numberPad');
+        const inputDisplay = document.getElementById('inputDisplay');
         const errorMessage = document.getElementById('errorMessage');
         const correctSequence = "78438768632666279";
         let inputSequence = "";
@@ -87,6 +102,7 @@
             const digit = event.target.closest('.digit')?.dataset.digit;
             if (digit && inputSequence.length < correctSequence.length) {
                 inputSequence += digit;
+                inputDisplay.textContent = inputSequence; // Update the display with the input
                 if (inputSequence.length === correctSequence.length) {
                     checkSequence();
                 }
@@ -102,7 +118,8 @@
                 document.getElementById('errorSound').play();
                 setTimeout(() => {
                     errorMessage.style.visibility = 'hidden'; // Hide the error message after 2 seconds
-                    inputSequence = ''; // Reset the sequence
+                    inputSequence = ''; // Reset the input sequence
+                    inputDisplay.textContent = ''; // Clear the display
                 }, 2000);
             }
         }
