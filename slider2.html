@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sliding Puzzle</title>
+    <style>
+        #puzzle {
+            width: 300px;
+            height: 300px;
+            margin: 20px auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 2px;
+        }
+        .tile {
+            width: 100px;
+            height: 100px;
+            background-image: url('pstc.png');
+            background-size: 300px 300px;
+        }
+        .hidden {
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div id="puzzle">
+        <div class="tile" style="background-position: 0px 0px;"></div>
+        <div class="tile" style="background-position: -100px 0px;"></div>
+        <div class="tile" style="background-position: -200px 0px;"></div>
+        <div class="tile" style="background-position: 0px -100px;"></div>
+        <div class="tile" style="background-position: -100px -100px;"></div>
+        <div class="tile" style="background-position: -200px -100px;"></div>
+        <div class="tile" style="background-position: 0px -200px;"></div>
+        <div class="tile" style="background-position: -100px -200px;"></div>
+        <div class="tile hidden" style="background-position: -200px -200px;"></div>
+    </div>
+    <script>
+        const tiles = document.querySelectorAll('.tile');
+        let emptyPosition = 8;
+
+        // Shuffle tiles initially
+        shuffleTiles();
+
+        tiles.forEach((tile, index) => {
+            tile.addEventListener('click', () => moveTile(index));
+        });
+
+        function moveTile(index) {
+            const difference = Math.abs(index - emptyPosition);
+            const rowDifference = Math.floor(index / 3) - Math.floor(emptyPosition / 3);
+
+            if (difference === 1 && rowDifference === 0 || difference === 3) {
+                [tiles[emptyPosition], tiles[index]] = [tiles[index], tiles[emptyPosition]];
+                tiles[emptyPosition].classList.remove('hidden');
+                tiles[index].classList.add('hidden');
+                emptyPosition = index;
+            }
+        }
+
+        function shuffleTiles() {
+            for (let i = tiles.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
+            }
+        }
+    </script>
+</body>
+</html>
