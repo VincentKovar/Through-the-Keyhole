@@ -36,7 +36,7 @@
             visibility: hidden; /* This will make the tile invisible */
         }
         #logo {
-            width: 120px; /* Reduced logo width */
+            width: 120px; /* Logo width */
             margin-bottom: 10px; /* Reduced margin below the logo */
             margin-top: 10px; /* Reduced margin above the logo */
         }
@@ -49,6 +49,7 @@
     <img src="WhBr-Rabbit-logo-golden-220609-v1.png" id="logo" alt="White Branches Rabbit Logo">
     <h2>Lock TBA</h2>
     <div id="puzzle"></div>
+    <audio id="phoneSound" src="phone.mp3"></audio> <!-- Sound file to be played -->
     <script>
         const gridSize = 3;
         let emptyPosition = gridSize * gridSize - 1; // Start with the last tile as the empty space
@@ -119,6 +120,10 @@
                     return false;
                 }
             }
+            document.getElementById('phoneSound').play(); // Play the sound
+            setTimeout(() => {
+                window.location.href = 'operator.html'; // Redirect after a delay
+            }, 2000);
             return true;
         }
     </script>
