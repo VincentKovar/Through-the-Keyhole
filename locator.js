@@ -54,6 +54,7 @@ function handleOrientation(event) {
     const bearing = calculateBearing(currentLocation, targetLocation);
     facingCorrectDirection = Math.abs(alpha - bearing) <= 7;
     instructionsDisplay.textContent = facingCorrectDirection ? "Correct direction!" : "Adjust your direction.";
+    adjustBeep(previousDistance); // Update beeping based on new orientation data
 }
 
 function calculateBearing(loc1, loc2) {
@@ -70,7 +71,7 @@ function adjustBeep(distance) {
     beepInterval = setInterval(() => {
         if (facingCorrectDirection) {
             beepAudio.play();
-            navigator.vibrate(200); // Haptic feedback when facing the right direction
+            navigator.vibrate(200); // Haptic feedback
         }
     }, interval);
 }
