@@ -20,7 +20,7 @@
             width: 100px;
             height: 100px;
         }
-        .tile.hidden {
+        .hidden {
             visibility: hidden; /* Hide one tile instead of making it transparent */
         }
     </style>
@@ -30,13 +30,17 @@
 <script>
     const imgSrc = 'pstc.png'; // Path to your image
     const gridSize = 3;
-    let emptyPosition = 8; // Starting position of the empty tile
+    let emptyPosition = 8; // Index of the empty space
     const tiles = [];
 
     function setupPuzzle() {
         const puzzle = document.getElementById('puzzle');
         const positions = [...Array(gridSize * gridSize).keys()];
-        shuffleArray(positions); // Shuffle positions to mix the tiles
+
+        // Shuffle positions for a solvable puzzle
+        do {
+            shuffleArray(positions);
+        } while (!isSolvable(positions));
 
         positions.forEach((pos, index) => {
             const tile = document.createElement('div');
@@ -46,26 +50,27 @@
             const y = -Math.floor(pos / gridSize) * 100;
             tile.style.backgroundPosition = `${x}px ${y}px`;
             puzzle.appendChild(tile);
-            tiles.push(tile);
+            tiles[pos] = tile;
 
             if (index === emptyPosition) {
                 tile.classList.add('hidden');
             } else {
-                tile.addEventListener('click', () => moveTile(index));
+                tile.addEventListener('click', () => moveTile(pos));
             }
         });
     }
 
-    function moveTile(index) {
-        const difference = Math.abs(index - emptyPosition);
-        const rowDifference = Math.floor(index / gridSize) - Math.floor(emptyPosition / gridSize);
+    function moveTile(pos) {
+        const difference = Math.abs(pos - emptyPosition);
+        const rowDifference = Math.floor(pos / gridSize) - Math.floor(emptyPosition / gridSize);
 
         if (difference === 1 && rowDifference === 0 || difference === gridSize) {
-            tiles[index].style.backgroundPosition = tiles[emptyPosition].style.backgroundPosition;
+            tiles[emptyPosition].style.backgroundPosition = tiles[pos].style.backgroundPosition;
             tiles[emptyPosition].classList.remove('hidden');
-            tiles[index].classList.add('hidden');
-            emptyPosition = index;
-            checkCompletion();
+            tiles[pos].classList.add('hidden');
+            tiles[emptyPosition] = tiles[pos];
+            tiles[pos] = null;
+            emptyPosition = pos;
         }
     }
 
@@ -76,16 +81,17 @@
         }
     }
 
-    function checkCompletion() {
-        const isComplete = tiles.every((tile, i) => {
-            const expectedPos = gridSize * Math.floor(i / gridSize) + i % gridSize;
-            return parseInt(tile.style.backgroundPositionY) === -Math.floor(expectedPos / gridSize) * 100 && 
-                   parseInt(tile.style.backgroundPositionX) === -(expectedPos % gridSize) * 100;
-        });
-
-        if (isComplete) {
-            alert('Puzzle Completed!');
+    function isSolvable(array) {
+        let inversions = 0;
+        for (let i = 0; i < array.length; i++) {
+            for (let j = i + 1; j < array.length; j++) {
+                if (array[j] > array[i]) {
+                    inversions++;
+                }
+            }
         }
+        // For a grid that is odd, we need an even number of inversions to be solvable
+        return inversions % 2 === 0;
     }
 
     setupPuzzle();
