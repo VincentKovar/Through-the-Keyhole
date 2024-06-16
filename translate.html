@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translate Live</title>
+</head>
+<body>
+    <button id="start">Start Translation</button>
+    <p id="output"></p>
+    <script>
+        const outputDiv = document.getElementById('output');
+        const startButton = document.getElementById('start');
+
+        startButton.addEventListener('click', function() {
+            if (!('webkitSpeechRecognition' in window)) {
+                alert('Your browser does not support speech recognition. Please try Chrome.');
+                return;
+            }
+
+            const recognition = new webkitSpeechRecognition();
+            recognition.lang = 'es-ES'; // Set Spanish as the language
+            recognition.start();
+
+            recognition.onresult = function(event) {
+                const speechResult = event.results[0][0].transcript;
+                outputDiv.textContent = 'Transcript: ' + speechResult;
+                // Here you would call the translation API to translate speechResult
+            };
+
+            recognition.onerror = function(event) {
+                outputDiv.textContent = 'Error occurred in recognition: ' + event.error;
+            }
+        });
+    </script>
+</body>
+</html>
