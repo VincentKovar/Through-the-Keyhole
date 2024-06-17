@@ -36,7 +36,7 @@
         input[type="text"] {
             width: 100%;
             padding: 10px;
-            margin: 10px 0;
+            margin: 0px 0;
             box-sizing: border-box;
         }
         button {
@@ -67,9 +67,9 @@
             }
         }
         .image {
-            width: 225px; /* Adjust the size of the image as needed */
+            width: 250px; /* Adjust the size of the image as needed */
             height: auto;
-            margin: 20px auto;
+            margin: 10px auto;
         }
     </style>
 </head>
@@ -81,7 +81,7 @@
         <h1>Through the Keyhole</h1>
         <h2>Lock XIII</h2>
         <img src="eagle.jpg" alt="Static Image" class="image">
-        <input type="text" id="answerInput" placeholder="Enter the symbol">
+        <input type="text" id="answerInput" placeholder="Enter the symbol.">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
         <div id="secret-message" class="hidden">
