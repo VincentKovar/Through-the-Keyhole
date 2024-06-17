@@ -63,13 +63,20 @@
         .hidden {
             display: none;
         }
-        .fall {
-            animation: fall 2s forwards;
-        }
-        @keyframes fall {
-            to {
-                transform: translateY(100vh);
-                opacity: 0;
+.fall {
+  animation: fall 2s forwards, scaleDown 2s forwards;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
+@keyframes scaleDown {
+  to {
+    transform: scale(0.1);
             }
         }
     </style>
@@ -80,7 +87,7 @@
             <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
         </a>
         <h1>Through the Keyhole</h1>
-        <h2>Lock XVII</h2>
+        <h2>Lock XVI</h2>
         <p>Use the key in your book to convert the name into a sum.</p>
         <input type="text" id="answerInput" placeholder="Paces to walk.">
         <button onclick="checkAnswer()">Submit</button>
