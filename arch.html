@@ -30,10 +30,15 @@
         .logo {
             width: 150px;
             height: auto;
-            margin-bottom: 10px; /* Reduced space between logo and H1 */
+            margin-bottom: 5px; /* Reduced space */
         }
         h1, h2 {
-            margin-top: 0px; /* Reduced space between logo and H1 */
+            margin: 5px 0; /* Reduced space */
+        }
+        .image {
+            width: 250px; /* Adjusted size of the image */
+            height: auto;
+            margin: 10px auto;
         }
         p {
             margin: 20px 0;
@@ -43,8 +48,6 @@
             padding: 10px;
             margin: 10px 0;
             box-sizing: border-box;
-            /* Set default placeholder text */
-            placeholder: "Who are they?";
         }
         button {
             width: 100%;
@@ -66,12 +69,17 @@
             display: none;
         }
         .fall {
-            animation: fall 3s upwards;
+            animation: fall 2s forwards, scaleDown 2s forwards;
         }
         @keyframes fall {
             to {
                 transform: translateY(100vh);
                 opacity: 0;
+            }
+        }
+        @keyframes scaleDown {
+            to {
+                transform: scale(0.1);
             }
         }
     </style>
@@ -82,13 +90,14 @@
             <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
         </a>
         <h1>Through the Keyhole</h1>
-        <h2>Lock TBA</h2>
-        <p>One of eleven tribes in the area, these were the first people to walk upriver.</p>
-        <input type="text" id="answerInput" placeholder="Who are they?">
+        <h2>Lock XVI</h2>
+        <img src="admiral.jpg" alt="Static Image" class="image">
+        <p>Use the key in your book to convert the name into a sum.</p>
+        <input type="text" id="answerInput" placeholder="Paces to walk.">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
     </div>
-    <audio id="successSound" src="drum.mp3"></audio>
+    <audio id="successSound" src="bugle.mp3"></audio>
     <audio id="errorSound" src="adding.mp3"></audio>
     <script>
         function checkAnswer() {
@@ -97,7 +106,7 @@
             const container = document.getElementById('container');
             const successSound = document.getElementById('successSound');
             const errorSound = document.getElementById('errorSound');
-            const correctAnswer = "Nookachamps";
+            const correctAnswer = "101";
 
             if (answerInput.value.trim() === correctAnswer) {
                 successSound.play();
@@ -106,7 +115,7 @@
                     window.location.href = 'locator.html';
                 }, 2000);
             } else {
-                errorMessage.textContent = "Sometimes, you just need a different perspective.";
+                errorMessage.textContent = "Use the key in your book to convert the name into a sum.";
                 errorMessage.classList.remove('hidden');
                 errorSound.play();
             }
