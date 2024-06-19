@@ -27,9 +27,9 @@
             box-sizing: border-box;
         }
         .logo {
-            width: 110px;
+            width: 110px;  /* Ensure the logo size is as desired */
             height: auto;
-            margin-bottom: 5px;
+            margin-bottom: 5px;  /* Adjust space between logo and title */
         }
         h1, h2 {
             margin: 5px 0;
@@ -37,7 +37,7 @@
         .image-container img {
             width: 100%;
             height: auto;
-            margin-bottom: 5px; /* Reduced margin between image and input */
+            margin-bottom: 0px; /* Adjust as needed */
         }
         input[type="text"], button {
             width: 100%;
@@ -52,7 +52,6 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
         }
         button:hover {
             background-color: #0056b3;
@@ -68,13 +67,16 @@
         }
         iframe {
             width: 100%;
-            height: 300px; /* Adjusted for better visibility */
-            display: none; /* Initially hidden */
+            height: 300px;  /* Adjust for better visibility */
+            display: none;  /* Initially hidden */
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <a href="https://www.whitebranches.com/keyhole" target="_blank">
+            <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
+        </a>
         <h1>Through the Keyhole</h1>
         <h2>Lock IX</h2>
         <div class="image-container">
@@ -97,7 +99,6 @@
             const correctBuilding = 'courthouse';
             const correctAddress = '707';
 
-            // Hide previous error messages and the image container initially
             errorMessage.style.display = 'none';
             document.querySelector('.image-container').style.display = 'none';
 
@@ -120,9 +121,21 @@
             } else {
                 errorMessage.textContent = 'Remember the maps in your book.';
                 errorMessage.style.display = 'block';
-                historyFrame.style.display = 'block'; // Show the iframe after the first incorrect attempt
+                historyFrame.style.display = 'block';
             }
         }
+
+        document.querySelectorAll('.zoomable-image').forEach(img => {
+            img.addEventListener('click', () => {
+                if (img.style.transform === 'scale(2.5)') {
+                    img.style.transform = 'scale(1)';
+                    img.style.cursor = 'zoom-in';
+                } else {
+                    img.style.transform = 'scale(2.5)';
+                    img.style.cursor = 'zoom-out';
+                }
+            });
+        });
     </script>
 </body>
 </html>
