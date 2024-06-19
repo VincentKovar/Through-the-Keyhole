@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Through the Keyhole</title>
-<link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png">
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
         body {
@@ -17,6 +17,7 @@
             text-align: center;
             margin: 0;
             background: #ffe4b5;
+            overflow: hidden; /* Prevent scrollbars during animation */
         }
         .container {
             width: 90%;
@@ -24,17 +25,29 @@
             text-align: center;
             padding: 20px;
             box-sizing: border-box;
+            transition: transform 2s ease-in-out; /* Transition for falling effect */
         }
         .logo {
             width: 110px;
             height: auto;
-            margin-bottom: 20px;
-        h1 {
-  margin: 5px; /* Adjust the value to your liking */
-}
-        h2 {
-  margin: 5px; /* Adjust the value to your liking */
-}
+            margin-bottom: 5px; /* Reduced space */
+        }
+        h1, h2 {
+            margin: 5px 0; /* Reduced space */
+        }
+        .image {
+            width: 250px; /* Adjusted size of the image */
+            height: auto;
+            margin: 10px auto;
+        }
+        p {
+            margin: 10px 0;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
         }
         button {
             width: 100%;
@@ -44,14 +57,9 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin-top: 10px;
         }
         button:hover {
             background-color: #0056b3;
-        }
-        #next-container {
-            display: none;
-            margin-top: 20px;
         }
         .next-button {
             background-color: brown;
