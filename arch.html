@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Through the Keyhole</title>
-<link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png">
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
         body {
@@ -29,15 +29,9 @@
             width: 110px;
             height: auto;
             margin-bottom: 5px;
-        h1 {
-  margin: 5px; /* Adjust the value to your liking */
-}
-        h2 {
-  margin: 5px; /* Adjust the value to your liking */
-}
-        .gif-image {
-            width: 240px;
-            height: auto;
+        }
+        h1, h2 {
+            margin: 5px; /* Adjust the value to your liking */
         }
         input[type="text"] {
             width: 100%;
@@ -64,9 +58,6 @@
         .hidden {
             display: none;
         }
-        .fall {
-            animation: fall 2s forwards, scaleDown 2s forwards;
-        }
         @keyframes fall {
             to {
                 transform: translateY(100vh);
@@ -81,13 +72,12 @@
     </style>
 </head>
 <body>
-    <div class="container" id="container">
+    <div class="container">
         <a href="https://www.whitebranches.com/keyhole" target="_blank">
             <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
         </a>
         <h1>Through the Keyhole</h1>
         <h2>Lock XVI</h2>
-        <img src="admiral.jpg" alt="Static Image" class="image">
         <input type="text" id="answerInput" placeholder="Paces to walk.">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
