@@ -69,10 +69,15 @@
             left: 50%;
             transform-origin: 50% 100%;
             transform: translateX(-50%) rotate(0deg);
-            transition: transform 0.5s, background-color 0.5s;
+            transition: transform 1s, background-color 0.5s;
         }
-        #direction-message, #distance-message {
-            margin-top: 10px;
+        #needle.pulse {
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
         #error-message {
             color: red;
@@ -90,8 +95,6 @@
         <h2>Lock VI</h2>
         <div id="compass">
             <div id="needle"></div>
-            <p id="direction-message"></p>
-            <p id="distance-message"></p>
         </div>
         <p>Between the sights familiar there<br>
         These Gates of Knox a treasure bear<br>
@@ -127,26 +130,20 @@
             const alpha = event.alpha || 0;
             const adjustedAlpha = (alpha + 180) % 360;
             const angleToDestination = calculateAngleToDestination(adjustedAlpha);
-
             needle.style.transform = `translateX(-50%) rotate(${angleToDestination}deg)`;
-            const distance = calculateDistance(getCurrentLatitude(), getCurrentLongitude(), destinationLatitude, destinationLongitude);
-            const direction = getDirection(angleToDestination);
-            document.getElementById('direction-message').innerHTML = `Walking in the ${direction} direction`;
-            document.getElementById('distance-message').innerHTML = `You're ${distance} meters away from the statue`;
+
+            if (Math.abs(angleToDestination) <= 10 || Math.abs(angleToDestination) >= 350) {
+                needle.style.backgroundColor = 'green';
+                needle.classList.add('pulse');
+            } else {
+                needle.style.backgroundColor = 'red';
+                needle.classList.remove('pulse');
+            }
         }
 
         function calculateAngleToDestination(alpha) {
             const destinationAngle = Math.atan2(destinationLatitude - getCurrentLatitude(), destinationLongitude - getCurrentLongitude()) * (180 / Math.PI);
             return destinationAngle - alpha;
-        }
-
-        function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371;
-            const dLat = deg2rad(lat2 - lat1);
-            const dLon = deg2rad(lon2 - lon1);
-            const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2));
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            return R * c * 1000;
         }
 
         function getCurrentLatitude() {
@@ -155,15 +152,6 @@
 
         function getCurrentLongitude() {
             return -122.358;
-        }
-
-        function deg2rad(deg) {
-            return deg * Math.PI / 180;
-        }
-
-        function getDirection(angle) {
-            const directions = ['North', 'North-East', 'East', 'South-East', 'South', 'South-West', 'West', 'North-West'];
-            return directions[Math.floor((angle + 22.5) % 360 / 45)];
         }
     </script>
 </body>
