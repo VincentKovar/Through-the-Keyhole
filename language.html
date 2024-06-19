@@ -53,6 +53,19 @@
         .audio-player {
             margin-bottom: 20px;
         }
+                .bottom-image {
+            width: 95px; /* Adjust size to be smaller than the top image */
+            height: auto;
+            margin-top: 00px;
+            margin-bottom: 0px;
+            cursor: pointer;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
     </style>
 </head>
 <body>
@@ -77,7 +90,9 @@ Things no words can quite portray.<br>
 Follow the rabbit, he’s the groom,<br>
 The next clue waits where love does <i>Bloom</i>.<br>
 </p>
-       
+         <div>
+        <img src="keyclue.png" class="bottom-image" alt="Key Clue" onclick="openQRScanner()">
+    </div>    
 
 
 </body>
