@@ -26,12 +26,13 @@
   height: 500px; /* Adjust this value to a larger height */
 }
         }
-        .logo {
-            width: 110px; /* Adjust size as needed */
-            max-width: 110px; /* Add this line */
-            height: auto;
-            margin-bottom: 5px;
-        }
+.logo {
+    width: 110px; /* Adjust size as needed */
+    height: auto;
+    margin-bottom: 5px;
+    display: block; /* Ensures the logo is treated as a block-level element */
+    max-width: 100%; /* Prevents the logo from scaling larger than its intrinsic size */
+}
         h1 {
   margin: 5px; /* Adjust the value to your liking */
 }
