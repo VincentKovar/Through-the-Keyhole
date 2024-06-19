@@ -91,16 +91,16 @@
         <input type="text" id="keyInput" placeholder="four alpha-numeric characters">
         <button onclick="navigate()">Submit</button>
     </div>
-
+    <audio id="successSound" src="tada.mp3"></audio>
+    <audio id="errorSound" src="stream.mp3"></audio>
     <script>
     let incorrectAttempts = 0;
 
     function navigate() {
         const enteredKey = document.getElementById('keyInput').value.trim().toLowerCase();
-        console.log("Entered Key:", enteredKey);  // Debugging output
-
-        const comparisonKey = 'h5nd';  // Ensure the key is in the correct format for comparison
         const errorMessage = document.getElementById('error-message');
+        const errorSound = document.getElementById('errorSound');
+        const successSound = document.getElementById('successSound');
         const trumpeterImage = document.getElementById('trumpeter-image');
         const windsorImage = document.getElementById('windsor-image');
 
@@ -111,14 +111,16 @@
         windsorImage.style.display = 'none';
         document.getElementById('keyInput').value = ''; // Reset the input box on incorrect attempt
 
-        if (enteredKey === comparisonKey) {
-            console.log("Correct key entered, navigating to bricks.html");
-            window.location.href = 'bricks.html'; // Navigate to bricks.html for correct answer
+        if (enteredKey === 'h5nd') {
+            successSound.play();
+            setTimeout(() => {
+                window.location.href = 'bricks.html'; // Navigate to bricks.html for correct answer
+            }, 2000);
         } else {
+            errorSound.play();
             incorrectAttempts++;
-            console.log("Incorrect key entered, attempts:", incorrectAttempts);  // Debugging output
             if (incorrectAttempts === 1) {
-                errorMessage.textContent = 'The image of the rabbit in your book contains several visual clues about which path you should take to your next location.';
+                errorMessage.textContent = 'The image of the beflowered rabbit in your book contains several visual clues about which path you should take to your next location.';
                 errorMessage.style.display = 'block';
             } else if (incorrectAttempts === 2) {
                 errorMessage.textContent = 'The maps in the book help you find not only where things are, but where they were. Keep your chin up and you might see hints you\'re going the right way.';
@@ -143,6 +145,6 @@
             }
         });
     });
-</script>
+    </script>
 </body>
 </html>
