@@ -97,9 +97,9 @@
             const container = document.getElementById('container');
             const successSound = document.getElementById('successSound');
             const errorSound = document.getElementById('errorSound');
-            const correctAnswer = "Nookachamps";
+            const correctAnswer = "Nookachamps".toLowerCase(); // Convert to lowercase
 
-            if (answerInput.value.trim() === correctAnswer) {
+            if (answerInput.value.trim().toLowerCase() === correctAnswer) { // Convert input to lowercase
                 successSound.play();
                 container.classList.add('fall');
                 setTimeout(() => {
