@@ -89,48 +89,63 @@
         <button onclick="navigate()">Submit</button>
         <audio id="gavelSound" src="gavel.mp3"></audio>
     </div>
-    <script>
-        function navigate() {
-            const buildingInput = document.getElementById('buildingInput');
-            const addressInput = document.getElementById('addressInput');
-            const errorMessage = document.getElementById('error-message');
-            const historyFrame = document.getElementById('historyFrame');
-            const gavelSound = document.getElementById('gavelSound');
-            const correctBuilding = 'courthouse';
-            const correctAddress = '707';
+<script>
+    function navigate() {
+        const buildingInput = document.getElementById('buildingInput').value.trim().toLowerCase();
+        const addressInput = document.getElementById('addressInput').value.trim();
+        const errorMessage = document.getElementById('error-message');
+        const historyFrame = document.getElementById('historyFrame');
+        const gavelSound = document.getElementById('gavelSound');
+        const correctBuilding = 'courthouse';
+        const correctAddress = '707';
 
-            // Reset error message and hide images initially
-            errorMessage.style.display = 'none';
-            document.querySelector('.image-container').style.display = 'none';
-            historyFrame.style.display = 'none';
+        // Reset error message and hide images initially
+        errorMessage.style.display = 'none';
+        document.querySelector('.image-container').style.display = 'none';
+        historyFrame.style.display = 'none';
 
-            if (buildingInput.value.trim().toLowerCase() === correctBuilding && addressInput.value.trim() === correctAddress) {
-                gavelSound.play();
-                gavelSound.onended = function() {
-                    window.location.href = 'bricks.html';
-                };
-            } else {
-                buildingInput.value = ''; // Reset the building input
-                addressInput.value = ''; // Reset the address input
-                errorMessage.textContent = 'Remember the maps in your book.';
-                errorMessage.style.display = 'block';
-                historyFrame.style.display = 'block'; // Show the iframe after the first incorrect attempt
-            }
+        if (buildingInput === correctBuilding && addressInput === correctAddress) {
+            gavelSound.play();
+            gavelSound.onended = function() {
+                document.querySelector('.container').innerHTML = `
+                       <a href="https://www.whitebranches.com/keyhole" target="_blank">
+            <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
+        </a>
+                    <h1>Through the Keyhole</h1>
+                    <h2>Lock X</h2>
+                    <p>Decatur’s house rolled away,<br>
+                        to make room for a grander day.<br>
+                        Here the city’s voice held the stage,<br>
+                        Until dawned silver’s golden age.<br>
+                        Walk behind that name of sorrow,<br>
+                        One who ended our President’s tomorrow,<br>
+                        On this we talk, and we see,<br>
+                        Using it you’ll find lock and key.</p>
+                `;
+                setTimeout(() => {
+                    window.location.href = 'bricks.html'; // Redirect to bricks.html after a delay
+                }, 3500); // Delay in milliseconds, adjust as needed
+            };
+        } else {
+            errorMessage.textContent = 'Remember the maps in your book.';
+            errorMessage.style.display = 'block';
+            historyFrame.style.display = 'block'; // Show the iframe after the first incorrect attempt
         }
+    }
 
-        // Zoom functionality for images remains unchanged
-        document.querySelectorAll('.zoomable-image').forEach(img => {
-            img.addEventListener('click', () => {
-                if (img.style.transform === 'scale(2.5)') {
-                    img.style.transform = 'scale(1)';
-                    img.style.cursor = 'zoom-in';
-                } else {
-                    img.style.transform = 'scale(2.5)';
-                    img.style.cursor = 'zoom-out';
-                }
-            });
+    document.querySelectorAll('.zoomable-image').forEach(img => {
+        img.addEventListener('click', () => {
+            if (img.style.transform === 'scale(2.5)') {
+                img.style.transform = 'scale(1)';
+                img.style.cursor = 'zoom-in';
+            } else {
+                img.style.transform = 'scale(2.5)';
+                img.style.cursor = 'zoom-out';
+            }
         });
-    </script>
+    });
+</script>
+
 </body>
 </html>
 
