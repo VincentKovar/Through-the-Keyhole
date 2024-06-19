@@ -6,29 +6,37 @@
     <title>Through the Keyhole</title>
     <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+       @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
         body {
             display: flex;
             justify-content: center;
             align-items: center;
+            height: 100vh;
             flex-direction: column;
-            font-family: 'Alice', serif;
-            text-align: left;
+            font-family: Alice, sans-serif;
+            text-align: center;
             margin: 0;
             padding: 0;
-            background: #ffe4b5; /* Background color */
+            background: #ffe4b5; /* Add background here */
         }
         .container {
-            width: 90%;
-            max-width: 600px; /* Adjust the max-width as needed */
+            max-width: 90%;
+            width: 300px;
             text-align: center;
-            padding: 20px; /* Padding for better mobile view */
-            box-sizing: border-box; /* Ensure padding doesn't affect width */
         }
         .logo {
-            width: 150px; /* Adjust size as needed */
+            width: 110px; /* Adjust size as needed */
             height: auto;
-            margin-bottom: 20px;
+            margin-bottom: 5px;
+        }
+        h1 {
+  margin: 5px; /* Adjust the value to your liking */
+}
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
         }
         button {
             width: 100%;
@@ -43,17 +51,20 @@
             background-color: #0056b3;
         }
         .audio-player {
-            width: 100%;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
-        .bottom-image {
-            width: 90%; /* Slightly smaller than the window width */
-            max-width: 100%; /* Ensure it fits within the container */
+                .bottom-image {
+            width: 95px; /* Adjust size to be smaller than the top image */
             height: auto;
-            margin: 0 auto; /* Center the image */
+            margin-top: 5px;
+            margin-bottom: 0px;
+            cursor: pointer;
+            animation: pulse 1s infinite;
         }
-        p {
-            margin: 20px 0; /* Margin for paragraphs */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
     </style>
 </head>
@@ -67,11 +78,11 @@
             <source src="Adventure in Swingtime.mp3" type="audio/mpeg">
             Your browser does not support the audio element.
         </audio>
-        <p>How have you been doing so far? Are you writing down all the keys in your book?</p>
-        <p>You'll find the rhymes and images hint at the general location you should be in and might also suggest what thing(s) you’re looking for.</p>
-        <p>But don't forget to look up at your real-world surroundings, too. Mt. Vernon has a lot to explore and experience. If you're ready for a little break, pop into a local cafe, grab a nibble to eat, or maybe pick yourself up something nice from a local merchant.</p>
+        <p>How have you been doing so far? Are you writing down all the keys and secret messages in your book?</p>
+        <p>The rhymes and images in your book contain hints about locations and thing(s) you’re looking for.</p>
+        <p>But don't forget to look up at your real-world surroundings, too. Mt. Vernon has a lot to explore and experience. If you're ready for a little break, pop into a local cafe or maybe pick yourself up something nice from a local merchant.</p>
         <p>Puzzle solving is hard. You deserve it!</p>
-        <p>When you're ready to hop along, come back here, turn to Lock VII in your book for the next location, next puzzle, and next key.</p>
+        <p>When you're ready to hop along, come back here to this spot and <i>turn</i> to Lock VII in your book for the next location, next puzzle, and next key.</p>
         <img src="relaxingrabbit.jpeg" class="bottom-image">
     </div>
 </body>
