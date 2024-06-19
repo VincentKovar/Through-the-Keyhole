@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Through the Keyhole</title>
-    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/png">
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
         body {
@@ -17,6 +17,7 @@
             text-align: center;
             margin: 0;
             background: #ffe4b5;
+            overflow: hidden; /* Prevent scrollbars during animation */
         }
         .container {
             width: 90%;
@@ -24,28 +25,30 @@
             text-align: center;
             padding: 20px;
             box-sizing: border-box;
+            transition: transform 2s ease-in-out; /* Transition for falling effect */
         }
         .logo {
-            width: 110px;
+            width: 150px;
             height: auto;
-            margin-bottom: 5px;
+            margin-bottom: 10px; /* Reduced space between logo and H1 */
         }
         h1, h2 {
-            margin: 5px 0;
+            margin-top: 0px; /* Reduced space between logo and H1 */
         }
-        .image-container img {
-            width: 100%;  /* Ensures the image is the same width as the text box and button */
-            height: auto;
-            margin-bottom: 10px;
+        p {
+            margin: 20px 0;
         }
-        input[type="text"], button {
+        input[type="text"] {
             width: 100%;
             padding: 10px;
-            margin-top: 10px;
+            margin: 10px 0;
             box-sizing: border-box;
-            font-size: 16px;
+            /* Set default placeholder text */
+            placeholder: "Who are they?";
         }
         button {
+            width: 100%;
+            padding: 10px;
             background-color: #007bff;
             color: white;
             border: none;
@@ -55,13 +58,15 @@
         button:hover {
             background-color: #0056b3;
         }
-        #error-message {
+        .error-message {
             color: red;
             margin-top: 10px;
-            font-size: 14px;
+        }
+        .hidden {
+            display: none;
         }
         .fall {
-            animation: fall 2s forwards, scaleDown 2s forwards;
+            animation: fall 3s upwards;
         }
         @keyframes fall {
             to {
@@ -69,27 +74,22 @@
                 opacity: 0;
             }
         }
-        @keyframes scaleDown {
-            to {
-                transform: scale(0.1);
-            }
-        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="container">
         <a href="https://www.whitebranches.com/keyhole" target="_blank">
             <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
         </a>
         <h1>Through the Keyhole</h1>
-        <h2>Lock XVI</h2>
-        <img src="admiral.jpg" alt="Admiral Image" class="image-container">
-        <input type="text" id="answerInput" placeholder="Paces to walk.">
+        <h2>Lock TBA</h2>
+        <p>One of eleven tribes in the area, these were the first people to walk upriver.</p>
+        <input type="text" id="answerInput" placeholder="Who are they?">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
     </div>
-    <audio id="successSound" src="bugle.mp3"></audio>
-    <audio id="errorSound" src="adding.mp3"></audio>
+    <audio id="successSound" src="drum.mp3"></audio>
+    <audio id="errorSound" src="CHANGEME.mp3"></audio>
     <script>
         function checkAnswer() {
             const answerInput = document.getElementById('answerInput');
@@ -97,18 +97,16 @@
             const container = document.getElementById('container');
             const successSound = document.getElementById('successSound');
             const errorSound = document.getElementById('errorSound');
-            const correctAnswer = "101";
+            const correctAnswer = "Nookachamps".toLowerCase(); // Convert to lowercase
 
-            if (answerInput.value.trim().toLowerCase() === correctAnswer) {
+            if (answerInput.value.trim().toLowerCase() === correctAnswer) { // Convert input to lowercase
                 successSound.play();
-                successSound.onended = function() {
-                    container.classList.add('fall');
-                    setTimeout(() => {
-                        window.location.href = 'locator.html';
-                    }, 2000);
-                };
+                container.classList.add('fall');
+                setTimeout(() => {
+                    window.location.href = 'locator.html';
+                }, 2000);
             } else {
-                errorMessage.textContent = "Convert the name into a sum.";
+                errorMessage.textContent = "Sometimes, you just need a different perspective.";
                 errorMessage.classList.remove('hidden');
                 errorSound.play();
             }
