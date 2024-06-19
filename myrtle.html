@@ -11,31 +11,28 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh; /* Use min-height for scrollable content */
+            min-height: 100vh;
             flex-direction: column;
             font-family: 'Alice', serif;
             text-align: center;
             margin: 0;
             padding: 0;
-            background: #ffe4b5; /* Background color */
+            background: #ffe4b5;
         }
         .container {
             width: 90%;
-            max-width: 300px; /* Adjust width */
+            max-width: 300px;
             text-align: center;
-            padding: 20px; /* Padding for better mobile view */
-            box-sizing: border-box; /* Ensure padding doesn't affect width */
+            padding: 20px;
+            box-sizing: border-box;
         }
         .logo {
-            width: 110px; /* Adjust size as needed */
+            width: 110px;
             height: auto;
-            margin-bottom: 5px; /* Reduced to half to bring H1 closer */
+            margin-bottom: 5px;
         }
-        h1 {
-            margin-top: 5px; /* Reduced top margin */
-        }
-         h2 {
-            margin-top: 0px; /* Reduced top margin */
+        h1, h2 {
+            margin-top: 5px;
         }
         input[type="text"] {
             width: 100%;
@@ -64,23 +61,23 @@
             width: 90%;
             max-width: 100%;
             height: auto;
-            margin: 20px auto 0 auto; /* Space between image and input box */
+            margin: 20px auto 0;
             cursor: zoom-in;
         }
         p {
-            margin: 10px 0; /* Margin for paragraphs */
+            margin: 10px 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <a href="https://www.whitebranches.com/keyhole" target="_blank">
-        <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo">
+            <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo">
         </a>
         <h1>Through the Keyhole</h1>
         <h2>Lock VIII</h2>
         <p>The blossom path sweetly declares,<br>
-           Love from someone who cares.<br>
+           Lucky love from someone who cares.<br>
            Walk East from the waters’ wall,<br>
            And go past the Trumpeter’s call<br>
            But don’t stop just on precedent<br>
@@ -94,57 +91,60 @@
     <audio id="successSound" src="tada.mp3"></audio>
     <audio id="errorSound" src="stream.mp3"></audio>
     <script>
-    let incorrectAttempts = 0;
+        let incorrectAttempts = 0;
 
-    function navigate() {
-        const enteredKey = document.getElementById('keyInput').value.trim().toLowerCase();
-        const errorMessage = document.getElementById('error-message');
-        const errorSound = document.getElementById('errorSound');
-        const successSound = document.getElementById('successSound');
-        const trumpeterImage = document.getElementById('trumpeter-image');
-        const windsorImage = document.getElementById('windsor-image');
+        function navigate() {
+            const enteredKey = document.getElementById('keyInput').value.trim().toLowerCase();
+            const validKeys = ['h5nd', 'hsnd'];  // Array of valid keys
+            const isCorrect = validKeys.includes(enteredKey);
+            const errorMessage = document.getElementById('error-message');
+            const errorSound = document.getElementById('errorSound');
+            const successSound = document.getElementById('successSound');
+            const trumpeterImage = document.getElementById('trumpeter-image');
+            const windsorImage = document.getElementById('windsor-image');
 
-        // Reset error message and hide images
-        errorMessage.textContent = '';
-        errorMessage.style.display = 'none';
-        trumpeterImage.style.display = 'none';
-        windsorImage.style.display = 'none';
-        document.getElementById('keyInput').value = ''; // Reset the input box on incorrect attempt
+            errorMessage.textContent = '';
+            errorMessage.style.display = 'none';
+            trumpeterImage.style.display = 'none';
+            windsorImage.style.display = 'none';
 
-        if (enteredKey === 'h5nd') {
-            successSound.play();
-            setTimeout(() => {
-                window.location.href = 'bricks.html'; // Navigate to bricks.html for correct answer
-            }, 2000);
-        } else {
-            errorSound.play();
-            incorrectAttempts++;
-            if (incorrectAttempts === 1) {
-                errorMessage.textContent = 'The image of the beflowered rabbit in your book contains several visual clues about which path you should take to your next location.';
-                errorMessage.style.display = 'block';
-            } else if (incorrectAttempts === 2) {
-                errorMessage.textContent = 'The maps in the book help you find not only where things are, but where they were. Keep your chin up and you might see hints you\'re going the right way.';
-                errorMessage.style.display = 'block';
-            } else if (incorrectAttempts === 3) {
-                trumpeterImage.style.display = 'block';
-            } else if (incorrectAttempts >= 4) {
-                windsorImage.style.display = 'block';
+            if (isCorrect) {
+                successSound.play();
+                document.body.style.animation = "spin 2s ease-out"; // Add spinning animation
+                setTimeout(() => {
+                    window.location.href = 'bricks.html'; // Navigate to bricks.html for correct answer
+                }, 2000);
+            } else {
+                errorSound.play();
+                incorrectAttempts++;
+                if (incorrectAttempts === 1) {
+                    errorMessage.textContent = 'The image of the beflowered rabbit in your book contains several visual clues about which path you should take to your next location.';
+                    errorMessage.style.display = 'block';
+                } else if (incorrectAttempts === 2) {
+                    errorMessage.textContent = 'The maps in the book help you find not only where things are, but where they were. Keep your chin up and you might see hints you\'re going the right way.';
+                    errorMessage.style.display = 'block';
+                } else if (incorrectAttempts === 3) {
+                    trumpeterImage.style.display = 'block';
+                } else if (incorrectAttempts >= 4) {
+                    windsorImage.style.display = 'block';
+                }
             }
         }
-    }
 
-    // Zoom functionality for images remains unchanged
-    document.querySelectorAll('.zoomable-image').forEach(img => {
-        img.addEventListener('click', () => {
-            if (img.style.transform === 'scale(2.5)') {
-                img.style.transform = 'scale(1)';
-                img.style.cursor = 'zoom-in';
-            } else {
-                img.style.transform = 'scale(2.5)';
-                img.style.cursor = 'zoom-out';
-            }
+        document.querySelectorAll('.zoomable-image').forEach(img => {
+            img.addEventListener('click', () => {
+                if (img.style.transform === 'scale(2.5)') {
+                    img.style.transform = 'scale(1)';
+                    img.style.cursor = 'zoom-in';
+                } else {
+                    img.style.transform = 'scale(2.5)';
+                    img.style.cursor = 'zoom-out';
+                }
+            });
         });
-    });
+
+        // Add CSS for spin animation
+        document.head.insertAdjacentHTML('beforeend', '<style>@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }</style>');
     </script>
 </body>
 </html>
