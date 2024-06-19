@@ -31,17 +31,21 @@
             margin-bottom: 5px;
         }
         h1, h2 {
-            margin: 5px; /* Adjust the value to your liking */
+            margin: 5px 0;
         }
-        input[type="text"] {
+        .image-container img {
+            width: 100%;  /* Ensures the image is the same width as the text box and button */
+            height: auto;
+            margin-bottom: 10px;
+        }
+        input[type="text"], button {
             width: 100%;
             padding: 10px;
-            margin: 10px 0;
+            margin-top: 10px;
             box-sizing: border-box;
+            font-size: 16px;
         }
         button {
-            width: 100%;
-            padding: 10px;
             background-color: #007bff;
             color: white;
             border: none;
@@ -51,12 +55,13 @@
         button:hover {
             background-color: #0056b3;
         }
-        .error-message {
+        #error-message {
             color: red;
             margin-top: 10px;
+            font-size: 14px;
         }
-        .hidden {
-            display: none;
+        .fall {
+            animation: fall 2s forwards, scaleDown 2s forwards;
         }
         @keyframes fall {
             to {
@@ -78,6 +83,7 @@
         </a>
         <h1>Through the Keyhole</h1>
         <h2>Lock XVI</h2>
+        <img src="admiral.jpg" alt="Admiral Image" class="image-container">
         <input type="text" id="answerInput" placeholder="Paces to walk.">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
@@ -93,12 +99,14 @@
             const errorSound = document.getElementById('errorSound');
             const correctAnswer = "101";
 
-            if (answerInput.value.trim() === correctAnswer) {
+            if (answerInput.value.trim().toLowerCase() === correctAnswer) {
                 successSound.play();
-                container.classList.add('fall');
-                setTimeout(() => {
-                    window.location.href = 'locator.html';
-                }, 2000);
+                successSound.onended = function() {
+                    container.classList.add('fall');
+                    setTimeout(() => {
+                        window.location.href = 'locator.html';
+                    }, 2000);
+                };
             } else {
                 errorMessage.textContent = "Convert the name into a sum.";
                 errorMessage.classList.remove('hidden');
