@@ -54,6 +54,19 @@
             color: red;
             margin-top: 10px;
         }
+        .bottom-image {
+            width: 90px; /* Adjust size to be smaller than the top image */
+            height: auto;
+            margin-top: 00px;
+            margin-bottom: 0px;
+            cursor: pointer;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
     </style>
 </head>
 <body>
@@ -68,6 +81,9 @@
         <input type="text" id="keyInput" placeholder="Enter the month">
         <button onclick="navigate()">Submit</button>
         <p id="errorMessage" class="error-message" style="display: none;">Find the hidden bride and consider what the language of flowers says about which month she has chosen for her wedding.</p>
+    </div>
+      <div>
+        <img src="keyclue.png" class="bottom-image" alt="Key Clue" onclick="openQRScanner()">
     </div>
    <script>
     function navigate() {
