@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Through the Keyhole</title>
-    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
         body {
@@ -30,10 +30,10 @@
         .logo {
             width: 150px;
             height: auto;
-            margin-bottom: 20px;
+            margin-bottom: 10px; /* Reduced space between logo and H1 */
         }
         h1, h2 {
-            margin: 10px 0;
+            margin-top: 0px; /* Reduced space between logo and H1 */
         }
         p {
             margin: 20px 0;
@@ -43,6 +43,8 @@
             padding: 10px;
             margin: 10px 0;
             box-sizing: border-box;
+            /* Set default placeholder text */
+            placeholder: "Who are they?";
         }
         button {
             width: 100%;
@@ -82,17 +84,19 @@
         <h1>Through the Keyhole</h1>
         <h2>Lock TBA</h2>
         <p>One of eleven tribes in the area, these were the first people to walk upriver.</p>
-        <input type="text" id="answerInput" placeholder="">
+        <input type="text" id="answerInput" placeholder="Who are they?">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
     </div>
     <audio id="successSound" src="drum.mp3"></audio>
+    <audio id="errorSound" src="CHANGEME.mp3"></audio>
     <script>
         function checkAnswer() {
             const answerInput = document.getElementById('answerInput');
             const errorMessage = document.getElementById('errorMessage');
             const container = document.getElementById('container');
             const successSound = document.getElementById('successSound');
+            const errorSound = document.getElementById('errorSound');
             const correctAnswer = "Nookachamps";
 
             if (answerInput.value.trim() === correctAnswer) {
@@ -104,6 +108,7 @@
             } else {
                 errorMessage.textContent = "Sometimes, you just need a different perspective.";
                 errorMessage.classList.remove('hidden');
+                errorSound.play();
             }
         }
     </script>
