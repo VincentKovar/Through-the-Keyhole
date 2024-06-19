@@ -1,108 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Through the Keyhole</title>
-     <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            flex-direction: column;
-            font-family: 'Alice', serif;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-            background: #ffe4b5; /* Add background here */
-        }
-        .container {
-            max-width: 90%;
-            width: 300px;
-            text-align: center;
-        }
-        .logo {
-            width: 110px; /* Adjust size as needed */
-            height: auto;
-            margin-bottom: 05px;
-        }
-                h1, h2 {
-            margin-top: 0px; /* Reduced space between logo and H1 */
-            margin-bottom: 5px; /* Adjust the value to your liking */
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Through the Keyhole</title>
+<link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+body {
+display: flex;
+justify-content: center;
+align-items: center;
+height: 100vh;
+flex-direction: column;
+font-family: 'Alice', serif;
+text-align: center;
+margin: 0;
+padding: 0;
+background: #ffe4b5; /* Add background here */
 }
-        }
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            box-sizing: border-box;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .error-message {
-            color: red;
-            margin-top: 20px;
-        }
-    </style>
+.container {
+max-width: 90%;
+width: 300px;
+text-align: center;
+}
+.logo {
+width: 110px; /* Adjust size as needed */
+height: auto;
+margin-bottom: 05px;
+}
+h1, h2 {
+margin-top: 5px; /* Reduced space between logo and H1 */
+}
+input[type="text"] {
+width: 100%;
+padding: 10px;
+margin: 10px 0;
+box-sizing: border-box;
+}
+button {
+width: 100%;
+padding: 10px;
+background-color: #007bff;
+color: white;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+}
+button:hover {
+background-color: #0056b3;
+}
+.error-message {
+color: red;
+margin-top: 20px;
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <a href="https://www.whitebranches.com/keyhole" target="_blank">
-        <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo">
-        </a>
-        <h1>Through the Keyhole</h1>
-        <h2>Lock IV</h2>
-        <p>Two faces fuget,<br> behind whose hands they hide<br>
-        To see them both,<br> stand across and aside.<br>
-        For we're all late or early<br> from time to time,<br>
-        But it's the difference you seek<br> here in this rhyme.<br>
-        Between the river and rails of the track,<br>
-        Time flows onward<br> but does not turn back.<br>
-        Perhaps one runs right and one runs slow,<br>
-        The secret <i>counts</i> on you to know.<br>
-        For time ticks on, look and you’ll see.<br>
-        The space <i>between</i> shall reveal your key.</p>
-        <input type="text" id="keyInput" placeholder="Enter the number">
-        <button onclick="checkAnswer()">Submit</button>
-        <p id="error-message" class="error-message"></p>
-    </div>
+<div class="container">
+<a href="https://www.whitebranches.com/keyhole" target="_blank">
+<img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo">
+</a>
+<h1>Through the Keyhole</h1>
+<h2>Lock IV</h2>
+<p>Two faces fuget,<br> behind whose hands they hide<br>
+To see them both,<br> stand across and aside.<br>
+For we're all late or early<br> from time to time,<br>
+But it's the difference you seek<br> here in this rhyme.<br>
+Between the river and rails of the track,<br>
+Time flows onward<br> but does not turn back.<br>
+Perhaps one runs right and one runs slow,<br>
+The secret <i>counts</i> on you to know.<br>
+For time ticks on, look and you’ll see.<br>
+The space <i>between</i> shall reveal your key.</p>
+<input type="text" id="keyInput" placeholder="Enter the number">
+<button onclick="checkAnswer()">Submit</button>
+<p id="error-message" class="error-message"></p>
+</div>
 
-    <!-- Audio element -->
-    <audio id="background-audio" src="old-fashioned-clock-sound-37729.mp3" type="audio/mpeg" loop></audio>
+<!-- Audio element -->
+<audio id="background-audio" src="old-fashioned-clock-sound-37729.mp3" type="audio/mpeg" loop></audio>
 
-    <script>
-        function playAudio() {
-            var audio = document.getElementById('background-audio');
-            audio.play();
-        }
+<script>
+function playAudio() {
+var audio = document.getElementById('background-audio');
+audio.play();
+}
 
-        function checkAnswer() {
-            const enteredValue = parseInt(document.getElementById('keyInput').value.trim());
-            const minValue = 222 - 9;
-            const maxValue = 222 + 9;
-            const errorMessage = document.getElementById('error-message');
+function checkAnswer() {
+const enteredValue = parseInt(document.getElementById('keyInput').value.trim());
+const minValue = 222 - 9;
+const maxValue = 222 + 9;
+const errorMessage = document.getElementById('error-message');
 
-            if (!isNaN(enteredValue) && enteredValue >= minValue && enteredValue <= maxValue) {
-                window.location.href = 'language.html';
-            } else {
-                errorMessage.textContent = 'The difference in total minutes. Numbers only.';
-                document.getElementById('keyInput').value = '';
-                playAudio(); // Play sound effect for wrong answer
-            }
-        }
-    </script>
+if (!isNaN(enteredValue) && enteredValue >= minValue && enteredValue <= maxValue) {
+window.location.href = 'language.html';
+} else {
+errorMessage.textContent = 'The difference in total minutes. Numbers only.';
+document.getElementById('keyInput').value = '';
+playAudio(); // Play sound effect for wrong answer
+}
+}
+</script>
 </body>
 </html>
