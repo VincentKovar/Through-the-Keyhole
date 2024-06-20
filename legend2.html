@@ -113,43 +113,44 @@
         let attempts = 0;
         const correctAnswer = "heART";
 
-        function checkAnswer() {
-            const keyInput = document.getElementById('keyInput');
-            const errorMessage = document.getElementById('errorMessage');
-            const drainSound = document.getElementById('drainSound');
-            const input = keyInput.value.trim().toUpperCase();
+function checkAnswer() {
+    const keyInput = document.getElementById('keyInput');
+    const errorMessage = document.getElementById('errorMessage');
+    const drainSound = document.getElementById('drainSound');
+    const input = keyInput.value.trim();
 
-            keyInput.value = ''; // Reset input field every time submit is clicked
+    keyInput.value = ''; // Reset input field every time submit is clicked
 
-            if (input === correctAnswer) {
-                document.querySelector('.container').classList.add('fade-out');
-                setTimeout(() => {
-                    window.location.href = 'final.html';
-                }, 2000);
-                playTriumphSound();
-            } else {
-                attempts++;
-                drainSound.play();
-                errorMessage.style.display = 'block'; // Ensure error message is visible
-                switch (attempts) {
-                    case 1:
-                        errorMessage.textContent = "Look again";
-                        break;
-                    case 2:
-                        errorMessage.textContent = "Look up. Look down. What you seek is near the ground.";
-                        break;
-                    case 3:
-                        errorMessage.textContent = "Opening a new tab for help.";
-                        window.open('https://meyersign.com/2021/09/tales-from-the-magic-skagit-from-these-waters/', '_blank');
-                        break;
-                }
-            }
+    // Check if the input exactly matches "heART"
+    if (input === "heART") {
+        document.querySelector('.container').classList.add('fade-out');
+        setTimeout(() => {
+            window.location.href = 'final.html';
+        }, 2000);
+        playTriumphSound();
+    } else {
+        attempts++;
+        drainSound.play();
+        errorMessage.style.display = 'block'; // Ensure error message is visible
+        switch (attempts) {
+            case 1:
+                errorMessage.textContent = "Look again";
+                break;
+            case 2:
+                errorMessage.textContent = "Look up. Look down. What you seek is near the ground.";
+                break;
+            case 3:
+                errorMessage.textContent = "Opening a new tab for help.";
+                window.open('https://meyersign.com/2021/09/tales-from-the-magic-skagit-from-these-waters/', '_blank');
+                break;
         }
+    }
+}
 
-        function playTriumphSound() {
-            const triumphSound = document.getElementById('triumphSound');
-            triumphSound.play();
-        }
+function playTriumphSound() {
+    const triumphSound = document.getElementById('triumphSound');
+    triumphSound.play();
+}
     </script>
 </body>
 </html>
