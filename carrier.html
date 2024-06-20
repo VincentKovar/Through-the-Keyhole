@@ -93,7 +93,7 @@
         <h1>Through the Keyhole</h1>
         <h2>Lock XII</h2>
         <p>The names listed in your book all provided what? </p>
-        <input type="text" id="answerInput" placeholder="Enter Key XII">
+        <input type="text" id="answerInput" placeholder="What was all fit to print?">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
     </div>
@@ -133,7 +133,7 @@
                 } else if (attempts === 2) {
                     errorMessage.textContent = "No matter if you're with the reds or the blues, both sides sometimes call it, fake ______.";
                 } else if (attempts >= 3) {
-                    errorMessage.textContent = "After morning, after evening but before a stand, those are more clues, the word you're seeking is all that's fit to print in the daily ______.";
+                    errorMessage.textContent = "After morning, after evening but before a stand, those are more clues, the word you're looking for is in the daily ______.";
                     errorSound.pause();
                 }
                 errorMessage.classList.remove('hidden');
