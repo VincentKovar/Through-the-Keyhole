@@ -14,7 +14,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Alice', serif; /* Ensure the font family is applied correctly */
+            font-family: 'Alice', serif;
+            background: #ffe4b5;
         }
         .container {
             width: 90%;
@@ -28,7 +29,7 @@
             width: 50vw;
             height: 100vh;
             top: 0;
-            background: #ffe4b5; /* Match the body background */
+            background: #ffe4b5;
             transition: transform 1s ease-in-out;
             z-index: 1;
         }
@@ -49,7 +50,7 @@
             margin: 5px 0;
         }
         .image {
-            width: 100%; /* Match the width of the text box */
+            width: 100%;
             height: auto;
             margin: 10px auto;
         }
@@ -78,6 +79,15 @@
         .hidden {
             display: none;
         }
+        .fade-out {
+            animation: fadeOut 2s forwards;
+        }
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+        }
     </style>
 </head>
 <body>
@@ -88,7 +98,7 @@
             <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
         </a>
         <h1>Through the Keyhole</h1>
-        <h2>Lock TBA</h2>
+        <h2>Lock XIV</h2>
         <img src="secretorderlogo2.gif" alt="Secret Order Logo" class="image">
         <input type="text" id="cuba" placeholder="Enter first location">
         <input type="text" id="portorico" placeholder="Enter location">
@@ -113,8 +123,11 @@
                               philippineIslandsInput === correctAnswers[2] && usaInput === correctAnswers[3];
 
             if (isCorrect) {
-                document.getElementById('leftDoor').style.transform = 'translateX(-100%)';  // Moves left door to the left
-                document.getElementById('rightDoor').style.transform = 'translateX(100%)'; // Moves right door to the right
+                document.getElementById('leftDoor').style.transform = 'translateX(-100%)';
+                document.getElementById('rightDoor').style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    window.location.href = 'final.html';  // Redirect to your next page
+                }, 1000);  // Adjust the delay as needed
             } else {
                 errorMessage.textContent = "Incorrect answers, please try again.";
                 errorMessage.style.display = 'block';
