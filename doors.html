@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Through the Keyhole</title>
-    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png">
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
         body, html {
@@ -125,7 +125,7 @@
             if (isCorrect) {
                 document.getElementById('leftDoor').style.transform = 'translateX(-100%)';
                 document.getElementById('rightDoor').style.transform = 'translateX(100%)';
-                setTimeout(checkAnswer, 1000); => {
+                setTimeout(() => {
                     window.location.href = 'final.html';  // Redirect to your next page
                 }, 1000);  // Adjust the delay as needed
             } else {
