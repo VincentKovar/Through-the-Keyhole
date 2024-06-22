@@ -125,7 +125,7 @@
             if (isCorrect) {
                 document.getElementById('leftDoor').style.transform = 'translateX(-100%)';
                 document.getElementById('rightDoor').style.transform = 'translateX(100%)';
-                setTimeout(() => {
+                setTimeout(checkAnswer, 1000); => {
                     window.location.href = 'final.html';  // Redirect to your next page
                 }, 1000);  // Adjust the delay as needed
             } else {
