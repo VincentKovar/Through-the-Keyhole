@@ -11,7 +11,10 @@
             margin: 0;
             padding: 0;
             height: 100%;
-            overflow: hidden;  /* Ensures the door animation is visible */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Alice', serif; /* Ensure the font family is applied correctly */
         }
         .container {
             width: 90%;
@@ -19,8 +22,6 @@
             text-align: center;
             padding: 20px;
             box-sizing: border-box;
-            position: relative; /* Relative positioning for container */
-            z-index: 2; /* Ensures it's above the doors */
         }
         .door {
             position: fixed;
@@ -77,15 +78,6 @@
         .hidden {
             display: none;
         }
-        .fade-out {
-            animation: fadeOut 2s forwards;
-        }
-        @keyframes fadeOut {
-            to {
-                opacity: 0;
-                transform: translateY(-100%);
-            }
-        }
     </style>
 </head>
 <body>
@@ -96,7 +88,7 @@
             <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
         </a>
         <h1>Through the Keyhole</h1>
-        <h2>Lock XIV</h2>
+        <h2>Lock TBA</h2>
         <img src="secretorderlogo2.gif" alt="Secret Order Logo" class="image">
         <input type="text" id="cuba" placeholder="Enter first location">
         <input type="text" id="portorico" placeholder="Enter location">
