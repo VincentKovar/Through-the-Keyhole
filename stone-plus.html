@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Through the Keyhole</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background: #ffe4b5; /* Add background here */
+        }
+        .container {
+            max-width: 90%;
+            width: 300px;
+            text-align: center;
+        }
+        .logo {
+            width: 150px; /* Adjust size as needed */
+            height: auto;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .audio-player {
+            margin-bottom: 20px;
+        }
+        #compass {
+            width: 80%; /* Adjust width as needed */
+            max-width: 200px; /* Add a maximum width for larger screens */
+            height: 0; /* Set height to 0 to maintain aspect ratio */
+            padding-bottom: 80%; /* Adjust this to maintain the circle */
+            border: 2px solid black;
+            border-radius: 50%;
+            position: relative;
+            margin: 20px auto; /* Center the compass horizontally and add margin */
+            box-sizing: border-box;
+        }
+        #needle {
+            width: 3px;
+            height: 40%;
+            background-color: red;
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform-origin: 50% 100%;
+            transform: translateX(-50%) rotate(0deg);
+            transition: transform 0.5s, background-color 0.5s;
+        }
+        #needle.pulse {
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        #error-message {
+            color: red;
+            display: none; /* Initially hidden */
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo">
+        <h1>Through the Keyhole</h1>
+        <h2>Lock V</h2>
+        <div id="compass">
+            <div id="needle"></div>
+        </div>
+        <p>Between the sights familiar there<br>
+        These Gates of Knox a treasure bear<br>
+        Make new friends, but keep the old<br>
+        One is silver and the other is gold<br>
+        In Jasper and granite, never alone<br>
+        The years they shared, etched in stone<br></p>
+        <p>How many years did they share?</p>
+        <input type="text" id="keyInput" placeholder="enter numbers">
+        <button onclick="navigate()">Submit</button>
+        <p id="error-message">Their overlapping years were quite grounded.</p>
+    </div>
+
+    <script>
+        // Destination coordinates 
+        const destinationLatitude = 48.41949156451598; // Replace with destination latitude
+        const destinationLongitude = -122.33769579668959; // Replace with destination longitude
+
+        function navigate() {
+            const enteredKey = document.getElementById('keyInput').value.trim().toLowerCase(); // Convert entered key to lowercase
+            const comparisonKey1 = '33';
+            const comparisonKey2 = 'thirty-three';
+
+            if (enteredKey === comparisonKey1 || enteredKey === comparisonKey2) {
+                window.location.href = 'turn.html'; // Navigate to turn.html for correct answer
+            } else {
+                document.getElementById('error-message').style.display = 'block'; // Show error message for incorrect answer
+                window.open('https://www.mountvernonwa.gov/550/Jasper-Gates-Statue---First-and-Gates-St', '_blank'); // Open the hint page in a new tab
+            }
+        }
+
+        window.addEventListener('deviceorientationabsolute', handleOrientation);
+        window.addEventListener('deviceorientation', handleOrientation);
+
+        function handleOrientation(event) {
+            const needle = document.getElementById('needle');
+            const alpha = event.webkitCompassHeading || Math.abs(event.alpha - 360); // Compass direction in degrees
+            const adjustedAlpha = (alpha + 180) % 360; // Adjust for holding phone in front
+
+            // Calculate angle between user's orientation and destination
+            const angleToDestination = calculateAngleToDestination(adjustedAlpha);
+
+            // Set rotation of the needle
+            needle.style.transform = `translateX(-50%) rotate(${angleToDestination}deg)`;
+
+            // Change needle color based on orientation
+            if ((angleToDestination > -10 && angleToDestination < 10) || (angleToDestination > 350 || angleToDestination < -350)) {
+                needle.style.backgroundColor = 'green';
+                needle.classList.add('pulse');
+            } else {
+                needle.style.backgroundColor = 'red';
+                needle.classList.remove('pulse');
+            }
+        }
+
+        // Function to calculate angle between user's orientation and destination
+        function calculateAngleToDestination(alpha) {
+            const destinationAngle = Math.atan2(destinationLatitude - getCurrentLatitude(), destinationLongitude - getCurrentLongitude()) * (180 / Math.PI);
+            return destinationAngle - alpha;
+        }
+
+        // Function to get current latitude (for testing, replace with actual location retrieval)
+        function getCurrentLatitude() {
+            return 48.41949156451598; // Example latitude, replace with actual retrieval
+        }
+
+        // Function to get current longitude (for testing, replace with actual location retrieval)
+        function getCurrentLongitude() {
+            return -122.33769579668959; // Example longitude, replace with actual retrieval
+        }
+    </script>
+</body>
+</html>
