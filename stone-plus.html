@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Through the Keyhole</title>
-    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
         body {
@@ -17,15 +17,17 @@
             text-align: center;
             margin: 0;
             padding: 0;
-            background: #ffe4b5; /* Add background here */
+            background: #ffe4b5;
         }
         .container {
             max-width: 90%;
             width: 300px;
             text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
         }
         .logo {
-            width: 150px; /* Adjust size as needed */
+            width: 150px;
             height: auto;
             margin-bottom: 20px;
         }
@@ -51,14 +53,14 @@
             margin-bottom: 20px;
         }
         #compass {
-            width: 80%; /* Adjust width as needed */
-            max-width: 200px; /* Add a maximum width for larger screens */
-            height: 0; /* Set height to 0 to maintain aspect ratio */
-            padding-bottom: 80%; /* Adjust this to maintain the circle */
+            width: 80%;
+            max-width: 200px;
+            height: 0;
+            padding-bottom: 80%;
             border: 2px solid black;
             border-radius: 50%;
             position: relative;
-            margin: 20px auto; /* Center the compass horizontally and add margin */
+            margin: 20px auto;
             box-sizing: border-box;
         }
         #needle {
@@ -88,14 +90,28 @@
         }
         #error-message {
             color: red;
-            display: none; /* Initially hidden */
+            display: none;
             margin-top: 10px;
+        }
+        @media (max-width: 600px) {
+            .container {
+                width: 100%;
+                padding: 10px;
+            }
+            .logo {
+                width: 100px;
+                margin-bottom: 10px;
+            }
+            input[type="text"], button {
+                padding: 5px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo">
+        <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
         <h1>Through the Keyhole</h1>
         <h2>Lock V</h2>
         <div id="compass">
@@ -114,20 +130,19 @@
     </div>
 
     <script>
-        // Destination coordinates 
-        const destinationLatitude = 48.41949156451598; // Replace with destination latitude
-        const destinationLongitude = -122.33769579668959; // Replace with destination longitude
+        const destinationLatitude = 48.41949156451598;
+        const destinationLongitude = -122.33769579668959;
 
         function navigate() {
-            const enteredKey = document.getElementById('keyInput').value.trim().toLowerCase(); // Convert entered key to lowercase
+            const enteredKey = document.getElementById('keyInput').value.trim().toLowerCase();
             const comparisonKey1 = '33';
             const comparisonKey2 = 'thirty-three';
 
             if (enteredKey === comparisonKey1 || enteredKey === comparisonKey2) {
-                window.location.href = 'turn.html'; // Navigate to turn.html for correct answer
+                window.location.href = 'turn.html';
             } else {
-                document.getElementById('error-message').style.display = 'block'; // Show error message for incorrect answer
-                window.open('https://www.mountvernonwa.gov/550/Jasper-Gates-Statue---First-and-Gates-St', '_blank'); // Open the hint page in a new tab
+                document.getElementById('error-message').style.display = 'block';
+                window.open('https://www.mountvernonwa.gov/550/Jasper-Gates-Statue---First-and-Gates-St', '_blank');
             }
         }
 
@@ -136,16 +151,12 @@
 
         function handleOrientation(event) {
             const needle = document.getElementById('needle');
-            const alpha = event.webkitCompassHeading || Math.abs(event.alpha - 360); // Compass direction in degrees
-            const adjustedAlpha = (alpha + 180) % 360; // Adjust for holding phone in front
+            const alpha = event.webkitCompassHeading || Math.abs(event.alpha - 360);
+            const adjustedAlpha = (alpha + 180) % 360;
 
-            // Calculate angle between user's orientation and destination
             const angleToDestination = calculateAngleToDestination(adjustedAlpha);
-
-            // Set rotation of the needle
             needle.style.transform = `translateX(-50%) rotate(${angleToDestination}deg)`;
 
-            // Change needle color based on orientation
             if ((angleToDestination > -10 && angleToDestination < 10) || (angleToDestination > 350 || angleToDestination < -350)) {
                 needle.style.backgroundColor = 'green';
                 needle.classList.add('pulse');
@@ -155,20 +166,17 @@
             }
         }
 
-        // Function to calculate angle between user's orientation and destination
         function calculateAngleToDestination(alpha) {
             const destinationAngle = Math.atan2(destinationLatitude - getCurrentLatitude(), destinationLongitude - getCurrentLongitude()) * (180 / Math.PI);
             return destinationAngle - alpha;
         }
 
-        // Function to get current latitude (for testing, replace with actual location retrieval)
         function getCurrentLatitude() {
-            return 48.41949156451598; // Example latitude, replace with actual retrieval
+            return 47.8136;
         }
 
-        // Function to get current longitude (for testing, replace with actual location retrieval)
         function getCurrentLongitude() {
-            return -122.33769579668959; // Example longitude, replace with actual retrieval
+            return -122.358;
         }
     </script>
 </body>
