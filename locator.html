@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Through the Keyhole</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
+            background: #ffe4b5;
+            overflow: hidden;
+        }
+        .container {
+            width: 90%;
+            max-width: 300px;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .logo {
+            width: 110px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+        h1, h2 {
+            margin: 5px 0;
+        }
+        .image {
+            width: 250px;
+            height: auto;
+            margin: 10px auto;
+        }
+        p {
+            margin: 10px 0;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .next-button {
+            background-color: brown;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img id="logo" src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
+        <h1>Through the Keyhole</h1>
+        <h2>Lock XVII</h2>
+        <div id="distance">Distance to destination: Calculating...</div>
+        <div id="instructions">Push start then begin walking in any direction.</div>
+        <button onclick="startGame()" aria-label="Start navigation">Start</button>
+        <div id="next-container">
+            <p>When you've reached your destination click next.</p>
+            <button onclick="navigateToNext()" class="next-button" aria-label="Proceed to next page">Next</button>
+        </div>
+        <audio id="beep-audio" src="beep.mp3"></audio>
+    </div>
+    <script>
+        const destinationLatitude = 48.41949156451598; // Replace with destination latitude
+        const destinationLongitude = -122.33769579668959; // Replace with destination longitude
+
+        let watchId;
+        let beepInterval;
+        let previousAlpha = null;
+
+        function startGame() {
+            document.getElementById('instructions').innerText = "Start walking in any direction...";
+            if (navigator.geolocation) {
+                watchId = navigator.geolocation.watchPosition(updatePosition, handleError, { enableHighAccuracy: true });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+            window.addEventListener('deviceorientationabsolute', handleOrientation);
+            window.addEventListener('deviceorientation', handleOrientation);
+        }
+
+        function handleOrientation(event) {
+            const alpha = event.webkitCompassHeading || Math.abs(event.alpha - 360);
+            const adjustedAlpha = (alpha + 180) % 360;
+
+            // Smooth the angle using low-pass filter
+            if (previousAlpha === null) {
+                previousAlpha = adjustedAlpha;
+            } else {
+                const smoothingFactor = 0.1;
+                previousAlpha = previousAlpha * (1 - smoothingFactor) + adjustedAlpha * smoothingFactor;
+            }
+
+            const angleToDestination = calculateAngleToDestination(previousAlpha);
+            provideHapticFeedback(angleToDestination);
+        }
+
+        function provideHapticFeedback(angle) {
+            if ((angle > -10 && angle < 10) || (angle > 350 || angle < -350)) {
+                if (navigator.vibrate) {
+                    navigator.vibrate([200, 100, 200]); // Vibrate pattern for correct direction
+                }
+            }
+        }
+
+        function updatePosition(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            const distance = calculateDistance(latitude, longitude, destinationLatitude, destinationLongitude);
+            document.getElementById('distance').innerText = `Distance to destination: ${distance.toFixed(2)} meters`;
+
+            // Adjust beep frequency based on distance
+            clearInterval(beepInterval);
+            let beepFrequency = 2000; // Default beep frequency
+            if (distance < 50) {
+                beepFrequency = 500; // Beep every 0.5 seconds when very close
+            } else if (distance < 200) {
+                beepFrequency = 1000; // Beep every 1 second when close
+            } else if (distance < 500) {
+                beepFrequency = 1500; // Beep every 1.5 seconds when mid-range
+            }
+            beepInterval = setInterval(playBeep, beepFrequency);
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radius of the Earth in kilometers
+            const dLat = deg2rad(lat2 - lat1);
+            const dLon = deg2rad(lon2 - lon1);
+            const lat1Rad = deg2rad(lat1);
+            const lat2Rad = deg2rad(lat2);
+
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1Rad) * Math.cos(lat2Rad);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            const distance = R * c;
+            return distance * 1000; // Convert to meters
+        }
+
+        function deg2rad(deg) {
+            return deg * (Math.PI / 180);
+        }
+
+        function playBeep() {
+            const beepAudio = document.getElementById('beep-audio');
+            beepAudio.play();
+        }
+
+        function navigateToNext() {
+            window.location.href = 'nextpage.html'; // Adjust to the actual next page
+        }
+
+        function handleError(error) {
+            console.error("Error occurred. Error code: " + error.code);
+            // Handle errors like PERMISSION_DENIED, POSITION_UNAVAILABLE, TIMEOUT
+        }
+
+        function calculateAngleToDestination(alpha) {
+            const destinationAngle = Math.atan2(destinationLatitude - getCurrentLatitude(), destinationLongitude - getCurrentLongitude()) * (180 / Math.PI);
+            return destinationAngle - alpha;
+        }
+
+        function getCurrentLatitude() {
+            // Replace with actual location retrieval
+            return 47.8136; // Example latitude
+        }
+
+        function getCurrentLongitude() {
+            // Replace with actual location retrieval
+            return -122.358; // Example longitude
+        }
+    </script>
+</body>
+</html>
