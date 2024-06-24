@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Through the Keyhole</title>
-    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png">
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
         body {
@@ -17,7 +17,6 @@
             text-align: center;
             margin: 0;
             background: #ffe4b5;
-            overflow: hidden;
         }
         .container {
             width: 90%;
@@ -87,6 +86,8 @@
         let watchId;
         let beepInterval;
         let previousAlpha = null;
+        let lastPosition = null;
+        let hapticInterval;
 
         function startGame() {
             document.getElementById('instructions').innerText = "Start walking in any direction...";
@@ -103,7 +104,6 @@
             const alpha = event.webkitCompassHeading || Math.abs(event.alpha - 360);
             const adjustedAlpha = (alpha + 180) % 360;
 
-            // Smooth the angle using low-pass filter
             if (previousAlpha === null) {
                 previousAlpha = adjustedAlpha;
             } else {
@@ -111,48 +111,51 @@
                 previousAlpha = previousAlpha * (1 - smoothingFactor) + adjustedAlpha * smoothingFactor;
             }
 
-            const angleToDestination = calculateAngleToDestination(previousAlpha);
-            provideHapticFeedback(angleToDestination);
+            if (lastPosition) {
+                const angleToDestination = calculateAngleToDestination(previousAlpha, lastPosition.coords.latitude, lastPosition.coords.longitude);
+                provideHapticFeedback(angleToDestination);
+            }
         }
 
         function provideHapticFeedback(angle) {
+            clearInterval(hapticInterval);
             if ((angle > -10 && angle < 10) || (angle > 350 || angle < -350)) {
                 if (navigator.vibrate) {
-                    navigator.vibrate([200, 100, 200]); // Vibrate pattern for correct direction
+                    hapticInterval = setInterval(() => navigator.vibrate([200]), 1000);
                 }
             }
         }
 
         function updatePosition(position) {
+            lastPosition = position;
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
             const distance = calculateDistance(latitude, longitude, destinationLatitude, destinationLongitude);
             document.getElementById('distance').innerText = `Distance to destination: ${distance.toFixed(2)} meters`;
 
-            // Adjust beep frequency based on distance
             clearInterval(beepInterval);
-            let beepFrequency = 2000; // Default beep frequency
+            let beepFrequency = 2000;
             if (distance < 50) {
-                beepFrequency = 500; // Beep every 0.5 seconds when very close
+                beepFrequency = 500;
             } else if (distance < 200) {
-                beepFrequency = 1000; // Beep every 1 second when close
+                beepFrequency = 1000;
             } else if (distance < 500) {
-                beepFrequency = 1500; // Beep every 1.5 seconds when mid-range
+                beepFrequency = 1500;
             }
             beepInterval = setInterval(playBeep, beepFrequency);
         }
 
         function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Radius of the Earth in kilometers
+            const R = 6371;
             const dLat = deg2rad(lat2 - lat1);
             const dLon = deg2rad(lon2 - lon1);
             const lat1Rad = deg2rad(lat1);
             const lat2Rad = deg2rad(lat2);
 
-            const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1Rad) * Math.cos(lat2Rad);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1Rad) * Math.cos(lat2Rad);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
             const distance = R * c;
-            return distance * 1000; // Convert to meters
+            return distance * 1000;
         }
 
         function deg2rad(deg) {
@@ -165,27 +168,16 @@
         }
 
         function navigateToNext() {
-            window.location.href = 'nextpage.html'; // Adjust to the actual next page
+            window.location.href = 'nextpage.html';
         }
 
         function handleError(error) {
             console.error("Error occurred. Error code: " + error.code);
-            // Handle errors like PERMISSION_DENIED, POSITION_UNAVAILABLE, TIMEOUT
         }
 
-        function calculateAngleToDestination(alpha) {
-            const destinationAngle = Math.atan2(destinationLatitude - getCurrentLatitude(), destinationLongitude - getCurrentLongitude()) * (180 / Math.PI);
+        function calculateAngleToDestination(alpha, currentLat, currentLon) {
+            const destinationAngle = Math.atan2(destinationLatitude - currentLat, destinationLongitude - currentLon) * (180 / Math.PI);
             return destinationAngle - alpha;
-        }
-
-        function getCurrentLatitude() {
-            // Replace with actual location retrieval
-            return 47.8136; // Example latitude
-        }
-
-        function getCurrentLongitude() {
-            // Replace with actual location retrieval
-            return -122.358; // Example longitude
         }
     </script>
 </body>
