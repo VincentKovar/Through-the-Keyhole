@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Through the Keyhole</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
+            background: #ffe4b5;
+        }
+        .container {
+            width: 90%;
+            max-width: 300px;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .logo {
+            width: 110px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+        h1, h2 {
+            margin: 5px 0;
+        }
+        .image {
+            width: 250px;
+            height: auto;
+            margin: 10px auto;
+        }
+        p {
+            margin: 10px 0;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .next-button {
+            background-color: brown;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img id="logo" src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
+        <h1>Through the Keyhole</h1>
+        <h2>Lock XVII</h2>
+        <div id="distance">Distance to destination: Calculating...</div>
+        <div id="instructions">Push start then begin walking in any direction.</div>
+        <button onclick="startGame()" aria-label="Start navigation">Start</button>
+        <div id="next-container">
+            <p>When you've reached your destination click next.</p>
+            <button onclick="navigateToNext()" class="next-button" aria-label="Proceed to next page">Next</button>
+        </div>
+        <audio id="beep-audio" src="beep.mp3"></audio>
+    </div>
+    <script>
+        const destinationLatitude = 48.41949156451598; // Replace with destination latitude
+        const destinationLongitude = -122.33769579668959; // Replace with destination longitude
+
+        let watchId;
+        let beepInterval;
+        let lastPosition = null;
+        let hapticInterval;
+
+        function startGame() {
+            document.getElementById('instructions').innerText = "Start walking in any direction...";
+            if (navigator.geolocation) {
+                watchId = navigator.geolocation.watchPosition(updatePosition, handleError, { enableHighAccuracy: true });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function updatePosition(position) {
+            lastPosition = position;
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            const distance = calculateDistance(latitude, longitude, destinationLatitude, destinationLongitude);
+            document.getElementById('distance').innerText = `Distance to destination: ${distance.toFixed(2)} meters`;
+
+            clearInterval(beepInterval);
+            let beepFrequency = 2000;
+            if (distance < 50) {
+                beepFrequency = 500;
+            } else if (distance < 200) {
+                beepFrequency = 1000;
+            } else if (distance < 500) {
+                beepFrequency = 1500;
+            }
+            beepInterval = setInterval(playBeep, beepFrequency);
+            provideHapticFeedback(distance);
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = deg2rad(lat2 - lat1);
+            const dLon = deg2rad(lon2 - lon1);
+            const lat1Rad = deg2rad(lat1);
+            const lat2Rad = deg2rad(lat2);
+
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1Rad) * Math.cos(lat2Rad);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            const distance = R * c;
+            return distance * 1000;
+        }
+
+        function deg2rad(deg) {
+            return deg * (Math.PI / 180);
+        }
+
+        function playBeep() {
+            const beepAudio = document.getElementById('beep-audio');
+            beepAudio.play();
+        }
+
+        function provideHapticFeedback(distance) {
+            clearInterval(hapticInterval);
+            if (distance < 50) {
+                if (navigator.vibrate) {
+                    hapticInterval = setInterval(() => navigator.vibrate([200]), 1000);
+                }
+            } else {
+                if (navigator.vibrate) {
+                    hapticInterval = setInterval(() => navigator.vibrate([100]), 2000);
+                }
+            }
+        }
+
+        function navigateToNext() {
+            window.location.href = 'nextpage.html';
+        }
+
+        function handleError(error) {
+            console.error("Error occurred. Error code: " + error.code);
+        }
+    </script>
+</body>
+</html>
