@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Through the Keyhole</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/png">
+    <style>
+        /* ... */
+        .pulse {
+            transform: scale(1.2);
+            transition: transform 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- ... -->
+    <script>
+        const destinationLatitude = 48.41890859784646;
+        const destinationLongitude = -122.33687234141873;
+        let watchId;
+        let signalInterval;
+
+        function startTracking() {
+            if (navigator.geolocation) {
+                watchId = navigator.geolocation.watchPosition(updatePosition, handleError, { enableHighAccuracy: true });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function updatePosition(position) {
+            clearInterval(signalInterval);
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            const distance = calculateDistance(latitude, longitude, destinationLatitude, destinationLongitude);
+            document.getElementById('distance-feedback').innerText = `Distance to destination: ${distance.toFixed(1)} meters`;
+
+            let interval = 4000;
+            if (distance < 50) {
+                interval = 800;
+            } else if (distance < 200) {
+                interval = 2000;
+            } else if (distance < 400) {
+                interval = 3000;
+            }
+            signalInterval = setInterval(() => {
+                provideFeedback(distance);
+            }, interval);
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = deg2rad(lat2 - lat1);
+            const dLon = deg2rad(lon2 - lon1);
+            const lat1Rad = deg2rad(lat1);
+            const lat2Rad = deg2rad(lat2);
+
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1Rad) * Math.cos(lat2Rad);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            const distance = R * c;
+            return distance * 1000;
+        }
+
+        function deg2rad(deg) {
+            return deg * (Math.PI / 180);
+        }
+
+        function provideFeedback(distance) {
+            const logo = document.getElementById('logo');
+            logo.classList.add('pulse');
+            setTimeout(() => {
+                logo.classList.remove('pulse');
+            }, 300);
+
+            if (navigator.vibrate) {
+                navigator.vibrate([200]);
+            }
+
+            const beepAudio = document.getElementById('beep-audio');
+            if (beepAudio.play) {
+                beepAudio.play();
+            }
+        }
+
+        function handleError(error) {
+            console.error("Error occurred. Error code: " + error.code);
+        }
+    </script>
+</body>
+</html>
