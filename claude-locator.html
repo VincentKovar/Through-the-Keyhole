@@ -94,6 +94,9 @@
             { name: "Very Far", threshold: Infinity }
         ];
 
+        // Add event listener for geolocation errors
+        navigator.geolocation.addEventListener('error', handleError);
+
         function startTracking() {
             if (navigator.geolocation) {
                 watchId = navigator.geolocation.watchPosition(updatePosition, handleError, { enableHighAccuracy: true });
@@ -108,7 +111,7 @@
             if (watchId) {
                 navigator.geolocation.clearWatch(watchId);
             }
-            clearInterval(signalInterval);
+            clearInterval(signalInterval); // Clear the interval
             document.getElementById('start-button').textContent = 'Start';
             document.getElementById('start-button').onclick = startTracking;
             document.getElementById('distance-feedback').innerText = 'Distance to destination: Tracking stopped';
@@ -165,6 +168,7 @@
                     return category.name;
                 }
             }
+            return "Unknown"; // Default category
         }
 
         function provideFeedback(distance) {
