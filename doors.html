@@ -15,7 +15,8 @@
             align-items: center;
             font-family: 'Alice', serif;
             background: #ffe4b5;
-            overflow: auto;  /* Allow scrolling */
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+            overflow-y: auto; /* Allow vertical scrolling if needed */
         }
         .container {
             width: 90%;
@@ -23,15 +24,20 @@
             text-align: center;
             padding: 20px;
             box-sizing: border-box;
-            position: relative;  /* Ensures the container is properly scaled */
+            position: relative; /* Ensures the container is properly scaled */
         }
-        .logo {
-            width: 110px;
+        .logo, .image {
+            width: 110px; /* Adjusted width for consistency */
             height: auto;
-            margin: 5px 0;
+            margin: 5px auto; /* Center the image horizontally */
         }
         h1, h2 {
             margin: 5px 0;
+        }
+        .image {
+            width: 150px; /* Resize the image between h2 and the first text box */
+            height: auto;
+            margin: 10px auto; /* Center and provide spacing around the image */
         }
         input[type="text"] {
             width: 100%;
@@ -58,11 +64,6 @@
         .hidden {
             display: none;
         }
-        @media (max-height: 600px) {
-            body, html {
-                align-items: flex-start; /* Prevents cutting off on smaller devices */
-            }
-        }
     </style>
 </head>
 <body>
@@ -72,7 +73,7 @@
         </a>
         <h1>Through the Keyhole</h1>
         <h2>Lock XXII</h2>
-         <img src="Secretorderlogocopy.gif" alt="Secret Order Logo" class="image">
+        <img src="Secretorderlogocopy.gif" alt="Secret Order Logo" class="image">
         <input type="text" id="keyTwo" placeholder="Key Two">
         <input type="text" id="keyFive" placeholder="Key Five">
         <input type="text" id="secretNumber" placeholder="Secret number for the day">
