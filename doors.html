@@ -10,13 +10,12 @@
         body, html {
             margin: 0;
             padding: 0;
-            height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
             font-family: 'Alice', serif;
             background: #ffe4b5;
-            overflow: hidden;  /* Ensures the door animation is visible */
+            overflow: auto;  /* Allow scrolling */
         }
         .container {
             width: 90%;
@@ -24,38 +23,15 @@
             text-align: center;
             padding: 20px;
             box-sizing: border-box;
-            z-index: 2; /* Ensure the container is above the doors */
-            background: #ffe4b5; /* To make sure the container background matches */
-        }
-        .door {
-            position: fixed;
-            width: 50vw;
-            height: 100vh;
-            top: 0;
-            background: #ffe4b5;
-            transition: transform 1s ease-in-out;
-            z-index: 1; /* Ensure the doors are below the container */
-        }
-        #leftDoor {
-            left: 0;
-            transform: translateX(0%);
-        }
-        #rightDoor {
-            right: 0;
-            transform: translateX(0%);
+            position: relative;  /* Ensures the container is properly scaled */
         }
         .logo {
             width: 110px;
             height: auto;
-            margin-bottom: 5px;
+            margin: 5px 0;
         }
         h1, h2 {
             margin: 5px 0;
-        }
-        .image {
-            width: 100%;
-            height: auto;
-            margin: 10px auto;
         }
         input[type="text"] {
             width: 100%;
@@ -82,58 +58,49 @@
         .hidden {
             display: none;
         }
-        .fade-out {
-            animation: fadeOut 4s forwards;
-        }
-        @keyframes fadeOut {
-            to {
-                opacity: 0;
-                transform: translateY(-100%);
+        @media (max-height: 600px) {
+            body, html {
+                align-items: flex-start; /* Prevents cutting off on smaller devices */
             }
         }
     </style>
 </head>
 <body>
-    <div id="leftDoor" class="door"></div>
-    <div id="rightDoor" class="door"></div>
     <div class="container">
         <a href="https://www.whitebranches.com/keyhole" target="_blank">
             <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
         </a>
         <h1>Through the Keyhole</h1>
-        <h2>Lock TBA</h2>
-        <img src="Secretorderlogocopy.gif" alt="Secret Order Logo" class="image">
-        <input type="text" id="cuba" placeholder="Enter first location">
-        <input type="text" id="portorico" placeholder="Enter location">
-        <input type="text" id="philippine-islands" placeholder="Enter location">
-        <input type="text" id="usa" placeholder="Enter USA...">
+        <h2>Lock XXII</h2>
+        <input type="text" id="keyTwo" placeholder="Key Two">
+        <input type="text" id="keyFive" placeholder="Key Five">
+        <input type="text" id="secretNumber" placeholder="Secret number for the day">
+        <input type="text" id="keySeven" placeholder="Key Seven">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
     </div>
-    <audio id="successSound" src="badge-coin-win-14675.mp3"></audio>
-    <audio id="errorSound" src="wah-wah-sad-trombone-6347.mp3"></audio>
+    <audio id="backgroundMusic" src="placeholder.mp3" autoplay></audio>
+    <audio id="successSound" src="chorus.mp3"></audio>
+    <audio id="errorSound" src="sputter.mp3"></audio>
     <script>
-        let attempts = 0;
-        const correctAnswers = ["cuba", "portorico", "philippine islands", "usa"];
+        const correctAnswers = ["monday", "march", "15", "2021"];
 
         function checkAnswer() {
-            const cubaInput = document.getElementById('cuba').value.trim().toLowerCase();
-            const portoricoInput = document.getElementById('portorico').value.trim().toLowerCase();
-            const philippineIslandsInput = document.getElementById('philippine-islands').value.trim().toLowerCase();
-            const usaInput = document.getElementById('usa').value.trim().toLowerCase();
-            const errorMessage = document.getElementById('errorMessage');
-            const isCorrect = cubaInput === correctAnswers[0] && portoricoInput === correctAnswers[1] && 
-                              philippineIslandsInput === correctAnswers[2] && usaInput === correctAnswers[3];
+            const inputs = document.querySelectorAll('input[type="text"]');
+            const isCorrect = Array.from(inputs).every((input, index) => 
+                input.value.trim().toLowerCase() === correctAnswers[index]
+            );
 
             if (isCorrect) {
-                document.getElementById('leftDoor').style.transform = 'translateX(-100%)';
-                document.getElementById('rightDoor').style.transform = 'translateX(100%)';
+                document.getElementById('successSound').play();
                 setTimeout(() => {
-                    window.location.href = 'final.html';  // Redirect to your next page
-                }, 1000);  // Adjust the delay as needed
+                    window.location.href = 'secretsoc.html';
+                }, 2000);  // Delay for transition
             } else {
-                errorMessage.textContent = "Incorrect answers, please try again.";
-                errorMessage.style.display = 'block';
+                inputs.forEach(input => input.value = ''); // Reset all inputs
+                document.getElementById('errorSound').play();
+                document.getElementById('errorMessage').textContent = "Incorrect answers, please try again.";
+                document.getElementById('errorMessage').classList.remove('hidden');
             }
         }
     </script>
