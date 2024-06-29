@@ -1,1 +1,156 @@
-its almost done
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Through the Keyhole</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
+            background: #ffe4b5;
+        }
+        .container {
+            width: 90%;
+            max-width: 300px;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .logo {
+            width: 110px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+        h1, h2 {
+            margin: 10px 0;
+        }
+        .image-container {
+            position: relative;
+            width: 100%;
+            max-width: 300px;
+            height: 275px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+        .fade {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            animation: crossfade 5s infinite;
+        }
+        @keyframes crossfade {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        #image2 {
+            animation-delay: 2.5s;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0 10px; /* Set consistent spacing */
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+        .hidden {
+            display: none;
+        }
+        .fade-out {
+            animation: fadeOut 2s forwards;
+        }
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="https://meyersign.com/2021/09/tales-from-the-magic-skagit-from-these-waters/" target="_blank">
+            <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
+        </a>
+        <h1>Through the Keyhole</h1>
+        <h2>Lock XXI</h2>
+        <div class="image-container">
+            <img src="legend1.png" class="fade" alt="Legend 1" id="image1">
+            <img src="legend2.png" class="fade" alt="Legend 2" id="image2">
+        </div>
+        <input type="text" id="keyInput" placeholder="What did Rachel encamp here?">
+        <button onclick="checkAnswer()">Submit</button>
+        <p id="errorMessage" class="error-message hidden"></p>
+    </div>
+    <audio id="drainSound" src="drain.mp3"></audio>
+    <audio id="triumphSound" src="triumph.mp3" preload="auto"></audio>
+    <script>
+        let attempts = 0;
+        const correctAnswer = "heART";
+
+function checkAnswer() {
+    const keyInput = document.getElementById('keyInput');
+    const errorMessage = document.getElementById('errorMessage');
+    const drainSound = document.getElementById('drainSound');
+    const input = keyInput.value.trim();
+
+    keyInput.value = ''; // Reset input field every time submit is clicked
+
+    // Check if the input exactly matches "heART"
+    if (input === "heART") {
+        document.querySelector('.container').classList.add('fade-out');
+        setTimeout(() => {
+            window.location.href = 'final.html';
+        }, 2000);
+        playTriumphSound();
+    } else {
+        attempts++;
+        drainSound.play();
+        errorMessage.style.display = 'block'; // Ensure error message is visible
+        switch (attempts) {
+            case 1:
+                errorMessage.textContent = "Look up. Look down. What you seek is near the ground.";
+                break;
+            case 2:
+                errorMessage.textContent = "This one is case sensitive.";
+                break;
+            case 3:
+                errorMessage.textContent = "Opening a new tab for help.";
+                window.open('https://meyersign.com/2021/09/tales-from-the-magic-skagit-from-these-waters/', '_blank');
+                break;
+        }
+    }
+}
+
+function playTriumphSound() {
+    const triumphSound = document.getElementById('triumphSound');
+    triumphSound.play();
+}
+    </script>
+</body>
+</html>
