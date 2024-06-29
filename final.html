@@ -17,6 +17,7 @@
             text-align: center;
             margin: 0;
             background: #ffe4b5;
+            overflow-x: hidden;  /* Prevent horizontal scrolling */
         }
         .container {
             width: 90%;
@@ -34,10 +35,15 @@
             margin: 10px 0;
         }
         .image-container {
-            width: 100%;
-            max-width: 300px;
-            height: 285px; /* Adjusted height */
-            margin: 10px auto; /* Placeholder for image */
+            width: 100%;  /* Ensures the container fits within the parent container */
+            max-width: 300px;  /* Restricts the width to fit mobile screens */
+            text-align: center;
+            margin: 10px auto;
+        }
+        .image-container img {
+            width: 150px;  /* Ideal width for mobile viewing */
+            height: auto;  /* Maintain aspect ratio */
+            margin: auto;  /* Center image horizontally */
         }
         input[type="text"] {
             width: 100%;
@@ -74,15 +80,14 @@
         <h1>Through the Keyhole</h1>
         <h2>Lock XXI</h2>
         <div class="image-container">
-            <!-- Replace 'placeholder.jpg' with your desired image later -->
-            <img src="5sec.gif" alt="Placeholder Image">
+            <img src="5sec.gif" alt="Placeholder Image" class="image">
         </div>
         <input type="text" id="answerInput" placeholder="Enter your answer here">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
     </div>
     <audio id="transitionSound" src="harp.mp3" preload="auto"></audio>
-    <audio id="errorSound" src="drum.mp3" preload="auto"></audio> <!-- Placeholder for error sound -->
+    <audio id="errorSound" src="drum.mp3" preload="auto"></audio>
     <script>
         function checkAnswer() {
             const answerInput = document.getElementById('answerInput');
