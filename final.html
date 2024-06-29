@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Through the Keyhole</title>
-    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/png">
+    <title>Through the Keyhole - Final Challenge</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
-        body, html {
-            margin: 0;
-            padding: 0;
+        body {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+            min-height: 100vh;
             font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
             background: #ffe4b5;
-            overflow: auto;  /* Allow scrolling */
         }
         .container {
             width: 90%;
@@ -23,20 +24,25 @@
             text-align: center;
             padding: 20px;
             box-sizing: border-box;
-            position: relative;  /* Ensures the container is properly scaled */
         }
-        .logo, .image {
-            width: 150px; /* Adjusted width for logo and image */
+        .logo {
+            width: 110px;
             height: auto;
-            margin: 5px auto; /* Center the image horizontally */
+            margin-bottom: 5px;
         }
         h1, h2 {
-            margin: 5px 0;
+            margin: 10px 0;
+        }
+        .image-container {
+            width: 100%;
+            max-width: 300px;
+            height: 285px; /* Adjusted height */
+            margin: 10px auto; /* Placeholder for image */
         }
         input[type="text"] {
             width: 100%;
             padding: 10px;
-            margin: 10px 0;
+            margin: 10px 0 10px; /* Set consistent spacing */
             box-sizing: border-box;
         }
         button {
@@ -58,11 +64,6 @@
         .hidden {
             display: none;
         }
-        @media (max-height: 600px) {
-            body, html {
-                align-items: flex-start; /* Prevents cutting off on smaller devices */
-            }
-        }
     </style>
 </head>
 <body>
@@ -72,37 +73,44 @@
         </a>
         <h1>Through the Keyhole</h1>
         <h2>Lock XXI</h2>
-        <img src="Secretorderlogocopy.gif" alt="Secret Order Logo" class="image">
-        <input type="text" id="keyTwo" placeholder="Key Two">
-        <input type="text" id="keyFive" placeholder="Key Five">
-        <input type="text" id="secretNumber" placeholder="Secret number for the day">
-        <input type="text" id="keySeven" placeholder="Key Seven">
+        <div class="image-container">
+            <!-- Replace 'placeholder.jpg' with your desired image later -->
+            <img src="placeholder.jpg" alt="Placeholder Image">
+        </div>
+        <input type="text" id="answerInput" placeholder="Enter your answer here">
         <button onclick="checkAnswer()">Submit</button>
         <p id="errorMessage" class="error-message hidden"></p>
     </div>
-    <audio id="backgroundMusic" src="placeholder.mp3" autoplay></audio>
-    <audio id="successSound" src="chorus.mp3"></audio>
-    <audio id="errorSound" src="sputter.mp3"></audio>
+    <audio id="transitionSound" src="harp.mp3" preload="auto"></audio>
+    <audio id="errorSound" src="drum.mp3" preload="auto"></audio> <!-- Placeholder for error sound -->
     <script>
-        const correctAnswers = ["monday", "march", "15", "2021"];
-
         function checkAnswer() {
-            const inputs = document.querySelectorAll('input[type="text"]');
-            const isCorrect = Array.from(inputs).every((input, index) => 
-                input.value.trim().toLowerCase() === correctAnswers[index]
-            );
+            const answerInput = document.getElementById('answerInput');
+            const errorMessage = document.getElementById('errorMessage');
+            const correctAnswer = "tulip";
+            const userInput = answerInput.value.trim().toLowerCase();
 
-            if (isCorrect) {
-                document.getElementById('successSound').play();
+            if (userInput === correctAnswer) {
+                document.getElementById('transitionSound').play();
                 setTimeout(() => {
-                    window.location.href = 'secretsoc.html';
-                }, 2000);  // Delay for transition
+                    window.location.href = 'doors.html';
+                }, 4000); // Add delay for the sound to play and transition effect
             } else {
-                inputs.forEach(input => input.value = ''); // Reset all inputs
-                document.getElementById('errorSound').play();
-                document.getElementById('errorMessage').textContent = "Incorrect answers, please try again.";
-                document.getElementById('errorMessage').classList.remove('hidden');
+                answerInput.value = ''; // Reset the input field
+                document.getElementById('errorSound').play(); // Play error sound
+                errorMessage.textContent = getErrorMessage();
+                errorMessage.classList.remove('hidden');
             }
+        }
+
+        function getErrorMessage() {
+            const errorMessages = [
+                "Try again.",
+                "Convert the numbered images, in the order you saw them in the film, using the cipher key in your book.",
+                "The answer has five letters.",
+                "Hint: Ben Hur and horses are involved."
+            ];
+            return errorMessages[Math.floor(Math.random() * errorMessages.length)];
         }
     </script>
 </body>
