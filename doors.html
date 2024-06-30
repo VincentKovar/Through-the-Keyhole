@@ -24,20 +24,20 @@
             text-align: center;
             padding: 20px;
             box-sizing: border-box;
-            position: relative; /* Ensures the container is properly scaled */
+            position: relative;
         }
         .logo, .image {
-            width: 110px; /* Adjusted width for consistency */
+            width: 110px;
             height: auto;
-            margin: 5px auto; /* Center the image horizontally */
+            margin: 5px auto;
         }
         h1, h2 {
             margin: 5px 0;
         }
         .image {
-            width: 180px; /* Resize the image between h2 and the first text box */
+            width: 180px;
             height: auto;
-            margin: 10px auto; /* Center and provide spacing around the image */
+            margin: 10px auto;
         }
         input[type="text"] {
             width: 100%;
@@ -81,34 +81,24 @@
         <button onclick="checkAnswer()">Cast Spell</button>
         <p id="errorMessage" class="error-message hidden"></p>
     </div>
-    <audio id="backgroundMusic" src="hiddenworkshop.mp3"></audio>
+    <audio id="backgroundMusic" src="hiddenworkshop.mp3" preload="auto"></audio>
     <audio id="successSound" src="chorus.mp3"></audio>
     <audio id="errorSound" src="sputter.mp3"></audio>
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const playMusic = urlParams.get('playMusic');
-        if (playMusic === 'true') {
-            const enterButton = document.createElement('button');
-            enterButton.innerText = 'Enter the Keyhole';
-            enterButton.onclick = function () {
-                document.getElementById('backgroundMusic').play();
-                enterButton.remove();
-            };
-            document.body.appendChild(enterButton);
-        }
         const correctAnswers = ["monday", "march", "15", "2021"];
         function checkAnswer() {
             const inputs = document.querySelectorAll('input[type="text"]');
             const isCorrect = Array.from(inputs).every((input, index) => 
                 input.value.trim().toLowerCase() === correctAnswers[index]
             );
+
             if (isCorrect) {
                 document.getElementById('successSound').play();
                 setTimeout(() => {
                     window.location.href = 'secretsoc.html';
-                }, 3500);
+                }, 3500);  // Delay for transition
             } else {
-                inputs.forEach(input => input.value = '');
+                inputs.forEach(input => input.value = ''); // Reset all inputs
                 document.getElementById('errorSound').play();
                 document.getElementById('errorMessage').textContent = "Incorrect answers, please try again.";
                 document.getElementById('errorMessage').classList.remove('hidden');
