@@ -82,6 +82,11 @@
         <p id="errorMessage" class="error-message hidden"></p>
     </div>
     <audio id="backgroundMusic" src="hiddenworkshop.mp3" autoplay loop></audio>
+<script>
+  setTimeout(() => {
+    document.getElementById('backgroundMusic').play();
+  }, 100); // Delay for 100ms
+</script>
     <audio id="successSound" src="chorus.mp3"></audio>
     <audio id="errorSound" src="sputter.mp3"></audio>
     <script>
