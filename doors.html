@@ -67,8 +67,10 @@
     </style>
 </head>
 <body>
-    <script>
-  window.onload = function() {
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const playMusic = urlParams.get('playMusic');
+  if (playMusic === 'true') {
     document.getElementById('backgroundMusic').play();
   }
 </script>
