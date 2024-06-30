@@ -108,9 +108,9 @@ function checkAnswer() {
   if (userInput === correctAnswer) {
     document.querySelector('.container').classList.add('fade-left');
     document.getElementById('transitionSound').play();
-    setTimeout(() => {
-      window.location.href = 'doors.html';
-    }, 4000); // Add delay for the sound to play and transition effect
+setTimeout(() => {
+  window.location.href = 'doors.html?playMusic=true';
+}, 4000);
   } else {
     answerInput.value = ''; // Reset the input field
     document.getElementById('errorSound').play(); // Play error sound
