@@ -15,8 +15,8 @@
             align-items: center;
             font-family: 'Alice', serif;
             background: #ffe4b5;
-            overflow-x: hidden;
-            overflow-y: auto;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+            overflow-y: auto; /* Allow vertical scrolling if needed */
         }
         .container {
             width: 90%;
@@ -24,28 +24,30 @@
             text-align: center;
             padding: 20px;
             box-sizing: border-box;
-            position: relative;
+            position: relative; /* Ensures the container is properly scaled */
         }
         .logo, .image {
-            width: 110px;
+            width: 110px; /* Adjusted width for consistency */
             height: auto;
-            margin: 5px auto;
+            margin: 5px auto; /* Center the image horizontally */
         }
         h1, h2 {
             margin: 5px 0;
         }
         .image {
-            width: 180px;
+            width: 180px; /* Resize the image between h2 and the first text box */
             height: auto;
-            margin: 10px auto;
+            margin: 10px auto; /* Center and provide spacing around the image */
         }
-        input[type="text"], button {
+        input[type="text"] {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
             box-sizing: border-box;
         }
         button {
+            width: 100%;
+            padding: 10px;
             background-color: #007bff;
             color: white;
             border: none;
@@ -94,9 +96,9 @@
                 document.getElementById('successSound').play();
                 setTimeout(() => {
                     window.location.href = 'secretsoc.html';
-                }, 3500);
+                }, 3500);  // Delay for transition
             } else {
-                inputs.forEach(input => input.value = ''); 
+                inputs.forEach(input => input.value = ''); // Reset all inputs
                 document.getElementById('errorSound').play();
                 document.getElementById('errorMessage').textContent = "Incorrect answers, please try again.";
                 document.getElementById('errorMessage').classList.remove('hidden');
