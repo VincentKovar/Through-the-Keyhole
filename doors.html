@@ -67,14 +67,7 @@
     </style>
 </head>
 <body>
-<script>
-  const urlParams = new URLSearchParams(window.location.search);
-  const playMusic = urlParams.get('playMusic');
-  if (playMusic === 'true') {
-    document.getElementById('backgroundMusic').play();
-  }
-</script>
-        <div class="container">
+    <div class="container">
         <a href="https://www.whitebranches.com/keyhole" target="_blank">
             <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
         </a>
@@ -88,25 +81,34 @@
         <button onclick="checkAnswer()">Cast Spell</button>
         <p id="errorMessage" class="error-message hidden"></p>
     </div>
-    <audio id="backgroundMusic" src="hiddenworkshop.mp3" autoplay></audio>
+    <audio id="backgroundMusic" src="hiddenworkshop.mp3"></audio>
     <audio id="successSound" src="chorus.mp3"></audio>
     <audio id="errorSound" src="sputter.mp3"></audio>
     <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const playMusic = urlParams.get('playMusic');
+        if (playMusic === 'true') {
+            const enterButton = document.createElement('button');
+            enterButton.innerText = 'Enter the Keyhole';
+            enterButton.onclick = function () {
+                document.getElementById('backgroundMusic').play();
+                enterButton.remove();
+            };
+            document.body.appendChild(enterButton);
+        }
         const correctAnswers = ["monday", "march", "15", "2021"];
-
         function checkAnswer() {
             const inputs = document.querySelectorAll('input[type="text"]');
             const isCorrect = Array.from(inputs).every((input, index) => 
                 input.value.trim().toLowerCase() === correctAnswers[index]
             );
-
             if (isCorrect) {
                 document.getElementById('successSound').play();
                 setTimeout(() => {
                     window.location.href = 'secretsoc.html';
-                }, 3500);  // Delay for transition
+                }, 3500);
             } else {
-                inputs.forEach(input => input.value = ''); // Reset all inputs
+                inputs.forEach(input => input.value = '');
                 document.getElementById('errorSound').play();
                 document.getElementById('errorMessage').textContent = "Incorrect answers, please try again.";
                 document.getElementById('errorMessage').classList.remove('hidden');
