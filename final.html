@@ -109,7 +109,7 @@ function checkAnswer() {
     document.querySelector('.container').classList.add('fade-left');
     document.getElementById('transitionSound').play();
 setTimeout(() => {
-  window.location.href = 'doors.html?playMusic=true';
+    window.location.href = 'doors.html';  // Direct navigation without parameters
 }, 4000);
   } else {
     answerInput.value = ''; // Reset the input field
