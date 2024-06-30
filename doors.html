@@ -15,8 +15,8 @@
             align-items: center;
             font-family: 'Alice', serif;
             background: #ffe4b5;
-            overflow-x: hidden; /* Prevent horizontal scrolling */
-            overflow-y: auto; /* Allow vertical scrolling if needed */
+            overflow-x: hidden;
+            overflow-y: auto;
         }
         .container {
             width: 90%;
@@ -39,15 +39,13 @@
             height: auto;
             margin: 10px auto;
         }
-        input[type="text"] {
+        input[type="text"], button {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
             box-sizing: border-box;
         }
         button {
-            width: 100%;
-            padding: 10px;
             background-color: #007bff;
             color: white;
             border: none;
@@ -81,7 +79,7 @@
         <button onclick="checkAnswer()">Cast Spell</button>
         <p id="errorMessage" class="error-message hidden"></p>
     </div>
-    <audio id="backgroundMusic" src="hiddenworkshop.mp3" autoplay></audio>
+    <audio id="backgroundMusic" src="hiddenworkshop.mp3" autoplay loop></audio>
     <audio id="successSound" src="chorus.mp3"></audio>
     <audio id="errorSound" src="sputter.mp3"></audio>
     <script>
@@ -96,9 +94,9 @@
                 document.getElementById('successSound').play();
                 setTimeout(() => {
                     window.location.href = 'secretsoc.html';
-                }, 3500);  // Delay for transition
+                }, 3500);
             } else {
-                inputs.forEach(input => input.value = ''); // Reset all inputs
+                inputs.forEach(input => input.value = ''); 
                 document.getElementById('errorSound').play();
                 document.getElementById('errorMessage').textContent = "Incorrect answers, please try again.";
                 document.getElementById('errorMessage').classList.remove('hidden');
