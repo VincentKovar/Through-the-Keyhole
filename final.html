@@ -35,20 +35,20 @@
             margin: 10px 0;
         }
         .image-container {
-            width: 100%;  /* Ensures the container fits within the parent container */
-            max-width: 300px;  /* Restricts the width to fit mobile screens */
+            width: 100%;
+            max-width: 300px;
             text-align: center;
             margin: 10px auto;
         }
         .image-container img {
-            width: 190px;  /* Ideal width for mobile viewing */
-            height: auto;  /* Maintain aspect ratio */
-            margin: auto;  /* Center image horizontally */
+            width: 190px;
+            height: auto;
+            margin: auto;
         }
         input[type="text"] {
             width: 100%;
             padding: 10px;
-            margin: 10px 0 10px; /* Set consistent spacing */
+            margin: 10px 0;
             box-sizing: border-box;
         }
         button {
@@ -71,15 +71,14 @@
             display: none;
         }
         .fade-left {
-  animation: fadeLeft 2s forwards;
-}
-
-@keyframes fadeLeft {
-  to {
-    opacity: 0;
-    transform: translateX(-100%);
-  }
-}
+            animation: fadeLeft 2s forwards;
+        }
+        @keyframes fadeLeft {
+            to {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+        }
     </style>
 </head>
 <body>
@@ -99,26 +98,27 @@
     <audio id="transitionSound" src="harp.mp3" preload="auto"></audio>
     <audio id="errorSound" src="drum.mp3" preload="auto"></audio>
     <script>
-function checkAnswer() {
-  const answerInput = document.getElementById('answerInput');
-  const errorMessage = document.getElementById('errorMessage');
-  const correctAnswer = "tulip";
-  const userInput = answerInput.value.trim().toLowerCase();
+        function checkAnswer() {
+            const answerInput = document.getElementById('answerInput');
+            const errorMessage = document.getElementById('errorMessage');
+            const correctAnswer = "tulip";
+            const userInput = answerInput.value.trim().toLowerCase();
 
-  if (userInput === correctAnswer) {
-    document.querySelector('.container').classList.add('fade-left');
-    document.getElementById('transitionSound').play();
-setTimeout(() => {
-    window.location.href = 'doors.html';  // Direct navigation without parameters
-}, 4000);
-  } else {
-    answerInput.value = ''; // Reset the input field
-    document.getElementById('errorSound').play(); // Play error sound
-    errorMessage.textContent = getErrorMessage();
-    errorMessage.classList.remove('hidden');
-  }
-}
-            function getErrorMessage() {
+            if (userInput === correctAnswer) {
+                document.querySelector('.container').classList.add('fade-left');
+                document.getElementById('transitionSound').play();
+                setTimeout(() => {
+                    window.location.href = 'doors.html';
+                }, 4000);  // This delay allows the transition animation and sound to play out
+            } else {
+                answerInput.value = ''; // Reset the input field
+                document.getElementById('errorSound').play(); // Play error sound
+                errorMessage.textContent = getErrorMessage();
+                errorMessage.classList.remove('hidden');
+            }
+        }
+
+        function getErrorMessage() {
             const errorMessages = [
                 "Try again.",
                 "Convert the numbered images, in the order you saw them in the film, using the cipher key in your book.",
