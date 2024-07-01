@@ -69,12 +69,14 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) rotate(90deg); /* Ensure arrow points correctly by default */
-            width: 50px; /* Adjust size as needed */
-            height: 50px; /* Adjust size as needed */
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
             background-image: url('finger.png');
-            background-size: contain;
+            background-size: cover;
+            background-repeat: no-repeat;
             pointer-events: none;
+            display: none; /* Start with the arrow hidden */
         }
     </style>
 </head>
@@ -99,6 +101,8 @@
                     if (result.state === 'denied') {
                         showError("Location permission is denied.");
                     }
+                }).catch((error) => {
+                    showError("Error checking geolocation permission: " + error);
                 });
             }
         });
@@ -107,7 +111,7 @@
         const destinationLongitude = -122.33687234141873;
         let watchId;
         let signalInterval;
-        
+
         const distanceCategories = [
             { name: "Very Close", threshold: 50 },
             { name: "Close", threshold: 200 },
@@ -121,7 +125,7 @@
                 watchId = navigator.geolocation.watchPosition(updatePosition, handleError, { enableHighAccuracy: true });
                 document.getElementById('start-button').textContent = 'Stop';
                 document.getElementById('start-button').onclick = stopTracking;
-                setVisibility('arrow', true); // Show the arrow when tracking starts
+                document.getElementById('arrow').style.display = 'block'; // Show the arrow when tracking starts
             } else {
                 showError("Geolocation is not supported by this browser.");
             }
@@ -135,8 +139,7 @@
             document.getElementById('start-button').textContent = 'Start';
             document.getElementById('start-button').onclick = startTracking;
             document.getElementById('distance-feedback').innerText = 'Distance to destination: Tracking stopped';
-            setVisibility('open-button', false); // Hide open button when tracking stops
-            setVisibility('arrow', false); // Hide the arrow when tracking stops
+            document.getElementById('arrow').style.display = 'none'; // Hide the arrow when tracking stops
         }
 
         function updatePosition(position) {
@@ -147,9 +150,9 @@
             document.getElementById('distance-feedback').innerText = `You are: ${category}`;
 
             if (distance <= 25) {
-                setVisibility('open-button', true);
+                document.getElementById('open-button').style.display = 'block';
             } else {
-                setVisibility('open-button', false);
+                document.getElementById('open-button').style.display = 'none';
             }
 
             updateArrow(position, calculateBearing(latitude, longitude, destinationLatitude, destinationLongitude));
@@ -241,15 +244,6 @@
 
         function showError(message) {
             document.getElementById('error-message').innerText = message;
-        }
-
-        function setVisibility(elementId, isVisible) {
-            const element = document.getElementById(elementId);
-            element.style.display = isVisible ? 'block' : 'none';
-        }
-
-        function openSlider() {
-            window.location.href = 'slider.html';
         }
     </script>
 </body>
