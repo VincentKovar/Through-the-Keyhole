@@ -22,11 +22,11 @@
             max-width: 300px;
             padding: 20px;
             box-sizing: border-box;
-            position: relative; /* Essential for positioning children absolutely */
+            position: relative;
         }
         .logo {
-            width: 110px; /* Restored original size */
-            margin-bottom: 20px; /* Spacing for visual clarity */
+            width: 110px;
+            margin-bottom: 30px; /* Provides sufficient space between elements */
             transition: transform 0.3s ease-in-out;
         }
         h1, h2 {
@@ -46,12 +46,12 @@
             background-color: #0056b3;
         }
         .distance-feedback {
-            margin: 10px 0;
+            margin: 20px 0; /* Increased margin for better visual separation */
             font-size: 1.2em;
         }
         #arrow {
             position: absolute;
-            top: 180px; /* Adjusted to position correctly between logo and H1 */
+            top: 170px; /* Adjust this value to ensure no overlap with text */
             left: 50%;
             transform: translateX(-50%) rotate(90deg);
             width: 50px;
@@ -74,145 +74,147 @@
         <h1>Through the Keyhole</h1>
         <h2>Lock XVII</h2>
         <div id="distance-feedback" class="distance-feedback">Distance to destination: Calculating...</div>
-        <button id="start-button" onclick="startTracking()">Start</button>
-        <button id="open-button" onclick="openSlider()" style="display: none;">Open</button>
+        <button id="start-button">Start</button>
+        <button id="open-button" style="display: none;">Open</button>
         <div id="error-message"></div>
         <audio id="beep-audio" src="beep.mp3"></audio>
     </div>
     <script>
-        const DESTINATION_LATITUDE = 48.41890859784646;
-        const DESTINATION_LONGITUDE = -122.33687234141873;
-        const BEARING_ADJUSTMENT = 90;
-        const VERY_FAR_INTERVAL = 4000; // One signal every 4 seconds
-        const CLOSE_INTERVALS = {
-            'Very Close': 800,
-            'Close': 2000,
-            'Getting Closer': 1000,
-            'Far': 3000,
-            'Very Far': VERY_FAR_INTERVAL
-        };
+        class GeoCacheGame {
+            static EARTH_RADIUS = 6371; // Earth's radius in kilometers
 
-        let watchId, lastUpdateTimestamp = 0;
-
-        function startTracking() {
-            if (navigator.geolocation) {
-                watchId = navigator.geolocation.watchPosition(updatePosition, handleError, { enableHighAccuracy: true });
-                document.getElementById('start-button').textContent = 'Stop';
-                document.getElementById('start-button').onclick = stopTracking;
-                document.getElementById('arrow').style.display = 'block'; // Ensure arrow is visible when tracking starts
-            } else {
-                showError("Geolocation is not supported by this browser.");
+            constructor() {
+                this.destinationLatitude = 48.41890859784646;
+                this.destinationLongitude = -122.33687234141873;
+                this.watchId = null;
+                this.lastUpdateTimestamp = 0;
+                this.feedbackInterval = 4000; // initial interval when very far
+                this.setupEventListeners();
             }
-        }
 
-        function stopTracking() {
-            if (watchId) {
-                navigator.geolocation.clearWatch(watchId);
-                watchId = null;
+            setupEventListeners() {
+                document.getElementById('start-button').addEventListener('click', () => this.startTracking());
+                document.getElementById('open-button').addEventListener('click', () => this.openSlider());
             }
-            clearInterval(signalInterval);
-            document.getElementById('start-button').textContent = 'Start';
-            document.getElementById('start-button').onclick = startTracking;
-            document.getElementById('distance-feedback').innerText = 'Distance to destination: Tracking stopped';
-            document.getElementById('open-button').style.display = 'none';
-            document.getElementById('arrow').style.display = 'none';
-        }
 
-        function updatePosition(position) {
-            const now = Date.now();
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
-            const distance = calculateSimpleDistance(latitude, longitude, DESTINATION_LATITUDE, DESTINATION_LONGITUDE);
-            const category = getDistanceCategory(distance);
-            const interval = CLOSE_INTERVALS[category] || VERY_FAR_INTERVAL;
-            
-            document.getElementById('distance-feedback').innerText = `Distance to destination: ${category}`;
-            if (distance <= 25) {
-                document.getElementById('open-button').style.display = 'block';
-            } else {
+            startTracking() {
+                if (navigator.geolocation) {
+                    this.watchId = navigator.geolocation.watchPosition(
+                        this.updatePosition.bind(this), 
+                        this.handleError.bind(this), 
+                        { enableHighAccuracy: true }
+                    );
+                    document.getElementById('start-button').textContent = 'Stop';
+                } else {
+                    this.showError("Geolocation is not supported by this browser.");
+                }
+            }
+
+            stopTracking() {
+                if (this.watchId !== null) {
+                    navigator.geolocation.clearWatch(this.watchId);
+                    this.watchId = null;
+                    this.resetUI();
+                }
+            }
+
+            updatePosition(position) {
+                const now = Date.now();
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                const distance = this.calculateDistance(latitude, longitude);
+                this.updateFeedback(distance);
+
+                if (now - this.lastUpdateTimestamp >= this.feedbackInterval) {
+                    this.lastUpdateTimestamp = now;
+                    this.updateArrow(latitude, longitude);
+                    this.provideFeedback();
+                }
+            }
+
+            updateFeedback(distance) {
+                const feedbackElement = document.getElementById('distance-feedback');
+                if (distance < 50) {
+                    feedbackElement.innerText = "Very Close";
+                    document.getElementById('open-button').style.display = 'block';
+                } else if (distance < 200) {
+                    feedbackElement.innerText = "Close";
+                } else if (distance < 400) {
+                    feedbackElement.innerText = "Getting Closer";
+                } else if (distance < 1000) {
+                    feedbackElement.innerText = "Far";
+                } else {
+                    feedbackElement.innerText = "Very Far";
+                }
+            }
+
+            updateArrow(lat, lon) {
+                const bearing = this.calculateBearing(lat, lon) + 90;
+                const arrow = document.getElementById('arrow');
+                arrow.style.transform = `translateX(-50%) rotate(${bearing}deg)`;
+            }
+
+            provideFeedback() {
+                const logo = document.getElementById('logo');
+                logo.classList.add('pulse');
+                setTimeout(() => logo.classList.remove('pulse'), 300);
+                navigator.vibrate?.(200);
+                document.getElementById('beep-audio').play();
+            }
+
+            calculateDistance(lat1, lon1) {
+                const lat2 = this.destinationLatitude;
+                const lon2 = this.destinationLongitude;
+                const dLat = (lat2 - lat1) * Math.PI / 180;
+                const dLon = (lon2 - lon1) * Math.PI / 180;
+                const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                return GeoCacheGame.EARTH_RADIUS * c * 1000; // Convert to meters
+            }
+
+            calculateBearing(lat1, lon1) {
+                const lat2 = this.destinationLatitude;
+                const lon2 = this.destinationLongitude;
+                const y = Math.sin(lon2 - lon1) * Math.cos(lat2);
+                const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
+                return Math.atan2(y, x) * 180 / Math.PI;
+            }
+
+            handleError(error) {
+                let message = "An unknown error occurred.";
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        message = "User denied the request for Geolocation.";
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        message = "Location information is unavailable.";
+                        break;
+                    case error.TIMEOUT:
+                        message = "The request to get user location timed out.";
+                        break;
+                }
+                this.showError(message);
+            }
+
+            showError(message) {
+                document.getElementById('error-message').innerText = message;
+            }
+
+            resetUI() {
+                document.getElementById('start-button').textContent = 'Start';
                 document.getElementById('open-button').style.display = 'none';
+                document.getElementById('arrow').style.display = 'none';
+                document.getElementById('distance-feedback').innerText = 'Distance to destination: Tracking stopped';
             }
-            
-            if (now - lastUpdateTimestamp >= interval) {
-                lastUpdateTimestamp = now;
-                const bearing = calculateBearing(latitude, longitude, DESTINATION_LATITUDE, DESTINATION_LONGITUDE);
-                updateArrow(bearing);
-                provideFeedback();
+
+            openSlider() {
+                window.location.href = 'slider.html';
             }
         }
 
-        function updateArrow(bearing) {
-            const arrow = document.getElementById('arrow');
-            const direction = bearing + BEARING_ADJUSTMENT;
-            arrow.style.transform = `translateX(-50%) rotate(${direction}deg)`;
-        }
-
-        function provideFeedback() {
-            const logo = document.getElementById('logo');
-            logo.classList.add('pulse');
-            setTimeout(() => logo.classList.remove('pulse'), 300);
-            if (navigator.vibrate) {
-                navigator.vibrate([200]);
-            }
-            const beepAudio = document.getElementById('beep-audio');
-            beepAudio.play();
-        }
-
-        function calculateBearing(lat1, lon1, lat2, lon2) {
-            const dLon = deg2rad(lon2 - lon1);
-            const y = Math.sin(dLon) * Math.cos(deg2rad(lat2));
-            const x = Math.cos(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) - Math.sin(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(dLon);
-            const bearing = Math.atan2(y, x);
-            return (bearing * 180 / Math.PI + 360) % 360; // Normalize bearing to be between 0-360 degrees
-        }
-
-        function calculateSimpleDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Earth's radius in km
-            const dLat = deg2rad(lat2 - lat1);
-            the dLon = deg2rad(lon2 - lon1);
-            const a =
-                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-                Math.sin(dLon / 2) * Math.sin(dLon / 2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            return R * c * 1000; // Distance in meters
-        }
-
-        function deg2rad(deg) {
-            return deg * (Math.PI / 180);
-        }
-
-        function getDistanceCategory(distance) {
-            if (distance < 50) return "Very Close";
-            if (distance < 200) return "Close";
-            if (distance < 400) return "Getting Closer";
-            if (distance < 1000) return "Far";
-            return "Very Far";
-        }
-
-        function handleError(error) {
-            let message = "An unknown error occurred.";
-            switch (error.code) {
-                case error.PERMISSION_DENIED:
-                    message = "User denied the request for Geolocation.";
-                    break;
-                case error.POSITION_UNAVAILABLE:
-                    message = "Location information is unavailable.";
-                    break;
-                case error.TIMEOUT:
-                    message = "The request to get user location timed out.";
-                    break;
-            }
-            showError(message);
-        }
-
-        function showError(message) {
-            document.getElementById('error-message').innerText = message;
-        }
-
-        function openSlider() {
-            window.location.href = 'slider.html';
-        }
+        const game = new GeoCacheGame();
     </script>
 </body>
 </html>
