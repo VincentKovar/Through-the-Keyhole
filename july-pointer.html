@@ -154,13 +154,13 @@
                 arrow.style.transform = `translateX(-50%) rotate(${bearing}deg)`;
             }
 
-            provideFeedback() {
-                const logo = document.getElementById('logo');
-                logo.classList.add('pulse');
-                setTimeout(() => logo.classList.remove('pulse'), 300);
-                navigator.vibrate?.(200);
-                document.getElementById('beep-audio').play();
-            }
+           provideFeedback() {
+  const logo = document.getElementById('logo');
+  logo.classList.add('pulse');
+  setTimeout(() => logo.classList.remove('pulse'), 300);
+  navigator.vibrate?.(200);
+  document.getElementById('beep-audio').play();
+}
 
             calculateDistance(lat1, lon1) {
                 const lat2 = this.destinationLatitude;
