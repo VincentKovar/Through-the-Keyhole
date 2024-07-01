@@ -22,11 +22,11 @@
             max-width: 300px;
             padding: 20px;
             box-sizing: border-box;
-            position: relative; /* Essential for positioning children absolutely */
+            position: relative;
         }
         .logo {
-            width: 110px; /* Restored original size */
-            margin-bottom: 20px; /* Spacing for visual clarity */
+            width: 110px;
+            margin-bottom: 20px; /* Adjust as needed */
             transition: transform 0.3s ease-in-out;
         }
         h1, h2 {
@@ -59,9 +59,9 @@
         }
         #arrow {
             position: absolute;
-            top: 80px; /* Adjusted to position correctly between logo and H1 */
+            top: 140px; /* Position it below the logo */
             left: 50%;
-            transform: translateX(-50%) rotate(90deg); /* Initial rotation */
+            transform: translateX(-50%) rotate(90deg);
             width: 50px;
             height: 50px;
             background-image: url('finger.png');
@@ -83,7 +83,7 @@
         <h2>Lock XVII</h2>
         <div id="distance-feedback" class="distance-feedback">Distance to destination: Calculating...</div>
         <button id="start-button" onclick="startTracking()">Start</button>
-        <button id="open-button" onclick="openSlider()">Open</button>
+        <button id="open-button" style="display: none;" onclick="openSlider()">Open</button>
         <div id="error-message"></div>
         <audio id="beep-audio" src="beep.mp3"></audio>
     </div>
@@ -132,17 +132,14 @@
             const bearing = calculateBearing(latitude, longitude, DESTINATION_LATITUDE, DESTINATION_LONGITUDE);
 
             updateFeedback(category, distance);
-            updateArrow(bearing);
-            setFeedbackInterval(distance);
+            if (distance < 500) { // Update arrow only within this range
+                updateArrow(bearing);
+            }
         }
 
         function updateFeedback(category, distance) {
             document.getElementById('distance-feedback').innerText = `Distance to destination: ${category}`;
-            if (distance <= 25) {
-                document.getElementById('open-button').style.display = 'block';
-            } else {
-                document.getElementById('open-button').style.display = 'none';
-            }
+            document.getElementById('open-button').style.display = distance <= 25 ? 'block' : 'none'; // Show button only when very close
         }
 
         function updateArrow(bearing) {
@@ -153,10 +150,10 @@
 
         function setFeedbackInterval(distance) {
             clearInterval(signalInterval);
-            let interval = 4000; // Default interval
+            let interval = 4000; // Default interval for distances > 1000 meters
             DISTANCE_CATEGORIES.forEach(category => {
                 if (distance < category.threshold) {
-                    interval = category.interval || interval;
+                    interval = category.interval;
                 }
             });
             signalInterval = setInterval(provideFeedback, interval);
@@ -164,8 +161,9 @@
 
         function provideFeedback() {
             const logo = document.getElementById('logo');
-            logo.classList.add('pulse');
-            setTimeout(() => logo.classList.remove('pulse'), 300);
+            if (!logo.classList.contains('pulse')) {
+                logo.classList.add('pulse');
+            }
             if (navigator.vibrate) {
                 navigator.vibrate([200]);
             }
