@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Through the Keyhole</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
+            background: #ffe4b5;
+        }
+      <!-- Add an arrow element -->
+<div id="arrow"></div>
+
+<!-- Style the arrow element -->
+<style>
+  #arrow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    background-image: url('finger.png'); /* Replace with your arrow icon */
+    background-size: contain;
+    pointer-events: none; /* Make the arrow clickable */
+  }
+        .container {
+            width: 90%;
+            max-width: 300px;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .logo {
+            width: 110px;
+            height: auto;
+            margin-bottom: 5px;
+            transition: transform 0.3s ease-in-out;
+        }
+        h1, h2 {
+            margin: 5px 0;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .distance-feedback {
+            margin: 10px 0;
+            font-size: 1.2em;
+        }
+        .pulse {
+            transform: scale(1.2);
+        }
+        #open-button {
+            display: none;
+            background-color: #28a745;
+        }
+        #open-button:hover {
+            background-color: #218838;
+        }
+        #error-message {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img id="logo" src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
+        <h1>Through the Keyhole</h1>
+        <h2>Lock XVII</h2>
+        <div id="distance-feedback" class="distance-feedback">Distance to destination: Calculating...</div>
+        <button id="start-button" onclick="startTracking()">Start</button>
+        <button id="open-button" onclick="openSlider()" style="display: none;">Open</button>
+        <div id="error-message"></div>
+        <audio id="beep-audio" src="beep.mp3"></audio>
+    </div>
+    <script>
+        const destinationLatitude = 48.41890859784646;
+        const destinationLongitude = -122.33687234141873;
+        let watchId;
+        let signalInterval;
+        let lastCategory = '';
+
+        const distanceCategories = [
+            { name: "Very Close", threshold: 50 },
+            { name: "Close", threshold: 200 },
+            { name: "Getting Closer", threshold: 400 },
+            { name: "Far", threshold: 1000 },
+            { name: "Very Far", threshold: Infinity }
+        ];
+
+        // Add event listener for geolocation errors
+        navigator.geolocation.addEventListener('error', handleError);
+
+        function startTracking() {
+            if (navigator.geolocation) {
+                watchId = navigator.geolocation.watchPosition(updatePosition, handleError, { enableHighAccuracy: true });
+                document.getElementById('start-button').textContent = 'Stop';
+                document.getElementById('start-button').onclick = stopTracking;
+            } else {
+                showError("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function stopTracking() {
+            if (watchId) {
+                navigator.geolocation.clearWatch(watchId);
+            }
+            clearInterval(signalInterval); // Clear the interval
+            document.getElementById('start-button').textContent = 'Start';
+            document.getElementById('start-button').onclick = startTracking;
+            document.getElementById('distance-feedback').innerText = 'Distance to destination: Tracking stopped';
+            document.getElementById('open-button').style.display = 'none';
+        }
+
+        function updatePosition(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            const distance = calculateSimpleDistance(latitude, longitude, destinationLatitude, destinationLongitude);
+            const category = getDistanceCategory(distance);
+            document.getElementById('distance-feedback').innerText = `You are: ${category}`;
+
+            if (distance <= 25) {
+                document.getElementById('open-button').style.display = 'block';
+            } else {
+                document.getElementById('open-button').style.display = 'none';
+            }
+
+            clearInterval(signalInterval);
+            let interval = 4000;
+            if (distance < 50) {
+                interval = 800;
+            } else if (distance < 200) {
+                interval = 2000;
+            } else if (distance < 400) {
+                interval = 3000;
+            }
+            signalInterval = setInterval(() => {
+                provideFeedback(distance);
+            }, interval);
+        }
+
+        function calculateSimpleDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Earth's radius in km
+            const dLat = deg2rad(lat2 - lat1);
+            const dLon = deg2rad(lon2 - lon1);
+            const a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            const distance = R * c;
+            return distance * 1000; // Convert to meters
+        }
+
+        function deg2rad(deg) {
+            return deg * (Math.PI / 180);
+        }
+
+        function getDistanceCategory(distance) {
+            for (let category of distanceCategories) {
+                if (distance < category.threshold) {
+                    return category.name;
+                }
+            }
+            return "Unknown"; // Default category
+        }
+
+        function provideFeedback(distance) {
+            const logo = document.getElementById('logo');
+            logo.classList.add('pulse');
+            setTimeout(() => {
+                logo.classList.remove('pulse');
+            }, 300);
+
+            if (navigator.vibrate) {
+                navigator.vibrate([200]);
+            }
+            const beepAudio = document.getElementById('beep-audio');
+            beepAudio.play();
+        }
+
+        function handleError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    showError("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    showError("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    showError("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    showError("An unknown error occurred.");
+                    break;
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('error-message').innerText = message;
+        }
+
+        function openSlider() {
+            window.location.href = 'slider.html';
+        }
+      function updateArrow() {
+  const arrow = document.getElementById('arrow');
+  const destinationLatitude = 48.41890859784646;
+  const destinationLongitude = -122.33687234141873;
+  const userLatitude = position.coords.latitude;
+  const userLongitude = position.coords.longitude;
+
+  // Calculate the direction and distance to the destination
+  const direction = calculateDirection(userLatitude, userLongitude, destinationLatitude, destinationLongitude);
+  const distance = calculateSimpleDistance(userLatitude, userLongitude, destinationLatitude, destinationLongitude);
+
+  // Update the arrow's direction and position
+  arrow.style.transform = `rotate(${direction}deg)`;
+  arrow.style.top = `${distance}px`;
+}
+     function updateArrow() {
+  const arrow = document.getElementById('arrow');
+  const destinationLatitude = 48.41890859784646;
+  const destinationLongitude = -122.33687234141873;
+  const userLatitude = position.coords.latitude;
+  const userLongitude = position.coords.longitude;
+
+  // Calculate the direction to the destination
+  const bearing = calculateBearing(userLatitude, userLongitude, destinationLatitude, destinationLongitude);
+  const direction = bearing + 90; // Adjust for arrow rotation
+
+  // Calculate the distance to the destination
+  const distance = calculateSimpleDistance(userLatitude, userLongitude, destinationLatitude, destinationLongitude);
+
+  // Update the arrow's direction and position
+  arrow.style.transform = `rotate(${direction}deg)`;
+  arrow.style.top = `${distance}px`;
+}
+
+// Function to calculate the bearing (direction) between two coordinates
+function calculateBearing(lat1, lon1, lat2, lon2) {
+  const dLon = deg2rad(lon2 - lon1);
+  const dLat = deg2rad(lat2 - lat1);
+  const y = Math.sin(dLon) * Math.cos(deg2rad(lat2));
+  const x = Math.cos(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) - Math.sin(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(dLon);
+  const bearing = Math.atan2(y, x);
+  return bearing * 180 / Math.PI;
+}
+
+// Function to calculate the simple distance between two coordinates
+function calculateSimpleDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Earth's radius in km
+  const dLat = deg2rad(lat2 - lat1);
+  const dLon = deg2rad(lon2 - lon1);
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const distance = R * c;
+  return distance * 1000; // Convert to meters
+}
+
+// Function to convert degrees to radians
+function deg2rad(deg) {
+  return deg * (Math.PI / 180);
+}
+    </script>
+</body>
+</html>
