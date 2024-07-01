@@ -69,14 +69,13 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%) rotate(90deg); /* Initial rotation since the arrow points to the right */
             width: 50px;
             height: 50px;
             background-image: url('finger.png');
-            background-size: cover;
+            background-size: contain;
             background-repeat: no-repeat;
             pointer-events: none;
-            display: none; /* Start with the arrow hidden */
         }
     </style>
 </head>
@@ -93,32 +92,10 @@
         <audio id="beep-audio" src="beep.mp3"></audio>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            if (!navigator.geolocation) {
-                showError("Geolocation is not supported by your browser.");
-            } else {
-                navigator.permissions.query({name: 'geolocation'}).then(function(result) {
-                    if (result.state === 'denied') {
-                        showError("Location permission is denied.");
-                    }
-                }).catch((error) => {
-                    showError("Error checking geolocation permission: " + error);
-                });
-            }
-        });
-
         const destinationLatitude = 48.41890859784646;
         const destinationLongitude = -122.33687234141873;
         let watchId;
         let signalInterval;
-
-        const distanceCategories = [
-            { name: "Very Close", threshold: 50 },
-            { name: "Close", threshold: 200 },
-            { name: "Getting Closer", threshold: 400 },
-            { name: "Far", threshold: 1000 },
-            { name: "Very Far", threshold: Infinity }
-        ];
 
         function startTracking() {
             if (navigator.geolocation) {
@@ -139,7 +116,8 @@
             document.getElementById('start-button').textContent = 'Start';
             document.getElementById('start-button').onclick = startTracking;
             document.getElementById('distance-feedback').innerText = 'Distance to destination: Tracking stopped';
-            document.getElementById('arrow').style.display = 'none'; // Hide the arrow when tracking stops
+            document.getElementById('open-button').style.display = 'none';
+            document.getElementById('arrow').style.display = 'none';
         }
 
         function updatePosition(position) {
@@ -147,77 +125,39 @@
             const longitude = position.coords.longitude;
             const distance = calculateSimpleDistance(latitude, longitude, destinationLatitude, destinationLongitude);
             const category = getDistanceCategory(distance);
-            document.getElementById('distance-feedback').innerText = `You are: ${category}`;
+            const bearing = calculateBearing(latitude, longitude, destinationLatitude, destinationLongitude);
 
-            if (distance <= 25) {
-                document.getElementById('open-button').style.display = 'block';
-            } else {
-                document.getElementById('open-button').style.display = 'none';
-            }
+            document.getElementById('distance-feedback').innerText = `Distance to destination: ${category}`;
+            updateArrow(bearing);
 
-            updateArrow(position, calculateBearing(latitude, longitude, destinationLatitude, destinationLongitude));
-
-            clearInterval(signalInterval);
-            let interval = 4000;
-            if (distance < 50) {
-                interval = 800;
-            } else if (distance < 200) {
-                interval = 2000;
-            } else if (distance < 400) {
-                interval = 1000; // More frequent updates as players get closer
-            }
-            signalInterval = setInterval(() => {
-                provideFeedback(distance);
-            }, interval);
+            setFeedbackInterval(distance);
         }
 
-        function updateArrow(position, bearing) {
+        function updateArrow(bearing) {
             const arrow = document.getElementById('arrow');
             const direction = bearing + 90; // Adjust bearing by 90 degrees because the arrow points right
             arrow.style.transform = `translate(-50%, -50%) rotate(${direction}deg)`;
         }
 
-        function calculateBearing(lat1, lon1, lat2, lon2) {
-            const dLon = deg2rad(lon2 - lon1);
-            const y = Math.sin(dLon) * Math.cos(deg2rad(lat2));
-            const x = Math.cos(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) - Math.sin(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(dLon);
-            const bearing = Math.atan2(y, x);
-            return (bearing * 180 / Math.PI + 360) % 360; // Normalize bearing to be between 0-360 degrees
-        }
-
-        function calculateSimpleDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Earth's radius in km
-            const dLat = deg2rad(lat2 - lat1);
-            const dLon = deg2rad(lon2 - lon1);
-            const a = 
-                Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
-                Math.sin(dLon/2) * Math.sin(dLon/2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            const distance = R * c;
-            return distance * 1000; // Convert to meters
-        }
-
-        function deg2rad(deg) {
-            return deg * (Math.PI / 180);
-        }
-
-        function getDistanceCategory(distance) {
-            for (let category of distanceCategories) {
-                if (distance < category.threshold) {
-                    return category.name;
-                }
+        function setFeedbackInterval(distance) {
+            clearInterval(signalInterval);
+            let interval = 4000; // Default interval
+            if (distance < 50) {
+                interval = 800;
+            } else if (distance < 200) {
+                interval = 2000;
+            } else if (distance < 400) {
+                interval = 1000;
             }
-            return "Unknown"; // Default category
+            signalInterval = setInterval(() => {
+                provideFeedback();
+            }, interval);
         }
 
-        function provideFeedback(distance) {
+        function provideFeedback() {
             const logo = document.getElementById('logo');
             logo.classList.add('pulse');
-            setTimeout(() => {
-                logo.classList.remove('pulse');
-            }, 300);
-
+            setTimeout(() => logo.classList.remove('pulse'), 300);
             if (navigator.vibrate) {
                 navigator.vibrate([200]);
             }
@@ -225,25 +165,60 @@
             beepAudio.play();
         }
 
+        function calculateBearing(lat1, lon1, lat2, lon2) {
+            const dLon = deg2rad(lon2 - lon1);
+            const y = Math.sin(dLon) * Math.cos(deg2rad(lat2));
+            const x = Math.cos(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) - Math.sin(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(dLon);
+            const bearing = Math.atan2(y, x);
+            return (bearing * 180 / Math.PI + 360) % 360;
+        }
+
+        function calculateSimpleDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radius of the earth in km
+            const dLat = deg2rad(lat2 - lat1);
+            const dLon = deg2rad(lon2 - lon1);
+            const a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c * 1000; // Distance in meters
+        }
+
+        function deg2rad(deg) {
+            return deg * (Math.PI / 180);
+        }
+
+        function getDistanceCategory(distance) {
+            if (distance < 50) return "Very Close";
+            if (distance < 200) return "Close";
+            if (distance < 400) return "Getting Closer";
+            if (distance < 1000) return "Far";
+            return "Very Far";
+        }
+
         function handleError(error) {
-            switch(error.code) {
+            let message = "An unknown error occurred.";
+            switch (error.code) {
                 case error.PERMISSION_DENIED:
-                    showError("User denied the request for Geolocation.");
+                    message = "User denied the request for Geolocation.";
                     break;
                 case error.POSITION_UNAVAILABLE:
-                    showError("Location information is unavailable.");
+                    message = "Location information is unavailable.";
                     break;
                 case error.TIMEOUT:
-                    showError("The request to get user location timed out.");
-                    break;
-                case error.UNKNOWN_ERROR:
-                    showError("An unknown error occurred.");
+                    message = "The request to get user location timed out.";
                     break;
             }
+            showError(message);
         }
 
         function showError(message) {
             document.getElementById('error-message').innerText = message;
+        }
+
+        function openSlider() {
+            window.location.href = 'slider.html';
         }
     </script>
 </body>
