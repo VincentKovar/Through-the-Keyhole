@@ -137,11 +137,11 @@
                 if (distance < 50) {
                     feedbackElement.innerText = "Very Close";
                     document.getElementById('open-button').style.display = 'block';
-                } else if (distance < 200) {
+                } else if (distance < 100) {
                     feedbackElement.innerText = "Close";
-                } else if (distance < 400) {
+                } else if (distance < 200) {
                     feedbackElement.innerText = "Getting Closer";
-                } else if (distance < 1000) {
+                } else if (distance < 500) {
                     feedbackElement.innerText = "Far";
                 } else {
                     feedbackElement.innerText = "Very Far";
