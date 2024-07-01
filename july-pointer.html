@@ -7,75 +7,48 @@
     <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
-        body {
+        body, .container {
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            font-family: 'Alice', serif;
             text-align: center;
+            font-family: 'Alice', serif;
             margin: 0;
+        }
+        body {
+            min-height: 100vh;
             background: #ffe4b5;
         }
         .container {
             width: 90%;
             max-width: 300px;
-            text-align: center;
             padding: 20px;
-            box-sizing: border-box;
         }
-        .logo {
-            width: 110px;
-            height: auto;
-            margin-bottom: 5px;
-            transition: transform 0.3s ease-in-out;
-        }
-        h1, h2 {
-            margin: 5px 0;
+        .logo, h1, h2, .distance-feedback, button {
+            margin-bottom: 10px;
         }
         button {
             width: 100%;
             padding: 10px;
             background-color: #007bff;
+            border-radius: 5px;
             color: white;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
-            margin-top: 10px;
         }
         button:hover {
             background-color: #0056b3;
         }
-        .distance-feedback {
-            margin: 10px 0;
-            font-size: 1.2em;
-        }
-        .pulse {
-            transform: scale(1.2);
-        }
-        #open-button {
-            display: none;
-            background-color: #28a745;
-        }
-        #open-button:hover {
-            background-color: #218838;
-        }
-        #error-message {
-            color: red;
-            margin-top: 10px;
-        }
         #arrow {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(90deg); /* Initial rotation since the arrow points to the right */
             width: 50px;
             height: 50px;
             background-image: url('finger.png');
             background-size: contain;
             background-repeat: no-repeat;
             pointer-events: none;
+        }
+        #error-message {
+            color: red;
         }
     </style>
 </head>
@@ -86,23 +59,31 @@
         <h2>Lock XVII</h2>
         <div id="distance-feedback" class="distance-feedback">Distance to destination: Calculating...</div>
         <button id="start-button" onclick="startTracking()">Start</button>
-        <button id="open-button" onclick="openSlider()">Open</button>
+        <button id="open-button" onclick="openSlider()" style="display: none;">Open</button>
         <div id="arrow"></div>
         <div id="error-message"></div>
         <audio id="beep-audio" src="beep.mp3"></audio>
     </div>
     <script>
-        const destinationLatitude = 48.41890859784646;
-        const destinationLongitude = -122.33687234141873;
-        let watchId;
-        let signalInterval;
+        const DESTINATION_LATITUDE = 48.41890859784646;
+        const DESTINATION_LONGITUDE = -122.33687234141873;
+        const BEARING_ADJUSTMENT = 90;
+        const DISTANCE_CATEGORIES = [
+            { name: "Very Close", threshold: 50, interval: 800 },
+            { name: "Close", threshold: 200, interval: 2000 },
+            { name: "Getting Closer", threshold: 400, interval: 1000 },
+            { name: "Far", threshold: 1000, interval: 4000 },
+            { name: "Very Far", threshold: Infinity }
+        ];
+
+        let watchId, signalInterval;
 
         function startTracking() {
             if (navigator.geolocation) {
                 watchId = navigator.geolocation.watchPosition(updatePosition, handleError, { enableHighAccuracy: true });
                 document.getElementById('start-button').textContent = 'Stop';
                 document.getElementById('start-button').onclick = stopTracking;
-                document.getElementById('arrow').style.display = 'block'; // Show the arrow when tracking starts
+                document.getElementById('arrow').style.display = 'block'; // Ensure arrow is visible when tracking starts
             } else {
                 showError("Geolocation is not supported by this browser.");
             }
@@ -123,35 +104,39 @@
         function updatePosition(position) {
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
-            const distance = calculateSimpleDistance(latitude, longitude, destinationLatitude, destinationLongitude);
+            const distance = calculateSimpleDistance(latitude, longitude, DESTINATION_LATITUDE, DESTINATION_LONGITUDE);
             const category = getDistanceCategory(distance);
-            const bearing = calculateBearing(latitude, longitude, destinationLatitude, destinationLongitude);
+            const bearing = calculateBearing(latitude, longitude, DESTINATION_LATITUDE, DESTINATION_LONGITUDE);
 
-            document.getElementById('distance-feedback').innerText = `Distance to destination: ${category}`;
+            updateFeedback(category, distance);
             updateArrow(bearing);
-
             setFeedbackInterval(distance);
+        }
+
+        function updateFeedback(category, distance) {
+            document.getElementById('distance-feedback').innerText = `Distance to destination: ${category}`;
+            if (distance <= 25) {
+                document.getElementById('open-button').style.display = 'block';
+            } else {
+                document.getElementById('open-button').style.display = 'none';
+            }
         }
 
         function updateArrow(bearing) {
             const arrow = document.getElementById('arrow');
-            const direction = bearing + 90; // Adjust bearing by 90 degrees because the arrow points right
-            arrow.style.transform = `translate(-50%, -50%) rotate(${direction}deg)`;
+            const direction = bearing + BEARING_ADJUSTMENT;
+            arrow.style.transform = `translateX(-50%) rotate(${direction}deg)`;
         }
 
         function setFeedbackInterval(distance) {
             clearInterval(signalInterval);
             let interval = 4000; // Default interval
-            if (distance < 50) {
-                interval = 800;
-            } else if (distance < 200) {
-                interval = 2000;
-            } else if (distance < 400) {
-                interval = 1000;
-            }
-            signalInterval = setInterval(() => {
-                provideFeedback();
-            }, interval);
+            DISTANCE_CATEGORIES.forEach(category => {
+                if (distance < category.threshold) {
+                    interval = category.interval || interval;
+                }
+            });
+            signalInterval = setInterval(provideFeedback, interval);
         }
 
         function provideFeedback() {
@@ -170,11 +155,11 @@
             const y = Math.sin(dLon) * Math.cos(deg2rad(lat2));
             const x = Math.cos(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) - Math.sin(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(dLon);
             const bearing = Math.atan2(y, x);
-            return (bearing * 180 / Math.PI + 360) % 360;
+            return (bearing * 180 / Math.PI + 360) % 360; // Normalize bearing to be between 0-360 degrees
         }
 
         function calculateSimpleDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Radius of the earth in km
+            const R = 6371; // Earth's radius in km
             const dLat = deg2rad(lat2 - lat1);
             const dLon = deg2rad(lon2 - lon1);
             const a =
@@ -190,11 +175,12 @@
         }
 
         function getDistanceCategory(distance) {
-            if (distance < 50) return "Very Close";
-            if (distance < 200) return "Close";
-            if (distance < 400) return "Getting Closer";
-            if (distance < 1000) return "Far";
-            return "Very Far";
+            for (let category of DISTANCE_CATEGORIES) {
+                if (distance < category.threshold) {
+                    return category.name;
+                }
+            }
+            return "Unknown"; // Default category
         }
 
         function handleError(error) {
