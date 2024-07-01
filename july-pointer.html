@@ -7,39 +7,61 @@
     <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
-        body, .container {
+        body {
             display: flex;
             flex-direction: column;
             align-items: center;
-            text-align: center;
-            font-family: 'Alice', serif;
-            margin: 0;
-        }
-        body {
             min-height: 100vh;
+            font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
             background: #ffe4b5;
         }
         .container {
             width: 90%;
             max-width: 300px;
             padding: 20px;
+            box-sizing: border-box;
+            position: relative; /* Essential for positioning children absolutely */
         }
-        .logo, h1, h2, .distance-feedback, button {
-            margin-bottom: 10px;
+        .logo {
+            width: 110px; /* Restored original size */
+            margin-bottom: 20px; /* Spacing for visual clarity */
+            transition: transform 0.3s ease-in-out;
+        }
+        h1, h2 {
+            margin: 5px 0;
         }
         button {
             width: 100%;
             padding: 10px;
             background-color: #007bff;
-            border-radius: 5px;
             color: white;
             border: none;
+            border-radius: 5px;
             cursor: pointer;
+            margin-top: 10px;
         }
         button:hover {
             background-color: #0056b3;
         }
+        .distance-feedback {
+            margin: 10px 0;
+            font-size: 1.2em;
+        }
+        .pulse {
+            animation: pulse-animation 2s infinite;
+        }
+        @keyframes pulse-animation {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
         #arrow {
+            position: absolute;
+            top: 80px; /* Adjusted to position correctly between logo and H1 */
+            left: 50%;
+            transform: translateX(-50%) rotate(90deg); /* Initial rotation */
             width: 50px;
             height: 50px;
             background-image: url('finger.png');
@@ -49,18 +71,19 @@
         }
         #error-message {
             color: red;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <img id="logo" src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
+        <img id="logo" src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo pulse" alt="Logo">
+        <div id="arrow"></div>
         <h1>Through the Keyhole</h1>
         <h2>Lock XVII</h2>
         <div id="distance-feedback" class="distance-feedback">Distance to destination: Calculating...</div>
         <button id="start-button" onclick="startTracking()">Start</button>
-        <button id="open-button" onclick="openSlider()" style="display: none;">Open</button>
-        <div id="arrow"></div>
+        <button id="open-button" onclick="openSlider()">Open</button>
         <div id="error-message"></div>
         <audio id="beep-audio" src="beep.mp3"></audio>
     </div>
