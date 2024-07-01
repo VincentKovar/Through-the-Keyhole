@@ -22,11 +22,11 @@
             max-width: 300px;
             padding: 20px;
             box-sizing: border-box;
-            position: relative;
+            position: relative; /* Essential for positioning children absolutely */
         }
         .logo {
-            width: 110px;
-            margin-bottom: 20px; /* Adjust as needed */
+            width: 110px; /* Restored original size */
+            margin-bottom: 20px; /* Spacing for visual clarity */
             transition: transform 0.3s ease-in-out;
         }
         h1, h2 {
@@ -49,17 +49,9 @@
             margin: 10px 0;
             font-size: 1.2em;
         }
-        .pulse {
-            animation: pulse-animation 2s infinite;
-        }
-        @keyframes pulse-animation {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
         #arrow {
             position: absolute;
-            top: 140px; /* Position it below the logo */
+            top: 180px; /* Adjusted to position correctly between logo and H1 */
             left: 50%;
             transform: translateX(-50%) rotate(90deg);
             width: 50px;
@@ -77,13 +69,13 @@
 </head>
 <body>
     <div class="container">
-        <img id="logo" src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo pulse" alt="Logo">
+        <img id="logo" src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
         <div id="arrow"></div>
         <h1>Through the Keyhole</h1>
         <h2>Lock XVII</h2>
         <div id="distance-feedback" class="distance-feedback">Distance to destination: Calculating...</div>
         <button id="start-button" onclick="startTracking()">Start</button>
-        <button id="open-button" style="display: none;" onclick="openSlider()">Open</button>
+        <button id="open-button" onclick="openSlider()" style="display: none;">Open</button>
         <div id="error-message"></div>
         <audio id="beep-audio" src="beep.mp3"></audio>
     </div>
@@ -91,15 +83,16 @@
         const DESTINATION_LATITUDE = 48.41890859784646;
         const DESTINATION_LONGITUDE = -122.33687234141873;
         const BEARING_ADJUSTMENT = 90;
-        const DISTANCE_CATEGORIES = [
-            { name: "Very Close", threshold: 50, interval: 800 },
-            { name: "Close", threshold: 200, interval: 2000 },
-            { name: "Getting Closer", threshold: 400, interval: 1000 },
-            { name: "Far", threshold: 1000, interval: 4000 },
-            { name: "Very Far", threshold: Infinity }
-        ];
+        const VERY_FAR_INTERVAL = 4000; // One signal every 4 seconds
+        const CLOSE_INTERVALS = {
+            'Very Close': 800,
+            'Close': 2000,
+            'Getting Closer': 1000,
+            'Far': 3000,
+            'Very Far': VERY_FAR_INTERVAL
+        };
 
-        let watchId, signalInterval;
+        let watchId, lastUpdateTimestamp = 0;
 
         function startTracking() {
             if (navigator.geolocation) {
@@ -115,6 +108,7 @@
         function stopTracking() {
             if (watchId) {
                 navigator.geolocation.clearWatch(watchId);
+                watchId = null;
             }
             clearInterval(signalInterval);
             document.getElementById('start-button').textContent = 'Start';
@@ -125,21 +119,26 @@
         }
 
         function updatePosition(position) {
+            const now = Date.now();
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
             const distance = calculateSimpleDistance(latitude, longitude, DESTINATION_LATITUDE, DESTINATION_LONGITUDE);
             const category = getDistanceCategory(distance);
-            const bearing = calculateBearing(latitude, longitude, DESTINATION_LATITUDE, DESTINATION_LONGITUDE);
-
-            updateFeedback(category, distance);
-            if (distance < 500) { // Update arrow only within this range
-                updateArrow(bearing);
-            }
-        }
-
-        function updateFeedback(category, distance) {
+            const interval = CLOSE_INTERVALS[category] || VERY_FAR_INTERVAL;
+            
             document.getElementById('distance-feedback').innerText = `Distance to destination: ${category}`;
-            document.getElementById('open-button').style.display = distance <= 25 ? 'block' : 'none'; // Show button only when very close
+            if (distance <= 25) {
+                document.getElementById('open-button').style.display = 'block';
+            } else {
+                document.getElementById('open-button').style.display = 'none';
+            }
+            
+            if (now - lastUpdateTimestamp >= interval) {
+                lastUpdateTimestamp = now;
+                const bearing = calculateBearing(latitude, longitude, DESTINATION_LATITUDE, DESTINATION_LONGITUDE);
+                updateArrow(bearing);
+                provideFeedback();
+            }
         }
 
         function updateArrow(bearing) {
@@ -148,22 +147,10 @@
             arrow.style.transform = `translateX(-50%) rotate(${direction}deg)`;
         }
 
-        function setFeedbackInterval(distance) {
-            clearInterval(signalInterval);
-            let interval = 4000; // Default interval for distances > 1000 meters
-            DISTANCE_CATEGORIES.forEach(category => {
-                if (distance < category.threshold) {
-                    interval = category.interval;
-                }
-            });
-            signalInterval = setInterval(provideFeedback, interval);
-        }
-
         function provideFeedback() {
             const logo = document.getElementById('logo');
-            if (!logo.classList.contains('pulse')) {
-                logo.classList.add('pulse');
-            }
+            logo.classList.add('pulse');
+            setTimeout(() => logo.classList.remove('pulse'), 300);
             if (navigator.vibrate) {
                 navigator.vibrate([200]);
             }
@@ -182,7 +169,7 @@
         function calculateSimpleDistance(lat1, lon1, lat2, lon2) {
             const R = 6371; // Earth's radius in km
             const dLat = deg2rad(lat2 - lat1);
-            const dLon = deg2rad(lon2 - lon1);
+            the dLon = deg2rad(lon2 - lon1);
             const a =
                 Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                 Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
@@ -196,12 +183,11 @@
         }
 
         function getDistanceCategory(distance) {
-            for (let category of DISTANCE_CATEGORIES) {
-                if (distance < category.threshold) {
-                    return category.name;
-                }
-            }
-            return "Unknown"; // Default category
+            if (distance < 50) return "Very Close";
+            if (distance < 200) return "Close";
+            if (distance < 400) return "Getting Closer";
+            if (distance < 1000) return "Far";
+            return "Very Far";
         }
 
         function handleError(error) {
