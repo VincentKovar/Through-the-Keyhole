@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invisible Maze Game</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
         body {
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            font-family: Arial, sans-serif;
+            font-family: 'Alice', serif;
             text-align: center;
             margin: 0;
             background: #f0f0f0;
@@ -32,6 +33,112 @@
             color: red;
         }
     </style>
+    <script>
+        const mazeWalls = [
+            { lat: 47.7428, lng: -122.1794 },
+            // Add more wall coordinates here
+        ];
+        const endPoint = { lat: 47.7429, lng: -122.1792 }; // Define the end point of the maze
+
+        let map, playerMarker;
+        let playerPosition = { lat: 47.7428, lng: -122.1795 }; // Initial player position
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: playerPosition,
+                zoom: 18
+            });
+
+            playerMarker = new google.maps.Marker({
+                position: playerPosition,
+                map: map,
+                title: 'Player'
+            });
+
+            // Draw maze walls
+            mazeWalls.forEach(wall => {
+                new google.maps.Marker({
+                    position: wall,
+                    map: map,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 5,
+                        fillColor: '#FF0000',
+                        fillOpacity: 1,
+                        strokeWeight: 0
+                    }
+                });
+            });
+
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(updatePlayerPosition, showError, { enableHighAccuracy: true });
+            } else {
+                alert('Geolocation is not supported by your browser.');
+            }
+        }
+
+        function updatePlayerPosition(position) {
+            const newLat = position.coords.latitude;
+            const newLng = position.coords.longitude;
+            playerPosition = { lat: newLat, lng: newLng };
+
+            playerMarker.setPosition(playerPosition);
+            map.setCenter(playerPosition);
+
+            checkCollision();
+            checkEndPoint();
+        }
+
+        function checkCollision() {
+            const collision = mazeWalls.some(wall => {
+                const distance = google.maps.geometry.spherical.computeDistanceBetween(
+                    new google.maps.LatLng(playerPosition),
+                    new google.maps.LatLng(wall)
+                );
+                return distance < 5; // Collision threshold in meters
+            });
+
+            if (collision) {
+                document.getElementById('feedback').innerText = 'You hit a wall!';
+                navigator.vibrate(200); // Haptic feedback
+                // Play sound feedback
+                const audio = new Audio('beep.mp3');
+                audio.play();
+            } else {
+                document.getElementById('feedback').innerText = '';
+            }
+        }
+
+        function checkEndPoint() {
+            const distance = google.maps.geometry.spherical.computeDistanceBetween(
+                new google.maps.LatLng(playerPosition),
+                new google.maps.LatLng(endPoint)
+            );
+
+            if (distance < 5) { // End point threshold in meters
+                alert('You reached the end of the maze!');
+                window.location.href = 'slider.html'; // Redirect to the next page
+            }
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    alert('User denied the request for Geolocation.');
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert('Location information is unavailable.');
+                    break;
+                case error.TIMEOUT:
+                    alert('The request to get user location timed out.');
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert('An unknown error occurred.');
+                    break;
+            }
+        }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDPo1Jlv9yFpKDDPwfFGw2_7V0ofCnkMrI&libraries=geometry&callback=initMap"></script>
 </head>
 <body>
     <div class="container">
@@ -39,14 +146,5 @@
         <div id="map"></div>
         <div id="feedback"></div>
     </div>
-    <script>
-        const mazeWalls = [
-            { lat: 47.7428, lng: -122.1794 },
-            // Add more wall coordinates here
-        ];
-        const endPoint = { lat: 47.7429, lng: -122.1792 }; // Define the end point of the maze
-    </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
 </body>
 </html>
-
