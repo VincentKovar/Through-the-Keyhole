@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orienteering Game</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
+            background: #ffe4b5;
+        }
+        .container {
+            width: 90%;
+            max-width: 600px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .logo {
+            width: 110px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+        h1, h2 {
+            margin: 5px 0;
+        }
+        #compass {
+            width: 200px;
+            height: 200px;
+            background: url('compass.png') no-repeat center center;
+            background-size: contain;
+            transform-origin: 50% 50%;
+            transition: transform 0.5s;
+        }
+        #message {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+        #download-links {
+            margin-top: 20px;
+        }
+        .link-button {
+            display: block;
+            margin: 10px 0;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .link-button:hover {
+            background-color: #0056b3;
+        }
+        #next-button {
+            display: none;
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        #next-button:hover {
+            background-color: #218838;
+        }
+    </style>
+    <script>
+        const destination = { lat: 47.7429, lng: -122.1792 }; // Define the destination coordinates
+        let map, playerMarker;
+        let playerPosition = { lat: 47.7428, lng: -122.1795 }; // Initial player position
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: playerPosition,
+                zoom: 18
+            });
+
+            playerMarker = new google.maps.Marker({
+                position: playerPosition,
+                map: map,
+                title: 'Player'
+            });
+
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(updatePlayerPosition, showError, { enableHighAccuracy: true });
+            } else {
+                document.getElementById('message').innerText = 'Compass not supported on this device. Download a compass app below.';
+                document.getElementById('download-links').style.display = 'block';
+            }
+        }
+
+        function updatePlayerPosition(position) {
+            const newLat = position.coords.latitude;
+            const newLng = position.coords.longitude;
+            playerPosition = { lat: newLat, lng: newLng };
+
+            playerMarker.setPosition(playerPosition);
+            map.setCenter(playerPosition);
+
+            checkDistanceToDestination();
+        }
+
+        function checkDistanceToDestination() {
+            const distance = google.maps.geometry.spherical.computeDistanceBetween(
+                new google.maps.LatLng(playerPosition),
+                new google.maps.LatLng(destination)
+            );
+
+            if (distance < 25) { // End point threshold in meters
+                document.getElementById('next-button').style.display = 'block';
+            } else {
+                document.getElementById('next-button').style.display = 'none';
+            }
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    alert('User denied the request for Geolocation.');
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert('Location information is unavailable.');
+                    break;
+                case error.TIMEOUT:
+                    alert('The request to get user location timed out.');
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert('An unknown error occurred.');
+                    break;
+            }
+        }
+
+        function navigateToNextPage() {
+            window.location.href = 'slider.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.DeviceOrientationEvent) {
+                window.addEventListener('deviceorientation', function(event) {
+                    const alpha = event.alpha;
+                    document.getElementById('compass').style.transform = `rotate(${alpha}deg)`;
+                }, true);
+            } else {
+                document.getElementById('message').innerText = 'Compass not supported on this device. Download a compass app below.';
+                document.getElementById('download-links').style.display = 'block';
+            }
+        });
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDPo1Jlv9yFpKDDPwfFGw2_7V0ofCnkMrI&libraries=geometry&callback=initMap"></script>
+</head>
+<body>
+    <div class="container">
+        <a href="https://www.whitebranches.com/keyhole">
+            <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo" id="logo">
+        </a>
+        <h1>Orienteering Game</h1>
+        <div id="compass"></div>
+        <div id="message">Move your device to see the compass rotate</div>
+        <div id="download-links" style="display: none;">
+            <a class="link-button" href="https://apps.apple.com/us/app/compass/id284910350" target="_blank">Download Compass App for iOS</a>
+            <a class="link-button" href="https://play.google.com/store/apps/details?id=com.digital.compass" target="_blank">Download Compass App for Android</a>
+        </div>
+        <button id="next-button" onclick="navigateToNextPage()">Next</button>
+    </div>
+</body>
+</html>
