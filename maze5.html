@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invisible Maze Game</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
+            background: #f0f0f0;
+        }
+        .container {
+            width: 90%;
+            max-width: 600px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        #map {
+            height: 400px;
+            width: 100%;
+            margin-top: 20px;
+        }
+        #feedback {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: red;
+        }
+    </style>
+    <script>
+        // Define the maze walls based on the 5x5 grid
+        const mazeWalls = [
+            { lat: 47.7428, lng: -122.1795 },
+            { lat: 47.7429, lng: -122.1795 },
+            { lat: 47.7430, lng: -122.1795 },
+            { lat: 47.7431, lng: -122.1795 },
+            { lat: 47.7428, lng: -122.1796 },
+            { lat: 47.7430, lng: -122.1796 },
+            { lat: 47.7432, lng: -122.1796 },
+            { lat: 47.7429, lng: -122.1797 },
+            { lat: 47.7431, lng: -122.1797 },
+            { lat: 47.7428, lng: -122.1798 },
+            { lat: 47.7429, lng: -122.1798 },
+            { lat: 47.7430, lng: -122.1798 },
+            { lat: 47.7431, lng: -122.1798 },
+            { lat: 47.7429, lng: -122.1799 },
+            { lat: 47.7431, lng: -122.1799 },
+        ];
+
+        // Define the end point of the maze
+        const endPoint = { lat: 47.7432, lng: -122.1799 }; 
+
+        let map, playerMarker;
+        let playerPosition = { lat: 47.7428, lng: -122.1795 }; // Initial player position
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: playerPosition,
+                zoom: 20
+            });
+
+            playerMarker = new google.maps.Marker({
+                position: playerPosition,
+                map: map,
+                title: 'Player'
+            });
+
+            // Draw maze walls
+            mazeWalls.forEach(wall => {
+                new google.maps.Marker({
+                    position: wall,
+                    map: map,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 5,
+                        fillColor: '#FF0000',
+                        fillOpacity: 1,
+                        strokeWeight: 0
+                    }
+                });
+            });
+
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(updatePlayerPosition, showError, { enableHighAccuracy: true });
+            } else {
+                alert('Geolocation is not supported by your browser.');
+            }
+        }
+
+        function updatePlayerPosition(position) {
+            const newLat = position.coords.latitude;
+            const newLng = position.coords.longitude;
+            playerPosition = { lat: newLat, lng: newLng };
+
+            playerMarker.setPosition(playerPosition);
+            map.setCenter(playerPosition);
+
+            checkCollision();
+            checkEndPoint();
+        }
+
+        function checkCollision() {
+            const collision = mazeWalls.some(wall => {
+                const distance = google.maps.geometry.spherical.computeDistanceBetween(
+                    new google.maps.LatLng(playerPosition),
+                    new google.maps.LatLng(wall)
+                );
+                return distance < 1; // Collision threshold in meters
+            });
+
+            if (collision) {
+                document.getElementById('feedback').innerText = 'You hit a wall!';
+                navigator.vibrate(200); // Haptic feedback
+                // Play sound feedback
+                const audio = new Audio('beep.mp3');
+                audio.play();
+            } else {
+                document.getElementById('feedback').innerText = '';
+            }
+        }
+
+        function checkEndPoint() {
+            const distance = google.maps.geometry.spherical.computeDistanceBetween(
+                new google.maps.LatLng(playerPosition),
+                new google.maps.LatLng(endPoint)
+            );
+
+            if (distance < 1) { // End point threshold in meters
+                alert('You reached the end of the maze!');
+                window.location.href = 'slider.html'; // Redirect to the next page
+            }
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    alert('User denied the request for Geolocation.');
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert('Location information is unavailable.');
+                    break;
+                case error.TIMEOUT:
+                    alert('The request to get user location timed out.');
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert('An unknown error occurred.');
+                    break;
+            }
+        }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDPo1Jlv9yFpKDDPwfFGw2_7V0ofCnkMrI&libraries=geometry&callback=initMap"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Invisible Maze Game</h1>
+        <div id="map"></div>
+        <div id="feedback"></div>
+    </div>
+</body>
+</html>
