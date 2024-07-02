@@ -1,21 +1,23 @@
 <html>
   <head>
     <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <script type="module">
-      import { initializeApp } from "(link unavailable)";
-      import { getDatabase, ref, set } from "(link unavailable)";
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+      import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
       const firebaseConfig = {
         apiKey: "AIzaSyApUVWW-tPirdkdfSnF4l88mRCJ_-gtQik",
-        authDomain: "(link unavailable)",
+        authDomain: "through-the-keyhole.firebaseapp.com",
         projectId: "through-the-keyhole",
-        storageBucket: "(link unavailable)",
+        storageBucket: "through-the-keyhole.appspot.com",
         messagingSenderId: "279501813981",
         appId: "1:279501813981:web:0afd1ce32fbe635d068334"
       };
 
       const app = initializeApp(firebaseConfig);
-      const db = getDatabase();
+      const db = getDatabase(app);
       const mazeRef = ref(db, 'maze');
 
       // Game logic goes here
@@ -86,6 +88,39 @@
         renderPlayer();
       });
     </script>
+    <style>
+      /* Add your CSS styling here */
+      #game-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+
+      #maze {
+        display: grid;
+        grid-template-columns: repeat(10, 20px);
+        grid-template-rows: repeat(10, 20px);
+      }
+
+      .maze-cell {
+        width: 20px;
+        height: 20px;
+        border: 1px solid #ccc;
+      }
+
+      .wall {
+        background-color: black;
+      }
+
+      #player {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background-color: red;
+      }
+    </style>
   </head>
   <body>
     <!-- Game content goes here -->
