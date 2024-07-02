@@ -55,41 +55,57 @@
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.1); }
         }
+        #map {
+            height: 400px;
+            width: 100%;
+            margin-top: 20px;
+        }
+        #error-message {
+            color: red;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <a href="https://www.whitebranches.com/keyhole">
-            <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo" id="logo">
+            <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo pulse" alt="Logo" id="logo">
         </a>
         <h1>Through the Keyhole</h1>
         <h2>Lock XVII</h2>
         <div id="distance-feedback" class="distance-feedback">Distance to destination: Calculating...</div>
         <button id="start-button" onclick="startTracking()">Start</button>
-        <div id="map" style="height: 400px; width: 100%; margin-top: 20px;"></div>
+        <div id="map"></div>
         <div id="error-message"></div>
         <audio id="beep-audio" src="beep.mp3"></audio>
     </div>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDPo1Jlv9yFpKDDPwfFGw2_7V0ofCnkMrI&callback=initMap" async defer></script>
     <script>
-        var feedbackInterval; // Global variable to keep track of the interval ID
         const DESTINATION_LATITUDE = 47.74275658241728;
         const DESTINATION_LONGITUDE = -122.17929919268146;
+        const VERY_CLOSE_DISTANCE = 25;
+        const CLOSE_DISTANCE = 200;
+        const GETTING_CLOSER_DISTANCE = 400;
+        const FAR_DISTANCE = 500;
+        const MAX_INTERVAL = 4000;
+        const MIN_INTERVAL = 800;
+
+        let watchId, feedbackInterval;
 
         function initMap() {
             const map = new google.maps.Map(document.getElementById('map'), {
-                center: {lat: DESTINATION_LATITUDE, lng: DESTINATION_LONGITUDE},
+                center: { lat: DESTINATION_LATITUDE, lng: DESTINATION_LONGITUDE },
                 zoom: 15
             });
             const marker = new google.maps.Marker({
-                position: {lat: DESTINATION_LATITUDE, lng: DESTINATION_LONGITUDE},
+                position: { lat: DESTINATION_LATITUDE, lng: DESTINATION_LONGITUDE },
                 map: map
             });
         }
 
         function startTracking() {
             if (navigator.geolocation) {
-                navigator.geolocation.watchPosition(updatePosition, handleError, { enableHighAccuracy: true });
+                watchId = navigator.geolocation.watchPosition(updatePosition, handleError, { enableHighAccuracy: true });
                 document.getElementById('start-button').textContent = 'Stop';
                 document.getElementById('start-button').onclick = stopTracking;
             } else {
@@ -98,7 +114,7 @@
         }
 
         function stopTracking() {
-            if (navigator.geolocation) {
+            if (watchId) {
                 navigator.geolocation.clearWatch(watchId);
             }
             clearInterval(feedbackInterval);
@@ -120,23 +136,25 @@
             const audio = document.getElementById('beep-audio');
             let interval;
 
-            if (distance > 500) {
-                interval = 4000; // More than 500 meters
+            if (distance > FAR_DISTANCE) {
+                interval = MAX_INTERVAL;
+                clearInterval(feedbackInterval);
             } else {
-                interval = 4000 - (3500 * ((500 - distance) / 500)); // Increases frequency as they get closer
-                interval = Math.max(interval, 800); // Ensures the frequency does not exceed one signal every 0.8 seconds
+                interval = MAX_INTERVAL - ((MAX_INTERVAL - MIN_INTERVAL) * ((FAR_DISTANCE - distance) / FAR_DISTANCE));
+                interval = Math.max(interval, MIN_INTERVAL);
+
+                clearInterval(feedbackInterval);
+                feedbackInterval = setInterval(() => {
+                    logo.classList.add('pulse');
+                    setTimeout(() => logo.classList.remove('pulse'), 300);
+                    audio.play();
+                    if (navigator.vibrate) {
+                        navigator.vibrate(200); // Vibrate for 200 milliseconds
+                    }
+                }, interval);
             }
 
-            clearInterval(feedbackInterval);
-
-            feedbackInterval = setInterval(() => {
-                logo.classList.add('pulse');
-                setTimeout(() => logo.classList.remove('pulse'), 300);
-                audio.play();
-                if (navigator.vibrate) {
-                    navigator.vibrate(200); // Vibrate for 200 milliseconds
-                }
-            }, interval);
+            document.getElementById('distance-feedback').innerText = `Distance to destination: ${Math.round(distance)} meters`;
         }
 
         function handleError(error) {
