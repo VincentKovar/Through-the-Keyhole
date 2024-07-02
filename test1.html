@@ -28,6 +28,10 @@
             height: auto;
             margin-bottom: 20px; /* Proper spacing below the logo */
         }
+        #map {
+            height: 400px; /* Adjust as needed */
+            width: 100%; /* Adjust as needed */
+        }
     </style>
 </head>
 <body>
@@ -35,8 +39,22 @@
         <a href="https://www.whitebranches.com/keyhole">
             <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
         </a>
-        <!-- Additional content will go here -->
+        <div id="map"></div>
     </div>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCv1IMxi-jeOTceDJNKtEHfJET0kapjdvo&callback=initMap" async defer></script>
+    <script>
+        function initMap() {
+            // Set the coordinates for your desired location 47.7427743554096, -122.17932562257758
+            var location = {lat: 47.7427743554096, lng: -122.17932562257758};
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 15,
+                center: location
+            });
+            var marker = new google.maps.Marker({
+                position: location,
+                map: map
+            });
+        }
+    </script>
 </body>
 </html>
-
