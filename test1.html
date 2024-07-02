@@ -6,19 +6,100 @@
     <title>Through the Keyhole</title>
     <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/png">
     <style>
-        /* Your CSS here */
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
+            background: #ffe4b5; /* light beige background */
+        }
+        .container {
+            width: 90%;
+            max-width: 300px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .logo {
+            width: 110px; /* Logo size is maintained */
+            height: auto;
+            margin-bottom: 20px; /* Proper spacing below the logo */
+            transition: transform 0.3s ease-in-out;
+        }
+        #map {
+            height: 400px; /* Adjust as needed */
+            width: 100%; /* Adjust as needed */
+        }
+        .pulse {
+            animation: pulse-animation 0.3s ease;
+        }
+        @keyframes pulse-animation {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
     </style>
 </head>
 <body>
-    <div id="map" style="height: 400px; width: 100%;"></div>
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap&libraries=&v=weekly" async defer></script>
+    <div class="container">
+        <a href="https://www.whitebranches.com/keyhole">
+            <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo" id="logo">
+        </a>
+        <div id="map"></div>
+    </div>
+    <audio id="beep-audio" src="beep.mp3"></audio>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDPo1Jlv9yFpKDDPwfFGw2_7V0ofCnkMrI&callback=initMap" async defer></script>
     <script>
+        var feedbackInterval; // Global variable to keep track of the interval ID
+
         function initMap() {
-            const map = new google.maps.Map(document.getElementById('map'), {
-                center: {lat: 47.74276102561735, lng: -122.17933883745528},
-                zoom: 8
+            var map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: 47.74275658241728, lng: -122.17929919268146},
+                zoom: 15
             });
-            // Additional JS code for map markers or other functionality: 47.74276102561735, -122.17933883745528
+            var marker = new google.maps.Marker({
+                position: {lat: 47.74275658241728, lng: -122.17929919268146},
+                map: map
+            });
+
+            navigator.geolocation.watchPosition(function(position) {
+                const playerPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                const destination = new google.maps.LatLng(47.74275658241728, -122.17929919268146);
+                const distance = google.maps.geometry.spherical.computeDistanceBetween(playerPosition, destination);
+
+                updateFeedback(distance);
+            }, function(error) {
+                console.error(error);
+            }, {
+                enableHighAccuracy: true,
+                maximumAge: 0
+            });
+        }
+
+        function updateFeedback(distance) {
+            const logo = document.getElementById('logo');
+            const audio = document.getElementById('beep-audio');
+            let interval;
+
+            if (distance > 500) {
+                interval = 4000; // More than 500 meters
+            } else {
+                interval = 4000 - (3500 * ((500 - distance) / 500)); // Increases frequency as they get closer
+                interval = Math.max(interval, 800); // Ensures the frequency does not exceed one signal every 0.8 seconds
+            }
+
+            clearInterval(feedbackInterval);
+
+            feedbackInterval = setInterval(() => {
+                logo.classList.add('pulse');
+                setTimeout(() => logo.classList.remove('pulse'), 300);
+                audio.play();
+                if (navigator.vibrate) {
+                    navigator.vibrate(200); // Vibrate for 200 milliseconds
+                }
+            }, interval);
         }
     </script>
 </body>
