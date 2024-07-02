@@ -79,7 +79,6 @@
         <div id="error-message"></div>
         <audio id="beep-audio" src="beep.mp3"></audio>
     </div>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDPo1Jlv9yFpKDDPwfFGw2_7V0ofCnkMrI&callback=initMap" async defer></script>
     <script>
         const DESTINATION_LATITUDE = 47.74275658241728;
         const DESTINATION_LONGITUDE = -122.17929919268146;
@@ -177,5 +176,6 @@
             document.getElementById('error-message').innerText = message;
         }
     </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDPo1Jlv9yFpKDDPwfFGw2_7V0ofCnkMrI&callback=initMap"></script>
 </body>
 </html>
