@@ -15,7 +15,7 @@
             font-family: 'Alice', serif;
             text-align: center;
             margin: 0;
-            background: #ffe4b5;
+            background: #ffe4b5; /* light beige background */
         }
         .container {
             width: 90%;
@@ -24,14 +24,14 @@
             box-sizing: border-box;
         }
         .logo {
-            width: 110px;
+            width: 110px; /* Logo size is maintained */
             height: auto;
-            margin-bottom: 20px;
+            margin-bottom: 20px; /* Proper spacing below the logo */
             transition: transform 0.3s ease-in-out;
         }
         #map {
-            height: 400px;
-            width: 100%;
+            height: 400px; /* Adjust as needed */
+            width: 100%; /* Adjust as needed */
         }
         .pulse {
             animation: pulse-animation 0.3s ease;
@@ -59,7 +59,7 @@
                 center: {lat: -34.397, lng: 150.644},
                 zoom: 15
             });
-            var marker = new google.maps.marker.AdvancedMarkerElement({
+            var marker = new google.maps.Marker({
                 position: {lat: -34.397, lng: 150.644},
                 map: map
             });
