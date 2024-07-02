@@ -89,7 +89,7 @@
         </a>
         <h1>Through the Keyhole</h1>
         <h2>Lock XVII</h2>
-        <p>Face North and click "calibrate" then skip the number of paces in Key Sixteen toward "Cuba" in the combination of Keys Twelve and Fourteen. When the "Next" button appears, you're at your next location!</p>
+        <p>Confirm you are facing Canadian North and click "calibrate" to set your compass if it is wonky. Then joyfully skip the number of paces in Key Sixteen toward "Cuba" in the combination of Keys Twelve and Fourteen. When the "Next" button appears, you're at your next location!</p>
         <button onclick="orienteeringGame.calibrate()">Calibrate Compass</button>
         <div id="compass-container">
             <div id="compass"></div>
@@ -133,7 +133,7 @@
             calibrate() {
                 if (this.currentAlpha !== undefined) {
                     this.calibrationOffset = (360 - this.currentAlpha) % 360;
-                    alert("Calibration complete. Please rotate your device in a figure-eight motion to improve accuracy.");
+                    alert("Calibration complete. Please rotate your device and hips in a figure-eight motion to improve accuracy. Also sing a sea shanty in the key of C");
                 } else {
                     alert("Calibration failed. Please try again.");
                 }
