@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Through the Keyhole</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
+            background: #ffe4b5;
+        }
+        .container {
+            width: 90%;
+            max-width: 300px;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .logo {
+            width: 110px;
+            margin-bottom: 10px;
+        }
+        h1, h2 {
+            margin: 5px 0;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px 0;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #compass-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        #compass {
+            height: 200px;
+            width: 200px;
+            background: url('compass.png') no-repeat center center;
+            background-size: contain;
+        }
+        #feedback {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: red;
+        }
+        #next-button {
+            display: none;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #next-button:hover {
+            background-color: #218838;
+        }
+        .pulse {
+            animation: pulse-animation 0.8s ease;
+        }
+        @keyframes pulse-animation {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+    </style>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDPo1Jlv9yFpKDDPwfFGw2_7V0ofCnkMrI&libraries=geometry"></script>
+</head>
+<body>
+    <div class="container">
+        <a href="https://www.whitebranches.com/keyhole">
+            <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo pulse" alt="Logo" id="logo">
+        </a>
+        <h1>Through the Keyhole</h1>
+        <h2>Lock XVII</h2>
+        <p>Face North and click "calibrate" then skip the number of paces in Key Sixteen toward "Cuba" in the combination of Keys Twelve and Fourteen. When the "Next" button appears, you're at your next location!</p>
+        <button onclick="orienteeringGame.calibrate()">Calibrate Compass</button>
+        <div id="compass-container">
+            <div id="compass"></div>
+        </div>
+        <div id="feedback"></div>
+        <button id="next-button" onclick="window.location.href='slider.html'">Next</button>
+        <audio id="beep-audio" src="beep.mp3"></audio>
+    </div>
+    <script>
+        const orienteeringGame = {
+            DEST_LATITUDE: 47.74275658241728,
+            DEST_LONGITUDE: -122.17929919268146,
+            MAX_INTERVAL: 4000,
+            MIN_INTERVAL: 800,
+            playerPosition: { lat: null, lng: null },
+            feedbackInterval: null,
+
+            init() {
+                if (window.DeviceOrientationEvent) {
+                    window.addEventListener('deviceorientation', this.handleOrientation.bind(this));
+                } else {
+                    alert("Compass not supported on your device. Please install a compass app.");
+                }
+
+                this.startGeolocation();
+            },
+
+            handleOrientation(event) {
+                let alpha;
+                if (typeof event.webkitCompassHeading !== 'undefined') {
+                    alpha = event.webkitCompassHeading;
+                } else {
+                    alpha = event.alpha;
+                }
+                const compass = document.getElementById('compass');
+                compass.style.transform = `rotate(${alpha}deg)`;
+            },
+
+            calibrate() {
+                alert("Please rotate your device in a figure-eight motion.");
+            },
+
+            startGeolocation() {
+                if (navigator.geolocation) {
+                    this.getCurrentPosition();
+                    setInterval(this.getCurrentPosition.bind(this), 5000);
+                } else {
+                    alert('Geolocation is not supported by your browser.');
+                }
+            },
+
+            getCurrentPosition() {
+                navigator.geolocation.getCurrentPosition(this.updatePlayerPosition.bind(this), this.showError.bind(this), { enableHighAccuracy: true });
+            },
+
+            updatePlayerPosition(position) {
+                this.playerPosition.lat = position.coords.latitude;
+                this.playerPosition.lng = position.coords.longitude;
+                this.checkDistance();
+            },
+
+            checkDistance() {
+                if (this.playerPosition.lat !== null && this.playerPosition.lng !== null) {
+                    const playerLatLng = new google.maps.LatLng(this.playerPosition.lat, this.playerPosition.lng);
+                    const destLatLng = new google.maps.LatLng(this.DEST_LATITUDE, this.DEST_LONGITUDE);
+                    const distance = google.maps.geometry.spherical.computeDistanceBetween(playerLatLng, destLatLng);
+
+                    this.updateFeedback(distance);
+                    if (distance <= 25) { // Very close threshold
+                        document.getElementById('next-button').style.display = 'block';
+                    } else {
+                        document.getElementById('next-button').style.display = 'none';
+                    }
+                }
+            },
+
+            updateFeedback(distance) {
+                const logo = document.getElementById('logo');
+                const audio = document.getElementById('beep-audio');
+                let interval;
+                let feedbackText;
+
+                // Define distance thresholds and corresponding feedback text
+                if (distance > 500) { // Very Far
+                    interval = this.MAX_INTERVAL;
+                    feedbackText = "Very Far";
+                } else if (distance > 400) { // Far
+                    interval = this.MAX_INTERVAL;
+                    feedbackText = "Far";
+                } else if (distance > 300) { // Getting Closer
+                    interval = this.MAX_INTERVAL - 1000;
+                    feedbackText = "Getting Closer";
+                } else if (distance > 200) { // Close
+                    interval = this.MAX_INTERVAL - 2000;
+                    feedbackText = "Close";
+                } else if (distance > 30) { // Very Close
+                    interval = this.MIN_INTERVAL;
+                    feedbackText = "Very Close";
+                }
+
+                clearInterval(this.feedbackInterval);
+                this.feedbackInterval = setInterval(() => {
+                    logo.classList.add('pulse');
+                    setTimeout(() => logo.classList.remove('pulse'), 300);
+                    audio.play();
+                    if (navigator.vibrate) {
+                        navigator.vibrate(200);
+                    }
+                }, interval);
+
+                document.getElementById('feedback').innerText = `${feedbackText}: ${Math.round(distance)} meters`;
+            },
+
+            showError(error) {
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        alert('User denied the request for Geolocation.');
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        alert('Location information is unavailable.');
+                        break;
+                    case error.TIMEOUT:
+                        alert('The request to get user location timed out.');
+                        break;
+                    case error.UNKNOWN_ERROR:
+                        alert('An unknown error occurred.');
+                        break;
+                }
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            orienteeringGame.init();
+        });
+    </script>
+</body>
+</html>
