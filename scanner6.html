@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Through the Keyhole</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
+            background: #ffe4b5;
+        }
+        .container {
+            width: 90%;
+            max-width: 300px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .logo {
+            width: 110px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease-in-out;
+        }
+        h1, h2 {
+            margin: 5px 0;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #scanner {
+            display: none;
+        }
+        #error-message {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="https://www.whitebranches.com/keyhole">
+            <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo pulse" alt="Logo" id="logo">
+        </a>
+        <h1>Through the Keyhole</h1>
+        <h2>Lock XVII</h2>
+        <button id="start-scanner-button" onclick="startScanner()">Scan QR Code</button>
+        <div id="scanner" style="display: none;">
+            <video id="scanner-video" width="100%" height="100%" autoplay></video>
+        </div>
+        <div id="error-message"></div>
+    </div>
+    <script src="https://unpkg.com/@zxing/library@latest"></script>
+    <script>
+        function startScanner() {
+            const codeReader = new ZXing.BrowserQRCodeReader();
+            const scannerElement = document.getElementById('scanner');
+            const scannerVideo = document.getElementById('scanner-video');
+            scannerElement.style.display = 'block';
+
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: "environment" } } })
+                .then(stream => {
+                    scannerVideo.srcObject = stream;
+                    return codeReader.decodeFromVideoElement(scannerVideo);
+                })
+                .then(result => {
+                    console.log(result);
+                    window.location.href = 'slider.html';
+                })
+                .catch(err => {
+                    console.error(err);
+                    showError('Failed to detect QR code. Please try again.');
+                });
+        }
+
+        function showError(message) {
+            document.getElementById('error-message').innerText = message;
+        }
+    </script>
+</body>
+</html>
