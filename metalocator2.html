@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Office Geocaching Game</title>
+    <style>
+      /* Add some basic styling to center the map */
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+      }
+      #map {
+        height: 80vh;
+        width: 80vw;
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Office Geocaching Game</h1>
+    <p>Find your way to the building!</p>
+    <div id="map"></div>
+    <script>
+      // Set the building's coordinates
+      const buildingCoords = {
+        lat: 47.742745141149314,
+        lng: -122.17933175053214
+      };
+      
+      // Set the map and geolocation options
+      const mapOptions = {
+        center: buildingCoords,
+        zoom: 18,
+        streetViewControl: false,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      };
+      
+      // Create the map
+      const map = new google.maps.Map(document.getElementById("map"), mapOptions);
+      
+      // Add a marker for the building
+      const marker = new google.maps.Marker({
+        position: buildingCoords,
+        map: map,
+        title: "Building Location"
+      });
+      
+      // Get the player's location and redirect if close enough
+      navigator.geolocation.getCurrentPosition(position => {
+        const playerCoords = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        const distance = calculateDistance(playerCoords, buildingCoords);
+        if (distance < 50) { // Adjust the distance threshold as needed
+          window.location.href = "slider.html"; // Replace with the building's webpage or a success page
+        }
+      });
+      
+      // Simple distance calculation function (Haversine formula)
+      function calculateDistance(coords1, coords2) {
+        const R = 6371; // Earth's radius in km
+        const lat1 = coords1.lat;
+        const lon1 = coords1.lng;
+        const lat2 = coords2.lat;
+        const lon2 = coords2.lng;
+        const dLat = deg2rad(lat2 - lat1);
+        const dLon = deg2rad(lon2 - lon1);
+        const a = sin(dLat / 2) * sin(dLat / 2) + cos(deg2rad(lat1)) * cos(deg2rad(lat2)) * sin(dLon / 2) * sin(dLon / 2);
+        const c = 2 * atan2(sqrt(a), sqrt(1 - a));
+        const distance = R * c;
+        return distance;
+      }
+      
+      // Helper function to convert degrees to radians
+      function deg2rad(deg) {
+        return deg * (Math.PI / 180);
+      }
+    </script>
+  </body>
+</html>
