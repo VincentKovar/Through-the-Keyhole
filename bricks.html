@@ -34,7 +34,7 @@
         h1 {
             margin: 5px 0;
         }
-         h2 {
+        h2 {
             margin-bottom: 10px;
         }
         .image-container img {
@@ -91,6 +91,7 @@
         <input type="text" id="addressInput" placeholder="What was its address number?">
         <button onclick="navigate()">Submit</button>
         <audio id="gavelSound" src="gavel.mp3"></audio>
+        <audio id="justiceSound" src="justice.mp3"></audio>
     </div>
 <script>
     function navigate() {
@@ -99,6 +100,7 @@
         const errorMessage = document.getElementById('error-message');
         const historyFrame = document.getElementById('historyFrame');
         const gavelSound = document.getElementById('gavelSound');
+        const justiceSound = document.getElementById('justiceSound');
         const correctBuilding = 'courthouse';
         const correctAddress = '707';
 
@@ -108,8 +110,8 @@
         historyFrame.style.display = 'none';
 
         if (buildingInput === correctBuilding && addressInput === correctAddress) {
-            gavelSound.play();
-            gavelSound.onended = function() {
+            justiceSound.play();
+            justiceSound.onended = function() {
                 document.querySelector('.container').innerHTML = `
                      <a href="https://www.whitebranches.com/keyhole" target="_blank">
             <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
@@ -129,6 +131,11 @@
             errorMessage.textContent = 'Remember the maps in your book.';
             errorMessage.style.display = 'block';
             historyFrame.style.display = 'block'; // Show the iframe after the first incorrect attempt
+            gavelSound.play();
+
+            // Reset text entry boxes to default text
+            document.getElementById('buildingInput').value = '';
+            document.getElementById('addressInput').value = '';
         }
     }
 
@@ -144,8 +151,5 @@
         });
     });
 </script>
-
-
 </body>
 </html>
-
