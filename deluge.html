@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Through the Keyhole</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Use min-height for scrollable content */
+            flex-direction: column;
+            font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background: #ffe4b5; /* Background color */
+        }
+        .container {
+            width: 90%;
+            max-width: 300px; /* Adjust width */
+            text-align: center;
+            padding: 20px; /* Padding for better mobile view */
+            box-sizing: border-box; /* Ensure padding doesn't affect width */
+        }
+        .logo {
+            width: 110px; /* Adjust size as needed */
+            height: auto;
+            margin-bottom: 5px;
+        }
+        h1 { margin: 5px; /* Adjust the value to your liking */
+        }
+        h2 { margin: 5px; /* Adjust the value to your liking */
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .audio-player {
+            margin-bottom: 20px;
+        }
+        .bottom-image {
+            width: 90%; /* Slightly smaller than the window width */
+            max-width: 100%; /* Ensure it fits within the container */
+            height: auto;
+            margin: 0 auto; /* Center the image */
+        }
+        #error-message {
+            color: red;
+            display: none; /* Initially hidden */
+            margin-top: 10px;
+        }
+        p {
+            margin: 10px 0; /* Margin for paragraphs */
+        }
+        .water-transition {
+            animation: waterFlow 2s forwards;
+        }
+        @keyframes waterFlow {
+            0% {
+                background: linear-gradient(to bottom, #b3e5fc 0%, #b3e5fc 100%);
+            }
+            100% {
+                background: linear-gradient(to bottom, #e0f7fa 0%, #b2ebf2 100%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="https://www.whitebranches.com/keyhole" target="_blank">
+            <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo">
+        </a>
+        <h1>Through the Keyhole</h1>
+        <h2>Lock VII</h2>
+        <p>Look in your book and in the world around you to find the next number in the sequence of Noah's foe.</p>
+        <input type="text" id="keyInput" placeholder="Enter three digits.">
+        <button onclick="navigate()">Submit</button>
+        <br>
+        <br>
+        <p id="error-message">Apres moi, le deluge.</p>
+        <img src="deluge.jpg" class="bottom-image">
+        <audio id="drain-audio" src="drain.mp3"></audio>
+    </div>
+
+    <script>
+        let incorrectAttempts = 0;
+
+        function navigate() {
+            const enteredKey = document.getElementById('keyInput').value.trim().toLowerCase(); // Convert entered key to lowercase
+            const comparisonKey1 = '021';
+            const errorMessage = document.getElementById('error-message');
+            const drainAudio = document.getElementById('drain-audio');
+
+            console.log('Entered Key:', enteredKey); // Debugging
+            console.log('Correct Key:', comparisonKey1); // Debugging
+
+            if (enteredKey === comparisonKey1) {
+                console.log('Navigating to myrtle.html'); // Debugging
+                document.body.classList.add('water-transition'); // Add water transition effect
+                setTimeout(() => {
+                    window.location.href = 'myrtle.html'; // Navigate to myrtle.html for correct answer
+                }, 2000); // Delay for transition effect
+            } else {
+                incorrectAttempts++;
+
+                if (incorrectAttempts === 1) {
+                    errorMessage.textContent = 'Apres moi, le deluge.';
+                } else if (incorrectAttempts === 2) {
+                    errorMessage.textContent = 'The riddle will guide you to this key.';
+                } else if (incorrectAttempts >= 3) {
+                    errorMessage.textContent = 'Here\'s some history to help.';
+                    window.open('https://skagittalk.com/2021/03/24/a-brief-look-at-historic-skagit-river-floods/', '_blank'); // Open the hint page in a new tab
+                }
+
+                errorMessage.style.display = 'block'; // Show error message for incorrect answer
+                document.getElementById('keyInput').value = ''; // Reset text entry box
+                drainAudio.play(); // Play drain sound
+            }
+        }
+    </script>
+</body>
+</html>
