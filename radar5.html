@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radar Interface</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
+            background: #0d0d0d; /* Black background mimicking radar display */
+            color: #00ff00; /* Green text color for radar display */
+        }
+        .container {
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .logo {
+            width: 110px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        h1 {
+            margin: 10px 0;
+        }
+        #radar {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            border: 2px solid #00ff00;
+            border-radius: 50%;
+            margin: 20px auto;
+            background: rgba(0, 255, 0, 0.1); /* Radar background */
+        }
+        #needle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 150px;
+            background: #00ff00;
+            transform-origin: bottom;
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        #dot {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: red;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 1s;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+            font-size: 16px;
+            border: 1px solid #00ff00;
+            background: #0d0d0d;
+            color: #00ff00;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #feedback {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: red;
+        }
+        #next-button {
+            display: none;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #next-button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="https://www.whitebranches.com/keyhole" target="_blank">
+            <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
+        </a>
+        <h1>Radar Interface</h1>
+        <div id="radar">
+            <div id="needle"></div>
+            <div id="dot"></div>
+        </div>
+        <input type="text" id="answerInput" placeholder="Enter your answer here">
+        <button onclick="checkAnswer()">Submit</button>
+        <div id="feedback"></div>
+        <button id="next-button" onclick="window.location.href='slider.html'">Next</button>
+        <audio id="beepAudio" src="beep.mp3" preload="auto"></audio>
+    </div>
+    <script>
+        const destination = { lat: 47.74275658241728, lng: -122.17929919268146 }; // Example destination
+        let playerPosition = { lat: null, lng: null };
+        let cachedLocation = null;
+
+        function initGeolocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(updatePosition, showError, {
+                    enableHighAccuracy: true,
+                    maximumAge: 10000,
+                    timeout: 5000
+                });
+            } else {
+                alert('Geolocation is not supported by your browser.');
+            }
+        }
+
+        function getGeolocation() {
+            fetch('https://www.googleapis.com/geolocation/v1/geolocate?key=YOUR_API_KEY', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                const location = data.location;
+                updatePosition({
+                    coords: {
+                        latitude: location.lat,
+                        longitude: location.lng
+                    }
+                });
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function updatePosition(position) {
+            playerPosition.lat = position.coords.latitude;
+            playerPosition.lng = position.coords.longitude;
+            cachedLocation = position;
+            updateDot();
+        }
+
+        function updateDot() {
+            if (playerPosition.lat !== null && playerPosition.lng !== null) {
+                const playerLatLng = new google.maps.LatLng(playerPosition.lat, playerPosition.lng);
+                const destLatLng = new google.maps.LatLng(destination.lat, destination.lng);
+                const distance = google.maps.geometry.spherical.computeDistanceBetween(playerLatLng, destLatLng);
+                const heading = google.maps.geometry.spherical.computeHeading(playerLatLng, destLatLng);
+
+                const radar = document.getElementById('radar');
+                const dot = document.getElementById('dot');
+
+                const radarRadius = radar.offsetWidth / 2;
+                const distanceRatio = Math.min(distance / 500, 1); // Cap at 500 meters
+                const dotX = radarRadius + radarRadius * distanceRatio * Math.cos(heading * Math.PI / 180);
+                const dotY = radarRadius - radarRadius * distanceRatio * Math.sin(heading * Math.PI / 180);
+
+                dot.style.left = `${dotX}px`;
+                dot.style.top = `${dotY}px`;
+
+                const needle = document.getElementById('needle');
+                needle.addEventListener('animationiteration', () => {
+                    if (Math.abs(parseFloat(dot.style.left) - radarRadius) < 10 && Math.abs(parseFloat(dot.style.top) - radarRadius) < 10) {
+                        dot.style.opacity = 1;
+                        document.getElementById('beepAudio').play();
+                        setTimeout(() => { dot.style.opacity = 0; }, 1000); // Fade out the dot after 1 second
+                    }
+                });
+
+                if (distance < 25) { // Less than 25 meters
+                    document.getElementById('feedback').innerText = 'You are very close!';
+                    document.getElementById('next-button').style.display = 'block';
+                } else {
+                    document.getElementById('feedback').innerText = `Distance to destination: ${Math.round(distance)} meters`;
+                    document.getElementById('next-button').style.display = 'none';
+                }
+            }
+        }
+
+        function showError(error) {
+            let message = 'An unknown error occurred.';
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    message = 'User denied the request for Geolocation.';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    message = 'Location information is unavailable.';
+                    break;
+                case error.TIMEOUT:
+                    message = 'The request to get user location timed out.';
+                    break;
+            }
+            alert(message);
+        }
+
+        function checkAnswer() {
+            const answerInput = document.getElementById('answerInput').value.trim().toLowerCase();
+            if (answerInput === 'correct answer') { // Replace 'correct answer' with the actual correct answer
+                window.location.href = 'slider.html';
+            } else {
+                document.getElementById('feedback').innerText = 'Incorrect answer. Try again.';
+                document.getElementById('answerInput').value = '';
+                document.getElementById('beepAudio').play();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initGeolocation);
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDPo1Jlv9yFpKDDPwfFGw2_7V0ofCnkMrI&libraries=geometry"></script>
+</body>
+</html>
