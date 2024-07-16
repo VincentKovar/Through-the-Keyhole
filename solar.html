@@ -186,25 +186,36 @@
                     rotatePlanet(planet, rotationAmount);
                 }
             });
-
             moveCount++;
             document.getElementById('move-counter').textContent = `Moves: ${moveCount}`;
             checkAlignment();
         }
 
-        function showTooltip(orbit, message) {
+        function showTooltip(element, text) {
             const tooltip = document.createElement('div');
-            tooltip.className = 'tooltip';
-            tooltip.textContent = message;
-            tooltip.style.left = `${orbit.offsetWidth / 2}px`;
-            tooltip.style.top = `${orbit.offsetHeight / 2}px`;
-            orbit.appendChild(tooltip);
-            setTimeout(() => tooltip.style.opacity = 1, 10);
+            tooltip.classList.add('tooltip');
+            tooltip.textContent = text;
+            document.body.appendChild(tooltip);
+            const rect = element.getBoundingClientRect();
+            tooltip.style.left = `${rect.left + window.pageXOffset}px`;
+            tooltip.style.top = `${rect.top + window.pageYOffset - 20}px`;
+            tooltip.style.opacity = 1;
             setTimeout(() => {
                 tooltip.style.opacity = 0;
-                setTimeout(() => tooltip.remove(), 300);
+                setTimeout(() => {
+                    tooltip.remove();
+                }, 300);
             }, 2000);
         }
+
+        window.onload = () => {
+            orbits.forEach((orbit) => {
+                const planet = orbit.querySelector('.planet');
+                if (planet) {
+                    planet.style.transform = `rotate(0deg) translate(${orbit.offsetWidth / 2}px) rotate(0deg)`;
+                }
+            });
+        };
 
         orbits.forEach((orbit, index) => {
             orbit.addEventListener('click', () => {
