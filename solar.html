@@ -146,6 +146,14 @@
             hard: [45, -40, 35, -30, 25, -20]
         };
 
+        const movementRules = {
+            mercury: { target: 'venus', amount: 5 },
+            venus: { target: 'earth', amount: 10 },
+            earth: { target: 'mars', amount: 15 },
+            mars: { target: 'jupiter', amount: 20 },
+            jupiter: { target: 'saturn', amount: 25 }
+        };
+
         function rotatePlanet(planet, angle) {
             const currentRotation = getRotationAngle(planet);
             planet.style.transform = `rotate(${currentRotation + angle}deg) translate(${planet.parentElement.offsetWidth / 2}px) rotate(${-currentRotation - angle}deg)`;
@@ -182,6 +190,16 @@
             moveCount++;
             document.getElementById('move-counter').textContent = `Moves: ${moveCount}`;
             checkAlignment();
+
+            // Apply movement rules
+            const currentPlanet = orbit.getAttribute('data-orbit');
+            if (currentPlanet in movementRules) {
+                const { target, amount } = movementRules[currentPlanet];
+                const targetOrbitIndex = Array.from(orbits).findIndex(o => o.getAttribute('data-orbit') === target);
+                if (targetOrbitIndex !== -1) {
+                    rotateOrbit(targetOrbitIndex, true); // Move the target planet
+                }
+            }
         }
 
         orbits.forEach((orbit, index) => {
