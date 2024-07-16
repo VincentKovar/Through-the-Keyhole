@@ -43,16 +43,30 @@
             border-radius: 50%;
             background: rgba(255, 165, 0, 0.1); /* Amber background */
         }
+        .sun {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ffa500;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
         .orbit {
             position: absolute;
-            width: 100%;
-            height: 100%;
             border: 1px solid #ffa500;
             border-radius: 50%;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
         }
+        .orbit[data-orbit="mercury"] { width: 60%; height: 60%; }
+        .orbit[data-orbit="venus"] { width: 70%; height: 70%; }
+        .orbit[data-orbit="earth"] { width: 80%; height: 80%; }
+        .orbit[data-orbit="mars"] { width: 85%; height: 85%; }
+        .orbit[data-orbit="jupiter"] { width: 90%; height: 90%; }
+        .orbit[data-orbit="saturn"] { width: 95%; height: 95%; }
         .planet {
             position: absolute;
             width: 10px;
@@ -62,12 +76,12 @@
             top: 50%;
             left: 50%;
         }
-        .planet[data-planet="mercury"] { transform: translate(-50%, -150%); }
-        .planet[data-planet="venus"] { transform: translate(-50%, -125%); }
+        .planet[data-planet="mercury"] { transform: translate(-50%, -100%); }
+        .planet[data-planet="venus"] { transform: translate(-50%, -100%); }
         .planet[data-planet="earth"] { transform: translate(-50%, -100%); }
-        .planet[data-planet="mars"] { transform: translate(-50%, -75%); }
-        .planet[data-planet="jupiter"] { transform: translate(-50%, -50%); }
-        .planet[data-planet="saturn"] { transform: translate(-50%, -25%); }
+        .planet[data-planet="mars"] { transform: translate(-50%, -100%); }
+        .planet[data-planet="jupiter"] { transform: translate(-50%, -100%); }
+        .planet[data-planet="saturn"] { transform: translate(-50%, -100%); }
         #move-counter {
             margin-top: 10px;
         }
@@ -92,6 +106,7 @@
         <h1>Solar System Puzzle</h1>
         <p>Align all planets!</p>
         <div id="game-container">
+            <div class="sun"></div>
             <div class="orbit" data-orbit="mercury">
                 <div class="planet" data-planet="mercury"></div>
             </div>
