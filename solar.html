@@ -169,12 +169,8 @@
                 planetsAligned = true;
                 document.getElementById('success-sound').play();
                 setTimeout(() => {
-                    document.body.style.transition = 'opacity 1s';
-                    document.body.style.opacity = 0;
-                    setTimeout(() => {
-                        window.location.href = 'next.html';
-                    }, 1000);
-                }, 500);
+                    window.location.href = 'next.html';
+                }, 1000);
             }
         }
 
@@ -202,6 +198,18 @@
             difficultyLevel = difficultyLevel === 'easy' ? 'hard' : 'easy';
             document.getElementById('difficulty-button').textContent = `Switch to ${difficultyLevel.charAt(0).toUpperCase() + difficultyLevel.slice(1)}`;
         });
+
+        // Randomly initialize planet positions
+        function randomizePlanetPositions() {
+            orbits.forEach(orbit => {
+                const planet = orbit.querySelector('.planet');
+                const randomAngle = Math.floor(Math.random() * 360);
+                rotatePlanet(planet, randomAngle);
+            });
+        }
+
+        randomizePlanetPositions(); // Initialize positions on page load
+
     </script>
 </body>
 </html>
