@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar System Puzzle</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
+            background: #000; /* Black background */
+            color: #ffa500; /* Amber text color */
+        }
+        .container {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .logo {
+            width: 110px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        h1 {
+            margin: 10px 0;
+        }
+        #game-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 20px auto;
+            border: 2px solid #ffa500;
+            border-radius: 50%;
+            background: rgba(255, 165, 0, 0.1); /* Amber background */
+        }
+        .orbit {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 1px solid #ffa500;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .planet {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ffa500;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+        }
+        .planet[data-planet="mercury"] { transform: translate(-50%, -150%); }
+        .planet[data-planet="venus"] { transform: translate(-50%, -125%); }
+        .planet[data-planet="earth"] { transform: translate(-50%, -100%); }
+        .planet[data-planet="mars"] { transform: translate(-50%, -75%); }
+        .planet[data-planet="jupiter"] { transform: translate(-50%, -50%); }
+        .planet[data-planet="saturn"] { transform: translate(-50%, -25%); }
+        #move-counter {
+            margin-top: 10px;
+        }
+        #reset-button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #reset-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="https://www.whitebranches.com/keyhole" target="_blank">
+            <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
+        </a>
+        <h1>Solar System Puzzle</h1>
+        <p>Align all planets!</p>
+        <div id="game-container">
+            <div class="orbit" data-orbit="mercury">
+                <div class="planet" data-planet="mercury"></div>
+            </div>
+            <div class="orbit" data-orbit="venus">
+                <div class="planet" data-planet="venus"></div>
+            </div>
+            <div class="orbit" data-orbit="earth">
+                <div class="planet" data-planet="earth"></div>
+            </div>
+            <div class="orbit" data-orbit="mars">
+                <div class="planet" data-planet="mars"></div>
+            </div>
+            <div class="orbit" data-orbit="jupiter">
+                <div class="planet" data-planet="jupiter"></div>
+            </div>
+            <div class="orbit" data-orbit="saturn">
+                <div class="planet" data-planet="saturn"></div>
+            </div>
+        </div>
+        <div id="move-counter">Moves: 0</div>
+        <button id="reset-button" onclick="resetGame()">Reset</button>
+        <audio id="success-sound" src="success.mp3" preload="auto"></audio>
+    </div>
+    <script>
+        let moveCount = 0;
+        let planetsAligned = false;
+
+        function rotateOrbit(orbit, angle) {
+            const currentRotation = getRotationAngle(orbit);
+            orbit.style.transform = `translate(-50%, -50%) rotate(${currentRotation + angle}deg)`;
+        }
+
+        function getRotationAngle(element) {
+            const style = window.getComputedStyle(element);
+            const transform = style.transform || style.webkitTransform || style.mozTransform;
+            if (transform === 'none') return 0;
+            const matrix = transform.match(/^matrix\((.+)\)$/);
+            if (matrix) {
+                const values = matrix[1].split(', ');
+                const a = parseFloat(values[0]);
+                const b = parseFloat(values[1]);
+                return Math.round(Math.atan2(b, a) * (180 / Math.PI));
+            }
+            return 0;
+        }
+
+        function checkAlignment() {
+            const planets = document.querySelectorAll('.planet');
+            const angles = Array.from(planets).map(planet => {
+                const orbit = planet.parentElement;
+                return getRotationAngle(orbit);
+            });
+            const aligned = angles.every((angle, i, arr) => angle === arr[0]);
+            if (aligned) {
+                planetsAligned = true;
+                document.getElementById('success-sound').play();
+                setTimeout(() => {
+                    document.body.style.transition = 'opacity 1s';
+                    document.body.style.opacity = 0;
+                    setTimeout(() => {
+                        window.location.href = 'next.html';
+                    }, 1000);
+                }, 500);
+            }
+        }
+
+        function onOrbitDrag(event, orbit) {
+            if (planetsAligned) return;
+            const startX = event.clientX || event.touches[0].clientX;
+            const startY = event.clientY || event.touches[0].clientY;
+            const initialAngle = getRotationAngle(orbit);
+
+            function onMouseMove(e) {
+                const currentX = e.clientX || e.touches[0].clientX;
+                const currentY = e.clientY || e.touches[0].clientY;
+                const deltaX = currentX - startX;
+                const deltaY = currentY - startY;
+                const angle = (Math.atan2(deltaY, deltaX) * 180 / Math.PI) - 90;
+                const rotationAngle = angle - initialAngle;
+                rotateOrbit(orbit, rotationAngle);
+                moveCount++;
+                document.getElementById('move-counter').textContent = `Moves: ${moveCount}`;
+                checkAlignment();
+            }
+
+            function onMouseUp() {
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+                document.removeEventListener('touchmove', onMouseMove);
+                document.removeEventListener('touchend', onMouseUp);
+            }
+
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+            document.addEventListener('touchmove', onMouseMove);
+            document.addEventListener('touchend', onMouseUp);
+        }
+
+        function resetGame() {
+            planetsAligned = false;
+            moveCount = 0;
+            document.getElementById('move-counter').textContent = 'Moves: 0';
+            const orbits = document.querySelectorAll('.orbit');
+            orbits.forEach(orbit => orbit.style.transform = 'translate(-50%, -50%) rotate(0deg)');
+        }
+
+        document.querySelectorAll('.orbit').forEach(orbit => {
+            orbit.addEventListener('mousedown', event => onOrbitDrag(event, orbit));
+            orbit.addEventListener('touchstart', event => onOrbitDrag(event, orbit));
+        });
+    </script>
+</body>
+</html>
