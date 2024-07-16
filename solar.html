@@ -16,8 +16,8 @@
             font-family: 'Alice', serif;
             text-align: center;
             margin: 0;
-            background: #000; /* Black background */
-            color: #ffa500; /* Amber text color */
+            background: #000;
+            color: #ffa500;
         }
         .container {
             width: 100%;
@@ -41,7 +41,7 @@
             margin: 20px auto;
             border: 2px solid #ffa500;
             border-radius: 50%;
-            background: rgba(255, 165, 0, 0.1); /* Amber background */
+            background: rgba(255, 165, 0, 0.1);
         }
         .sun {
             position: absolute;
@@ -60,6 +60,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            cursor: pointer;
         }
         .orbit[data-orbit="mercury"] { width: 60%; height: 60%; border: 1px solid rgba(255, 165, 0, 0.5); }
         .orbit[data-orbit="venus"] { width: 70%; height: 70%; border: 1px solid rgba(255, 165, 0, 0.6); }
@@ -73,13 +74,14 @@
             border-radius: 50%;
             top: 50%;
             left: 50%;
+            transform-origin: center;
         }
-        .planet[data-planet="mercury"] { width: 6px; height: 6px; transform: translate(-50%, -30px) rotate(30deg); }
-        .planet[data-planet="venus"] { width: 8px; height: 8px; transform: translate(-50%, -35px) rotate(90deg); }
-        .planet[data-planet="earth"] { width: 8px; height: 8px; transform: translate(-50%, -40px) rotate(150deg); }
-        .planet[data-planet="mars"] { width: 7px; height: 7px; transform: translate(-50%, -42.5px) rotate(210deg); }
-        .planet[data-planet="jupiter"] { width: 12px; height: 12px; transform: translate(-50%, -45px) rotate(270deg); }
-        .planet[data-planet="saturn"] { width: 11px; height: 11px; transform: translate(-50%, -47.5px) rotate(330deg); }
+        .planet[data-planet="mercury"] { width: 6px; height: 6px; }
+        .planet[data-planet="venus"] { width: 8px; height: 8px; }
+        .planet[data-planet="earth"] { width: 8px; height: 8px; }
+        .planet[data-planet="mars"] { width: 7px; height: 7px; }
+        .planet[data-planet="jupiter"] { width: 12px; height: 12px; }
+        .planet[data-planet="saturn"] { width: 11px; height: 11px; }
         #move-counter {
             margin-top: 10px;
         }
@@ -90,6 +92,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin-top: 10px;
         }
         #reset-button:hover {
             background-color: #0056b3;
@@ -102,68 +105,45 @@
             <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
         </a>
         <h1>Solar System Puzzle</h1>
-        <p>Align all planets!</p>
+        <p>Align all planets vertically!</p>
         <div id="game-container">
             <div class="sun"></div>
-            <div class="orbit" data-orbit="mercury">
-                <div class="planet" data-planet="mercury"></div>
-            </div>
-            <div class="orbit" data-orbit="venus">
-                <div class="planet" data-planet="venus"></div>
-            </div>
-            <div class="orbit" data-orbit="earth">
-                <div class="planet" data-planet="earth"></div>
-            </div>
-            <div class="orbit" data-orbit="mars">
-                <div class="planet" data-planet="mars"></div>
-            </div>
-            <div class="orbit" data-orbit="jupiter">
-                <div class="planet" data-planet="jupiter"></div>
-            </div>
-            <div class="orbit" data-orbit="saturn">
-                <div class="planet" data-planet="saturn"></div>
-            </div>
+            <div class="orbit" data-orbit="mercury"><div class="planet" data-planet="mercury"></div></div>
+            <div class="orbit" data-orbit="venus"><div class="planet" data-planet="venus"></div></div>
+            <div class="orbit" data-orbit="earth"><div class="planet" data-planet="earth"></div></div>
+            <div class="orbit" data-orbit="mars"><div class="planet" data-planet="mars"></div></div>
+            <div class="orbit" data-orbit="jupiter"><div class="planet" data-planet="jupiter"></div></div>
+            <div class="orbit" data-orbit="saturn"><div class="planet" data-planet="saturn"></div></div>
         </div>
         <div id="move-counter">Moves: 0</div>
-        <button id="reset-button" onclick="resetGame()">Reset</button>
+        <button id="reset-button">Reset</button>
         <audio id="success-sound" src="success.mp3" preload="auto"></audio>
     </div>
     <script>
+        const orbits = document.querySelectorAll('.orbit');
         let moveCount = 0;
         let planetsAligned = false;
 
-        function rotateOrbit(orbit, angle) {
-            const currentRotation = getRotationAngle(orbit);
-            orbit.style.transform = `translate(-50%, -50%) rotate(${currentRotation + angle}deg)`;
-            
-            // Rotate the planet in the opposite direction to keep it oriented correctly
-            const planet = orbit.querySelector('.planet');
-            const planetRotation = getRotationAngle(planet);
-            planet.style.transform = `translate(-50%, -${orbit.offsetHeight / 2}px) rotate(${planetRotation - angle}deg)`;
+        function rotatePlanet(planet, angle) {
+            const currentRotation = getRotationAngle(planet);
+            planet.style.transform = `rotate(${currentRotation + angle}deg) translate(${planet.parentElement.offsetWidth / 2}px) rotate(${-currentRotation - angle}deg)`;
         }
 
         function getRotationAngle(element) {
-            const style = window.getComputedStyle(element);
-            const transform = style.transform || style.webkitTransform || style.mozTransform;
-            if (transform === 'none') return 0;
-            const matrix = transform.match(/^matrix\((.+)\)$/);
-            if (matrix) {
-                const values = matrix[1].split(', ');
-                const a = parseFloat(values[0]);
-                const b = parseFloat(values[1]);
-                return Math.round(Math.atan2(b, a) * (180 / Math.PI));
-            }
-            return 0;
+            const transform = element.style.transform;
+            const matches = transform.match(/rotate\(([-\d.]+)deg\)/);
+            return matches ? parseFloat(matches[1]) : 0;
         }
 
         function checkAlignment() {
+            const tolerance = 5; // degrees
             const planets = document.querySelectorAll('.planet');
-            const angles = Array.from(planets).map(planet => {
-                const orbit = planet.parentElement;
-                return getRotationAngle(orbit);
+            const aligned = Array.from(planets).every(planet => {
+                const angle = getRotationAngle(planet) % 360;
+                return (angle >= 360 - tolerance || angle <= tolerance);
             });
-            const aligned = angles.every((angle, i, arr) => angle === arr[0]);
-            if (aligned) {
+
+            if (aligned && !planetsAligned) {
                 planetsAligned = true;
                 document.getElementById('success-sound').play();
                 setTimeout(() => {
@@ -176,55 +156,48 @@
             }
         }
 
-        function onOrbitDrag(event, orbit) {
-            if (planetsAligned) return;
-            const startX = event.clientX || event.touches[0].clientX;
-            const startY = event.clientY || event.touches[0].clientY;
-            const initialAngle = getRotationAngle(orbit);
+        function rotateOrbit(orbitIndex, clockwise) {
+            const rotationAmounts = [30, -40, 50, -60, 70, -80]; // Degrees to rotate for each orbit
+            const affectedOrbits = [
+                [0, 1, 2],    // Mercury affects itself, Venus, and Earth
+                [0, 1, 2, 3], // Venus affects Mercury, itself, Earth, and Mars
+                [1, 2, 3, 4], // Earth affects Venus, itself, Mars, and Jupiter
+                [2, 3, 4, 5], // Mars affects Earth, itself, Jupiter, and Saturn
+                [3, 4, 5],    // Jupiter affects Mars, itself, and Saturn
+                [4, 5]        // Saturn affects Jupiter and itself
+            ];
 
-            function onMouseMove(e) {
-                const currentX = e.clientX || e.touches[0].clientX;
-                const currentY = e.clientY || e.touches[0].clientY;
-                const deltaX = currentX - startX;
-                const deltaY = currentY - startY;
-                const angle = (Math.atan2(deltaY, deltaX) * 180 / Math.PI) - 90;
-                const rotationAngle = angle - initialAngle;
-                rotateOrbit(orbit, rotationAngle);
-                moveCount++;
-                document.getElementById('move-counter').textContent = `Moves: ${moveCount}`;
-                checkAlignment();
-            }
+            affectedOrbits[orbitIndex].forEach(index => {
+                const planet = orbits[index].querySelector('.planet');
+                const rotationAmount = rotationAmounts[index] * (clockwise ? 1 : -1);
+                rotatePlanet(planet, rotationAmount);
+            });
 
-            function onMouseUp() {
-                document.removeEventListener('mousemove', onMouseMove);
-                document.removeEventListener('mouseup', onMouseUp);
-                document.removeEventListener('touchmove', onMouseMove);
-                document.removeEventListener('touchend', onMouseUp);
-            }
-
-            document.addEventListener('mousemove', onMouseMove);
-            document.addEventListener('mouseup', onMouseUp);
-            document.addEventListener('touchmove', onMouseMove);
-            document.addEventListener('touchend', onMouseUp);
+            moveCount++;
+            document.getElementById('move-counter').textContent = `Moves: ${moveCount}`;
+            checkAlignment();
         }
 
-        document.querySelectorAll('.orbit').forEach(orbit => {
-            orbit.addEventListener('mousedown', (e) => onOrbitDrag(e, orbit));
-            orbit.addEventListener('touchstart', (e) => onOrbitDrag(e, orbit));
+        orbits.forEach((orbit, index) => {
+            orbit.addEventListener('click', () => rotateOrbit(index, true));
+            orbit.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                rotateOrbit(index, false);
+            });
         });
 
         function resetGame() {
             planetsAligned = false;
             moveCount = 0;
             document.getElementById('move-counter').textContent = 'Moves: 0';
-            const orbits = document.querySelectorAll('.orbit');
             orbits.forEach(orbit => {
-                orbit.style.transform = 'translate(-50%, -50%) rotate(0deg)';
                 const planet = orbit.querySelector('.planet');
-                const initialRotation = Array.from(orbits).indexOf(orbit) * 60; // 360 / 6 planets = 60 degrees
-                planet.style.transform = `translate(-50%, -${orbit.offsetHeight / 2}px) rotate(${initialRotation}deg)`;
+                const randomAngle = Math.floor(Math.random() * 360);
+                rotatePlanet(planet, randomAngle);
             });
         }
+
+        document.getElementById('reset-button').addEventListener('click', resetGame);
 
         resetGame();
     </script>
