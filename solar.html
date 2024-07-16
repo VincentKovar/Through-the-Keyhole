@@ -110,6 +110,7 @@
             pointer-events: none;
             opacity: 0;
             transition: opacity 0.3s;
+            z-index: 10;
         }
     </style>
 </head>
@@ -131,7 +132,7 @@
         </div>
         <div id="move-counter">Moves: 0</div>
         <button id="reset-button">Reset</button>
-        <button id="difficulty-button">Switch Difficulty</button>
+        <button id="difficulty-button">Switch to Hard</button>
         <audio id="success-sound" src="success.mp3" preload="auto"></audio>
     </div>
     <script>
@@ -141,8 +142,8 @@
         let difficultyLevel = 'easy';
 
         const rotationAmounts = {
-            easy: [30, -40, 50, -60, 70, -80],
-            hard: [45, -60, 75, -90, 105, -120]
+            easy: [30, -25, 20, -15, 10, -5],
+            hard: [45, -40, 35, -30, 25, -20]
         };
 
         function rotatePlanet(planet, angle) {
@@ -178,20 +179,19 @@
         }
 
         function rotateOrbit(orbitIndex, clockwise) {
-            const affectedOrbits = [
-                [0, 1],       // Mercury affects itself and Venus
-                [0, 1, 2],    // Venus affects Mercury, itself, and Earth
-                [1, 2, 3],    // Earth affects Venus, itself, and Mars
-                [2, 3, 4],    // Mars affects Earth, itself, and Jupiter
-                [3, 4, 5],    // Jupiter affects Mars, itself, and Saturn
-                [4, 5]        // Saturn affects Jupiter and itself
-            ];
+            const planet = orbits[orbitIndex].querySelector('.planet');
+            const rotationAmount = rotationAmounts[difficultyLevel][orbitIndex] * (clockwise ? 1 : -1);
+            rotatePlanet(planet, rotationAmount);
 
-            affectedOrbits[orbitIndex].forEach(index => {
-                const planet = orbits[index].querySelector('.planet');
-                const rotationAmount = rotationAmounts[difficultyLevel][index] * (clockwise ? 1 : -1);
-                rotatePlanet(planet, rotationAmount);
-            });
+            // Affect adjacent planets
+            if (orbitIndex > 0) {
+                const prevPlanet = orbits[orbitIndex - 1].querySelector('.planet');
+                rotatePlanet(prevPlanet, rotationAmount * 0.5);
+            }
+            if (orbitIndex < orbits.length - 1) {
+                const nextPlanet = orbits[orbitIndex + 1].querySelector('.planet');
+                rotatePlanet(nextPlanet, rotationAmount * 0.5);
+            }
 
             moveCount++;
             document.getElementById('move-counter').textContent = `Moves: ${moveCount}`;
@@ -202,6 +202,8 @@
             const tooltip = document.createElement('div');
             tooltip.className = 'tooltip';
             tooltip.textContent = message;
+            tooltip.style.left = `${orbit.offsetWidth / 2}px`;
+            tooltip.style.top = `${orbit.offsetHeight / 2}px`;
             orbit.appendChild(tooltip);
             setTimeout(() => tooltip.style.opacity = 1, 10);
             setTimeout(() => {
