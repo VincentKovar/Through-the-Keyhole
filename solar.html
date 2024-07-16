@@ -179,19 +179,13 @@
         }
 
         function rotateOrbit(orbitIndex, clockwise) {
-            const planet = orbits[orbitIndex].querySelector('.planet');
             const rotationAmount = rotationAmounts[difficultyLevel][orbitIndex] * (clockwise ? 1 : -1);
-            rotatePlanet(planet, rotationAmount);
-
-            // Affect adjacent planets
-            if (orbitIndex > 0) {
-                const prevPlanet = orbits[orbitIndex - 1].querySelector('.planet');
-                rotatePlanet(prevPlanet, rotationAmount * 0.5);
-            }
-            if (orbitIndex < orbits.length - 1) {
-                const nextPlanet = orbits[orbitIndex + 1].querySelector('.planet');
-                rotatePlanet(nextPlanet, rotationAmount * 0.5);
-            }
+            orbits.forEach((orbit, index) => {
+                const planet = orbit.querySelector('.planet');
+                if (planet) {
+                    rotatePlanet(planet, rotationAmount);
+                }
+            });
 
             moveCount++;
             document.getElementById('move-counter').textContent = `Moves: ${moveCount}`;
@@ -215,36 +209,26 @@
         orbits.forEach((orbit, index) => {
             orbit.addEventListener('click', () => {
                 rotateOrbit(index, true);
-                showTooltip(orbit, `Rotating ${orbit.dataset.orbit} clockwise`);
-            });
-            orbit.addEventListener('contextmenu', (e) => {
-                e.preventDefault();
-                rotateOrbit(index, false);
-                showTooltip(orbit, `Rotating ${orbit.dataset.orbit} counter-clockwise`);
+                showTooltip(orbit, `Rotated by ${rotationAmounts[difficultyLevel][index]} degrees`);
             });
         });
 
-        function resetGame() {
-            planetsAligned = false;
-            moveCount = 0;
-            document.getElementById('move-counter').textContent = 'Moves: 0';
+        document.getElementById('reset-button').addEventListener('click', () => {
             orbits.forEach(orbit => {
                 const planet = orbit.querySelector('.planet');
-                const randomAngle = Math.floor(Math.random() * 360);
-                rotatePlanet(planet, randomAngle);
+                if (planet) {
+                    planet.style.transform = `rotate(0deg) translate(${orbit.offsetWidth / 2}px) rotate(0deg)`;
+                }
             });
-        }
+            moveCount = 0;
+            document.getElementById('move-counter').textContent = `Moves: ${moveCount}`;
+            planetsAligned = false;
+        });
 
-        function switchDifficulty() {
+        document.getElementById('difficulty-button').addEventListener('click', () => {
             difficultyLevel = difficultyLevel === 'easy' ? 'hard' : 'easy';
-            document.getElementById('difficulty-button').textContent = `Switch to ${difficultyLevel === 'easy' ? 'Hard' : 'Easy'}`;
-            resetGame();
-        }
-
-        document.getElementById('reset-button').addEventListener('click', resetGame);
-        document.getElementById('difficulty-button').addEventListener('click', switchDifficulty);
-
-        resetGame();
+            document.getElementById('difficulty-button').textContent = difficultyLevel === 'easy' ? 'Switch to Hard' : 'Switch to Easy';
+        });
     </script>
 </body>
 </html>
