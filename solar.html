@@ -52,36 +52,34 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px #ffa500;
         }
         .orbit {
             position: absolute;
-            border: 1px solid #ffa500;
             border-radius: 50%;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
         }
-        .orbit[data-orbit="mercury"] { width: 60%; height: 60%; }
-        .orbit[data-orbit="venus"] { width: 70%; height: 70%; }
-        .orbit[data-orbit="earth"] { width: 80%; height: 80%; }
-        .orbit[data-orbit="mars"] { width: 85%; height: 85%; }
-        .orbit[data-orbit="jupiter"] { width: 90%; height: 90%; }
-        .orbit[data-orbit="saturn"] { width: 95%; height: 95%; }
+        .orbit[data-orbit="mercury"] { width: 60%; height: 60%; border: 1px solid rgba(255, 165, 0, 0.5); }
+        .orbit[data-orbit="venus"] { width: 70%; height: 70%; border: 1px solid rgba(255, 165, 0, 0.6); }
+        .orbit[data-orbit="earth"] { width: 80%; height: 80%; border: 1px solid rgba(255, 165, 0, 0.7); }
+        .orbit[data-orbit="mars"] { width: 85%; height: 85%; border: 1px solid rgba(255, 165, 0, 0.8); }
+        .orbit[data-orbit="jupiter"] { width: 90%; height: 90%; border: 1px solid rgba(255, 165, 0, 0.9); }
+        .orbit[data-orbit="saturn"] { width: 95%; height: 95%; border: 1px solid rgba(255, 165, 0, 1); }
         .planet {
             position: absolute;
-            width: 10px;
-            height: 10px;
             background: #ffa500;
             border-radius: 50%;
             top: 50%;
             left: 50%;
         }
-        .planet[data-planet="mercury"] { transform: translate(-50%, -100%); }
-        .planet[data-planet="venus"] { transform: translate(-50%, -100%); }
-        .planet[data-planet="earth"] { transform: translate(-50%, -100%); }
-        .planet[data-planet="mars"] { transform: translate(-50%, -100%); }
-        .planet[data-planet="jupiter"] { transform: translate(-50%, -100%); }
-        .planet[data-planet="saturn"] { transform: translate(-50%, -100%); }
+        .planet[data-planet="mercury"] { width: 6px; height: 6px; transform: translate(-50%, -30px) rotate(30deg); }
+        .planet[data-planet="venus"] { width: 8px; height: 8px; transform: translate(-50%, -35px) rotate(90deg); }
+        .planet[data-planet="earth"] { width: 8px; height: 8px; transform: translate(-50%, -40px) rotate(150deg); }
+        .planet[data-planet="mars"] { width: 7px; height: 7px; transform: translate(-50%, -42.5px) rotate(210deg); }
+        .planet[data-planet="jupiter"] { width: 12px; height: 12px; transform: translate(-50%, -45px) rotate(270deg); }
+        .planet[data-planet="saturn"] { width: 11px; height: 11px; transform: translate(-50%, -47.5px) rotate(330deg); }
         #move-counter {
             margin-top: 10px;
         }
@@ -137,6 +135,11 @@
         function rotateOrbit(orbit, angle) {
             const currentRotation = getRotationAngle(orbit);
             orbit.style.transform = `translate(-50%, -50%) rotate(${currentRotation + angle}deg)`;
+            
+            // Rotate the planet in the opposite direction to keep it oriented correctly
+            const planet = orbit.querySelector('.planet');
+            const planetRotation = getRotationAngle(planet);
+            planet.style.transform = `translate(-50%, -${orbit.offsetHeight / 2}px) rotate(${planetRotation - angle}deg)`;
         }
 
         function getRotationAngle(element) {
@@ -205,18 +208,25 @@
             document.addEventListener('touchend', onMouseUp);
         }
 
+        document.querySelectorAll('.orbit').forEach(orbit => {
+            orbit.addEventListener('mousedown', (e) => onOrbitDrag(e, orbit));
+            orbit.addEventListener('touchstart', (e) => onOrbitDrag(e, orbit));
+        });
+
         function resetGame() {
             planetsAligned = false;
             moveCount = 0;
             document.getElementById('move-counter').textContent = 'Moves: 0';
             const orbits = document.querySelectorAll('.orbit');
-            orbits.forEach(orbit => orbit.style.transform = 'translate(-50%, -50%) rotate(0deg)');
+            orbits.forEach(orbit => {
+                orbit.style.transform = 'translate(-50%, -50%) rotate(0deg)';
+                const planet = orbit.querySelector('.planet');
+                const initialRotation = Array.from(orbits).indexOf(orbit) * 60; // 360 / 6 planets = 60 degrees
+                planet.style.transform = `translate(-50%, -${orbit.offsetHeight / 2}px) rotate(${initialRotation}deg)`;
+            });
         }
 
-        document.querySelectorAll('.orbit').forEach(orbit => {
-            orbit.addEventListener('mousedown', event => onOrbitDrag(event, orbit));
-            orbit.addEventListener('touchstart', event => onOrbitDrag(event, orbit));
-        });
+        resetGame();
     </script>
 </body>
 </html>
