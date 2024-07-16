@@ -61,6 +61,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             cursor: pointer;
+            transition: all 0.3s ease;
         }
         .orbit[data-orbit="mercury"] { width: 60%; height: 60%; border: 1px solid rgba(255, 165, 0, 0.5); }
         .orbit[data-orbit="venus"] { width: 70%; height: 70%; border: 1px solid rgba(255, 165, 0, 0.6); }
@@ -75,6 +76,7 @@
             top: 50%;
             left: 50%;
             transform-origin: center;
+            transition: all 0.3s ease;
         }
         .planet[data-planet="mercury"] { width: 6px; height: 6px; }
         .planet[data-planet="venus"] { width: 8px; height: 8px; }
@@ -85,7 +87,7 @@
         #move-counter {
             margin-top: 10px;
         }
-        #reset-button {
+        #reset-button, #difficulty-button {
             padding: 10px;
             background-color: #007bff;
             color: white;
@@ -93,9 +95,21 @@
             border-radius: 5px;
             cursor: pointer;
             margin-top: 10px;
+            margin-right: 5px;
         }
-        #reset-button:hover {
+        #reset-button:hover, #difficulty-button:hover {
             background-color: #0056b3;
+        }
+        .tooltip {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            color: #000;
+            padding: 5px;
+            border-radius: 3px;
+            font-size: 12px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
     </style>
 </head>
@@ -117,12 +131,19 @@
         </div>
         <div id="move-counter">Moves: 0</div>
         <button id="reset-button">Reset</button>
+        <button id="difficulty-button">Switch Difficulty</button>
         <audio id="success-sound" src="success.mp3" preload="auto"></audio>
     </div>
     <script>
         const orbits = document.querySelectorAll('.orbit');
         let moveCount = 0;
         let planetsAligned = false;
+        let difficultyLevel = 'easy';
+
+        const rotationAmounts = {
+            easy: [30, -40, 50, -60, 70, -80],
+            hard: [45, -60, 75, -90, 105, -120]
+        };
 
         function rotatePlanet(planet, angle) {
             const currentRotation = getRotationAngle(planet);
@@ -157,19 +178,18 @@
         }
 
         function rotateOrbit(orbitIndex, clockwise) {
-            const rotationAmounts = [30, -40, 50, -60, 70, -80]; // Degrees to rotate for each orbit
             const affectedOrbits = [
-                [0, 1, 2],    // Mercury affects itself, Venus, and Earth
-                [0, 1, 2, 3], // Venus affects Mercury, itself, Earth, and Mars
-                [1, 2, 3, 4], // Earth affects Venus, itself, Mars, and Jupiter
-                [2, 3, 4, 5], // Mars affects Earth, itself, Jupiter, and Saturn
+                [0, 1],       // Mercury affects itself and Venus
+                [0, 1, 2],    // Venus affects Mercury, itself, and Earth
+                [1, 2, 3],    // Earth affects Venus, itself, and Mars
+                [2, 3, 4],    // Mars affects Earth, itself, and Jupiter
                 [3, 4, 5],    // Jupiter affects Mars, itself, and Saturn
                 [4, 5]        // Saturn affects Jupiter and itself
             ];
 
             affectedOrbits[orbitIndex].forEach(index => {
                 const planet = orbits[index].querySelector('.planet');
-                const rotationAmount = rotationAmounts[index] * (clockwise ? 1 : -1);
+                const rotationAmount = rotationAmounts[difficultyLevel][index] * (clockwise ? 1 : -1);
                 rotatePlanet(planet, rotationAmount);
             });
 
@@ -178,11 +198,27 @@
             checkAlignment();
         }
 
+        function showTooltip(orbit, message) {
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tooltip';
+            tooltip.textContent = message;
+            orbit.appendChild(tooltip);
+            setTimeout(() => tooltip.style.opacity = 1, 10);
+            setTimeout(() => {
+                tooltip.style.opacity = 0;
+                setTimeout(() => tooltip.remove(), 300);
+            }, 2000);
+        }
+
         orbits.forEach((orbit, index) => {
-            orbit.addEventListener('click', () => rotateOrbit(index, true));
+            orbit.addEventListener('click', () => {
+                rotateOrbit(index, true);
+                showTooltip(orbit, `Rotating ${orbit.dataset.orbit} clockwise`);
+            });
             orbit.addEventListener('contextmenu', (e) => {
                 e.preventDefault();
                 rotateOrbit(index, false);
+                showTooltip(orbit, `Rotating ${orbit.dataset.orbit} counter-clockwise`);
             });
         });
 
@@ -197,7 +233,14 @@
             });
         }
 
+        function switchDifficulty() {
+            difficultyLevel = difficultyLevel === 'easy' ? 'hard' : 'easy';
+            document.getElementById('difficulty-button').textContent = `Switch to ${difficultyLevel === 'easy' ? 'Hard' : 'Easy'}`;
+            resetGame();
+        }
+
         document.getElementById('reset-button').addEventListener('click', resetGame);
+        document.getElementById('difficulty-button').addEventListener('click', switchDifficulty);
 
         resetGame();
     </script>
