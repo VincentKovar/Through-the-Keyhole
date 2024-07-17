@@ -42,7 +42,6 @@
             border: 2px solid #ffa500;
             border-radius: 50%;
             background: rgba(255, 165, 0, 0.1);
-            touch-action: none; /* Disable touch scrolling */
         }
         .sun {
             position: absolute;
@@ -62,7 +61,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             cursor: pointer;
-            transition: transform 0.3s ease; /* Simplified transition */
+            transition: all 0.3s ease;
         }
         .orbit[data-orbit="mercury"] { width: 60%; height: 60%; border: 1px solid rgba(255, 165, 0, 0.5); }
         .orbit[data-orbit="venus"] { width: 70%; height: 70%; border: 1px solid rgba(255, 165, 0, 0.6); }
@@ -77,7 +76,7 @@
             top: 50%;
             left: 50%;
             transform-origin: center;
-            transition: transform 0.3s ease; /* Simplified transition */
+            transition: all 0.3s ease;
         }
         .planet[data-planet="mercury"] { width: 6px; height: 6px; }
         .planet[data-planet="venus"] { width: 8px; height: 8px; }
@@ -123,108 +122,147 @@
         <h1>Solar System Puzzle</h1>
         <p>Align all planets vertically!</p>
         <div id="game-container">
+            <!-- Sun -->
             <div class="sun"></div>
+            
+            <!-- Orbits -->
             <div class="orbit" data-orbit="mercury"><div class="planet" data-planet="mercury"></div></div>
             <div class="orbit" data-orbit="venus"><div class="planet" data-planet="venus"></div></div>
             <div class="orbit" data-orbit="earth"><div class="planet" data-planet="earth"></div></div>
             <div class="orbit" data-orbit="mars"><div class="planet" data-planet="mars"></div></div>
             <div class="orbit" data-orbit="jupiter"><div class="planet" data-planet="jupiter"></div></div>
             <div class="orbit" data-orbit="saturn"><div class="planet" data-planet="saturn"></div></div>
+            
+            <!-- Tooltips (Optional) -->
+            <!-- Example: <div class="tooltip" style="top: 50%; left: 50%;">Mercury</div> -->
         </div>
+        
+        <!-- Move Counter (Optional) -->
         <div id="move-counter">Moves: 0</div>
+        
+        <!-- Reset and Difficulty Buttons (Optional) -->
         <button id="reset-button">Reset</button>
-        <button id="difficulty-button">Switch to Hard</button>
-        <audio id="success-sound" src="success.mp3" preload="auto"></audio>
+        <button id="difficulty-button">Switch Difficulty</button>
+        
+        <!-- Success Sound (Optional) -->
+        <!-- Example: <audio id="success-sound" src="success.mp3" preload="auto"></audio> -->
     </div>
+    
+    <!-- JavaScript (To be implemented based on game logic) -->
     <script>
-        const orbits = document.querySelectorAll('.orbit');
+        // Variables to store current game state
+        let planets = ["mercury", "venus", "earth", "mars", "jupiter", "saturn"];
+        let solution = [];
+        let currentSequence = [];
         let moveCount = 0;
-        let planetsAligned = false;
-        let difficultyLevel = 'easy';
+        let successSound = new Audio("success.mp3");
 
-        const rotationAmounts = {
-            easy: [30, -25, 20, -15, 10, -5],
-            hard: [45, -40, 35, -30, 25, -20]
-        };
-
-        const movementRules = {
-            mercury: { target: 'venus', amount: 5 },
-            venus: { target: 'earth', amount: 10 },
-            earth: { target: 'mars', amount: 15 },
-            mars: { target: 'jupiter', amount: 20 },
-            jupiter: { target: 'saturn', amount: 25 }
-        };
-
-        function rotatePlanet(planet, angle) {
-            const currentRotation = getRotationAngle(planet);
-            planet.style.transform = `rotate(${currentRotation + angle}deg) translate(${planet.parentElement.offsetWidth / 2}px) rotate(${-currentRotation - angle}deg)`;
-        }
-
-        function getRotationAngle(element) {
-            const transform = element.style.transform;
-            const match = transform.match(/rotate\(([-\d.]+)deg\)/);
-            return match ? parseFloat(match[1]) : 0;
-        }
-
-        function checkAlignment() {
-            const tolerance = 5; // degrees
-            const planets = document.querySelectorAll('.planet');
-            const aligned = Array.from(planets).every(planet => {
-                const angle = getRotationAngle(planet) % 360;
-                return (angle >= 360 - tolerance || angle <= tolerance);
-            });
-
-            if (aligned && !planetsAligned) {
-                planetsAligned = true;
-                document.getElementById('success-sound').play();
-                setTimeout(() => {
-                    window.location.href = 'next.html';
-                }, 1000);
+        // Function to shuffle array (Fisher-Yates shuffle)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
             }
         }
 
-        function rotateOrbit(orbitIndex, clockwise) {
-            const angle = rotationAmounts[difficultyLevel][orbitIndex] * (clockwise ? 1 : -1);
-            const orbit = orbits[orbitIndex];
-            const planet = orbit.querySelector('.planet');
-            rotatePlanet(planet, angle);
-            moveCount++;
-            document.getElementById('move-counter').textContent = `Moves: ${moveCount}`;
-            checkAlignment();
-
-            // Apply movement rules
-            const currentPlanet = orbit.getAttribute('data-orbit');
-            if (currentPlanet in movementRules) {
-                const { target, amount } = movementRules[currentPlanet];
-                const targetOrbit = Array.from(orbits).find(o => o.getAttribute('data-orbit') === target);
-                const targetPlanet = targetOrbit.querySelector('.planet');
-                rotatePlanet(targetPlanet, amount * (clockwise ? 1 : -1));
-            }
-        }
-
-        function resetGame() {
-            const planets = document.querySelectorAll('.planet');
-            planets.forEach(planet => {
-                planet.style.transform = '';
-            });
+        // Initialize game with shuffled planet order
+        function initializeGame() {
+            shuffleArray(planets);
+            solution = [...planets]; // Copy shuffled array to solution
+            placePlanets();
+            updateTooltips();
             moveCount = 0;
-            planetsAligned = false;
+            updateMoveCounter();
+        }
+
+        // Place planets in their orbits based on currentSequence
+        function placePlanets() {
+            let orbits = document.querySelectorAll('.orbit');
+            for (let i = 0; i < planets.length; i++) {
+                let planet = orbits[i].querySelector('.planet');
+                planet.dataset.planet = planets[i];
+                let angle = (i / planets.length) * 2 * Math.PI;
+                let radius = parseInt(orbits[i].style.width) / 2 - parseInt(window.getComputedStyle(planet).width) / 2;
+                let x = Math.cos(angle) * radius;
+                let y = Math.sin(angle) * radius;
+                planet.style.transform = `translate(${x}px, ${y}px)`;
+            }
+        }
+
+        // Update tooltips for planets
+        function updateTooltips() {
+            let tooltips = document.querySelectorAll('.tooltip');
+            let orbits = document.querySelectorAll('.orbit');
+            for (let i = 0; i < planets.length; i++) {
+                let tooltip = tooltips[i];
+                let orbitRect = orbits[i].getBoundingClientRect();
+                tooltip.textContent = planets[i].charAt(0).toUpperCase() + planets[i].slice(1);
+                tooltip.style.top = `${orbitRect.top}px`;
+                tooltip.style.left = `${orbitRect.left}px`;
+                tooltip.style.opacity = 1;
+            }
+        }
+
+        // Update move counter on the UI
+        function updateMoveCounter() {
             document.getElementById('move-counter').textContent = `Moves: ${moveCount}`;
         }
 
-        function switchDifficulty() {
-            difficultyLevel = difficultyLevel === 'easy' ? 'hard' : 'easy';
-            document.getElementById('difficulty-button').textContent = `Switch to ${difficultyLevel.charAt(0).toUpperCase() + difficultyLevel.slice(1)}`;
+        // Handle click on a planet
+        function handlePlanetClick(planetIndex) {
+            let clickedPlanet = currentSequence.shift(); // Get the next expected planet
+            if (planets[planetIndex] === clickedPlanet) {
+                moveCount++;
+                updateMoveCounter();
+                if (currentSequence.length === 0) {
+                    if (JSON.stringify(planets) === JSON.stringify(solution)) {
+                        // Puzzle solved
+                        successSound.play();
+                        alert("Congratulations! You aligned all planets vertically.");
+                        // Here you can redirect to next.html or perform any other action
+                    } else {
+                        // Incorrect sequence
+                        alert("Incorrect sequence. Please try again.");
+                        shuffleArray(planets);
+                        placePlanets();
+                        updateTooltips();
+                        currentSequence = [...solution];
+                    }
+                }
+            } else {
+                alert("Incorrect planet clicked. Restarting sequence.");
+                shuffleArray(planets);
+                placePlanets();
+                updateTooltips();
+                currentSequence = [...solution];
+                moveCount = 0;
+            }
+            updateMoveCounter();
         }
 
-        orbits.forEach((orbit, index) => {
-            orbit.addEventListener('click', () => {
-                rotateOrbit(index, true);
-            });
+        // Event listeners for planet clicks
+        document.querySelectorAll('.planet').forEach((planet, index) => {
+            planet.addEventListener('click', () => handlePlanetClick(index));
         });
 
-        document.getElementById('reset-button').addEventListener('click', resetGame);
-        document.getElementById('difficulty-button').addEventListener('click', switchDifficulty);
+        // Event listener for reset button
+        document.getElementById('reset-button').addEventListener('click', () => {
+            shuffleArray(planets);
+            placePlanets();
+            updateTooltips();
+            currentSequence = [...solution];
+            moveCount = 0;
+            updateMoveCounter();
+        });
+
+        // Event listener for difficulty switch (if needed)
+        document.getElementById('difficulty-button').addEventListener('click', () => {
+            // Implement difficulty switch logic here
+            alert("Difficulty switch feature coming soon!");
+        });
+
+        // Initialize the game when the page loads
+        window.onload = initializeGame;
     </script>
 </body>
 </html>
