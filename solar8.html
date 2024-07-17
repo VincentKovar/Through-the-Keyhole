@@ -140,7 +140,6 @@
         let moveCount = 0;
         let planetsAligned = false;
         let difficultyLevel = 'easy';
-        let sequence = [];
 
         const rotationAmounts = {
             easy: [30, -25, 20, -15, 10, -5],
@@ -148,22 +147,12 @@
         };
 
         const movementRules = {
-            mercury: { target: 'venus', amount: 2 },
-            venus: { target: 'earth', amount: 3 },
-            earth: { target: 'mars', amount: 4 },
-            mars: { target: 'jupiter', amount: 5 },
-            jupiter: { target: 'saturn', amount: 6 }
+            mercury: { target: 'venus', amount: 5 },
+            venus: { target: 'earth', amount: 10 },
+            earth: { target: 'mars', amount: 15 },
+            mars: { target: 'jupiter', amount: 20 },
+            jupiter: { target: 'saturn', amount: 25 }
         };
-
-        function randomizeSequence() {
-            const planets = Object.keys(movementRules);
-            sequence = [];
-            while (planets.length > 0) {
-                const randomIndex = Math.floor(Math.random() * planets.length);
-                sequence.push(planets[randomIndex]);
-                planets.splice(randomIndex, 1);
-            }
-        }
 
         function rotatePlanet(planet, angle) {
             const currentRotation = getRotationAngle(planet);
@@ -202,35 +191,45 @@
             moveCount++;
             document.getElementById('move-counter').textContent = `Moves: ${moveCount}`;
             checkAlignment();
-            if (movementRules[planet.dataset.planet]) {
-                rotateOrbit(Array.from(orbits).findIndex(o => o.dataset.orbit === movementRules[planet.dataset.planet].target), !clockwise);
+
+            // Apply movement rules
+            const currentPlanet = orbit.getAttribute('data-orbit');
+            if (currentPlanet in movementRules) {
+                const { target, amount } = movementRules[currentPlanet];
+                const targetOrbit = Array.from(orbits).find(o => o.getAttribute('data-orbit') === target);
+                const targetPlanet = targetOrbit.querySelector('.planet');
+                rotatePlanet(targetPlanet, amount * (clockwise ? 1 : -1));
             }
         }
 
         function resetGame() {
             moveCount = 0;
+            document.getElementById('move-counter').textContent = 'Moves: 0';
             planetsAligned = false;
-            sequence = [];
-            randomizeSequence();
-            document.getElementById('move-counter').textContent = `Moves: ${moveCount}`;
-            document.querySelectorAll('.planet').forEach(planet => {
-                planet.style.transition = 'none';
-                planet.style.transform = 'none';
-                setTimeout(() => {
-                    planet.style.transition = 'all 0.3s ease';
-                }, 50);
+            orbits.forEach((orbit, index) => {
+                const planet = orbit.querySelector('.planet');
+                planet.style.transform = '';
+                if (index < orbits.length - 1) { // Skip Saturn reset
+                    const target = orbits[index + 1].querySelector('.planet');
+                    target.style.transform = '';
+                }
             });
         }
 
         function switchDifficulty() {
             difficultyLevel = difficultyLevel === 'easy' ? 'hard' : 'easy';
-            document.getElementById('difficulty-button').textContent = difficultyLevel === 'easy' ? 'Switch to Hard' : 'Switch to Easy';
+            document.getElementById('difficulty-button').textContent = `Switch to ${difficultyLevel.charAt(0).toUpperCase() + difficultyLevel.slice(1)}`;
+            resetGame();
         }
+
+        orbits.forEach((orbit, index) => {
+            orbit.addEventListener('click', () => {
+                rotateOrbit(index, true); // Always rotate clockwise on click
+            });
+        });
 
         document.getElementById('reset-button').addEventListener('click', resetGame);
         document.getElementById('difficulty-button').addEventListener('click', switchDifficulty);
-
-        randomizeSequence();
     </script>
 </body>
 </html>
