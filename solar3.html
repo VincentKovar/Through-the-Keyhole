@@ -58,6 +58,19 @@
             margin-top: 10px;
             display: none;
         }
+        #reset-button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+        #reset-button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -74,6 +87,7 @@
         </div>
         <div id="move-counter">Moves: 0</div>
         <div id="success-message">Planets Aligned! Proceeding to next level...</div>
+        <button id="reset-button">Reset Game</button>
     </div>
 
     <script>
@@ -170,7 +184,5 @@
             document.getElementById('reset-button').addEventListener('click', resetGame);
         });
     </script>
-    
-    <button id="reset-button">Reset Game</button>
 </body>
 </html>
