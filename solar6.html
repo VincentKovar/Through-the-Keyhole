@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar System Puzzle</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
+            background: #000;
+            color: #ffa500;
+        }
+        .container {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .logo {
+            width: 110px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        h1 {
+            margin: 10px 0;
+        }
+        #game-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 20px auto;
+            border: 2px solid #ffa500;
+            border-radius: 50%;
+            background: rgba(255, 165, 0, 0.1);
+            touch-action: none; /* Disable touch scrolling */
+        }
+        .sun {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ffa500;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px #ffa500;
+        }
+        .orbit {
+            position: absolute;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            transition: transform 0.3s ease; /* Simplified transition */
+        }
+        .orbit[data-orbit="mercury"] { width: 60%; height: 60%; border: 1px solid rgba(255, 165, 0, 0.5); }
+        .orbit[data-orbit="venus"] { width: 70%; height: 70%; border: 1px solid rgba(255, 165, 0, 0.6); }
+        .orbit[data-orbit="earth"] { width: 80%; height: 80%; border: 1px solid rgba(255, 165, 0, 0.7); }
+        .orbit[data-orbit="mars"] { width: 85%; height: 85%; border: 1px solid rgba(255, 165, 0, 0.8); }
+        .orbit[data-orbit="jupiter"] { width: 90%; height: 90%; border: 1px solid rgba(255, 165, 0, 0.9); }
+        .orbit[data-orbit="saturn"] { width: 95%; height: 95%; border: 1px solid rgba(255, 165, 0, 1); }
+        .planet {
+            position: absolute;
+            background: #ffa500;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform-origin: center;
+            transition: transform 0.3s ease; /* Simplified transition */
+        }
+        .planet[data-planet="mercury"] { width: 6px; height: 6px; }
+        .planet[data-planet="venus"] { width: 8px; height: 8px; }
+        .planet[data-planet="earth"] { width: 8px; height: 8px; }
+        .planet[data-planet="mars"] { width: 7px; height: 7px; }
+        .planet[data-planet="jupiter"] { width: 12px; height: 12px; }
+        .planet[data-planet="saturn"] { width: 11px; height: 11px; }
+        #move-counter {
+            margin-top: 10px;
+        }
+        #reset-button, #difficulty-button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-right: 5px;
+        }
+        #reset-button:hover, #difficulty-button:hover {
+            background-color: #0056b3;
+        }
+        .tooltip {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            color: #000;
+            padding: 5px;
+            border-radius: 3px;
+            font-size: 12px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="https://www.whitebranches.com/keyhole" target="_blank">
+            <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
+        </a>
+        <h1>Solar System Puzzle</h1>
+        <p>Align all planets vertically!</p>
+        <div id="game-container">
+            <div class="sun"></div>
+            <div class="orbit" data-orbit="mercury"><div class="planet" data-planet="mercury"></div></div>
+            <div class="orbit" data-orbit="venus"><div class="planet" data-planet="venus"></div></div>
+            <div class="orbit" data-orbit="earth"><div class="planet" data-planet="earth"></div></div>
+            <div class="orbit" data-orbit="mars"><div class="planet" data-planet="mars"></div></div>
+            <div class="orbit" data-orbit="jupiter"><div class="planet" data-planet="jupiter"></div></div>
+            <div class="orbit" data-orbit="saturn"><div class="planet" data-planet="saturn"></div></div>
+        </div>
+        <div id="move-counter">Moves: 0</div>
+        <button id="reset-button">Reset</button>
+        <button id="difficulty-button">Switch to Hard</button>
+        <audio id="success-sound" src="success.mp3" preload="auto"></audio>
+    </div>
+    <script>
+        const orbits = document.querySelectorAll('.orbit');
+        let moveCount = 0;
+        let planetsAligned = false;
+        let difficultyLevel = 'easy';
+
+        const rotationAmounts = {
+            easy: [30, -25, 20, -15, 10, -5],
+            hard: [45, -40, 35, -30, 25, -20]
+        };
+
+        const movementRules = {
+            mercury: { target: 'venus', amount: 5 },
+            venus: { target: 'earth', amount: 10 },
+            earth: { target: 'mars', amount: 15 },
+            mars: { target: 'jupiter', amount: 20 },
+            jupiter: { target: 'saturn', amount: 25 }
+        };
+
+        function rotatePlanet(planet, angle) {
+            const currentRotation = getRotationAngle(planet);
+            planet.style.transform = `rotate(${currentRotation + angle}deg) translate(${planet.parentElement.offsetWidth / 2}px) rotate(${-currentRotation - angle}deg)`;
+        }
+
+        function getRotationAngle(element) {
+            const transform = element.style.transform;
+            const match = transform.match(/rotate\(([-\d.]+)deg\)/);
+            return match ? parseFloat(match[1]) : 0;
+        }
+
+        function checkAlignment() {
+            const tolerance = 5; // degrees
+            const planets = document.querySelectorAll('.planet');
+            const aligned = Array.from(planets).every(planet => {
+                const angle = getRotationAngle(planet) % 360;
+                return (angle >= 360 - tolerance || angle <= tolerance);
+            });
+
+            if (aligned && !planetsAligned) {
+                planetsAligned = true;
+                document.getElementById('success-sound').play();
+                setTimeout(() => {
+                    window.location.href = 'next.html';
+                }, 1000);
+            }
+        }
+
+        function rotateOrbit(orbitIndex, clockwise) {
+            const angle = rotationAmounts[difficultyLevel][orbitIndex] * (clockwise ? 1 : -1);
+            const orbit = orbits[orbitIndex];
+            const planet = orbit.querySelector('.planet');
+            rotatePlanet(planet, angle);
+            moveCount++;
+            document.getElementById('move-counter').textContent = `Moves: ${moveCount}`;
+            checkAlignment();
+
+            // Apply movement rules
+            const currentPlanet = orbit.getAttribute('data-orbit');
+            if (currentPlanet in movementRules) {
+                const { target, amount } = movementRules[currentPlanet];
+                const targetOrbit = Array.from(orbits).find(o => o.getAttribute('data-orbit') === target);
+                const targetPlanet = targetOrbit.querySelector('.planet');
+                rotatePlanet(targetPlanet, amount * (clockwise ? 1 : -1));
+            }
+        }
+
+        function resetGame() {
+            const planets = document.querySelectorAll('.planet');
+            planets.forEach(planet => {
+                planet.style.transform = '';
+            });
+            moveCount = 0;
+            planetsAligned = false;
+            document.getElementById('move-counter').textContent = `Moves: ${moveCount}`;
+        }
+
+        function switchDifficulty() {
+            difficultyLevel = difficultyLevel === 'easy' ? 'hard' : 'easy';
+            document.getElementById('difficulty-button').textContent = `Switch to ${difficultyLevel.charAt(0).toUpperCase() + difficultyLevel.slice(1)}`;
+        }
+
+        orbits.forEach((orbit, index) => {
+            orbit.addEventListener('click', () => {
+                rotateOrbit(index, true);
+            });
+        });
+
+        document.getElementById('reset-button').addEventListener('click', resetGame);
+        document.getElementById('difficulty-button').addEventListener('click', switchDifficulty);
+    </script>
+</body>
+</html>
