@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar System Puzzle</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
+            background: #000;
+            color: #ffa500;
+        }
+        .container {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .logo {
+            width: 110px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        h1 {
+            margin: 10px 0;
+        }
+        #game-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 20px auto;
+            border: 2px solid #ffa500;
+            border-radius: 50%;
+            background: rgba(255, 165, 0, 0.1);
+        }
+        .sun {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ffa500;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px #ffa500;
+        }
+        .orbit {
+            position: absolute;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+        }
+        .orbit[data-orbit="mercury"] { width: 40%; height: 40%; border: 1px solid rgba(255, 165, 0, 0.5); }
+        .orbit[data-orbit="venus"] { width: 52%; height: 52%; border: 1px solid rgba(255, 165, 0, 0.6); }
+        .orbit[data-orbit="earth"] { width: 64%; height: 64%; border: 1px solid rgba(255, 165, 0, 0.7); }
+        .orbit[data-orbit="mars"] { width: 76%; height: 76%; border: 1px solid rgba(255, 165, 0, 0.8); }
+        .orbit[data-orbit="jupiter"] { width: 88%; height: 88%; border: 1px solid rgba(255, 165, 0, 0.9); }
+        .orbit[data-orbit="saturn"] { width: 100%; height: 100%; border: 1px solid rgba(255, 165, 0, 1); }
+        .planet {
+            position: absolute;
+            background: #ffa500;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        .planet[data-planet="mercury"] { width: 6px; height: 6px; }
+        .planet[data-planet="venus"] { width: 8px; height: 8px; }
+        .planet[data-planet="earth"] { width: 9px; height: 9px; }
+        .planet[data-planet="mars"] { width: 7px; height: 7px; }
+        .planet[data-planet="jupiter"] { width: 14px; height: 14px; }
+        .planet[data-planet="saturn"] { width: 12px; height: 12px; }
+        #move-counter {
+            margin-top: 10px;
+        }
+        #reset-button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        #reset-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="https://www.whitebranches.com/keyhole" target="_blank">
+            <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo" alt="Logo">
+        </a>
+        <h1>Solar System Puzzle</h1>
+        <p>Align all planets vertically!</p>
+        <div id="game-container">
+            <div class="sun"></div>
+            <div class="orbit" data-orbit="mercury"><div class="planet" data-planet="mercury"></div></div>
+            <div class="orbit" data-orbit="venus"><div class="planet" data-planet="venus"></div></div>
+            <div class="orbit" data-orbit="earth"><div class="planet" data-planet="earth"></div></div>
+            <div class="orbit" data-orbit="mars"><div class="planet" data-planet="mars"></div></div>
+            <div class="orbit" data-orbit="jupiter"><div class="planet" data-planet="jupiter"></div></div>
+            <div class="orbit" data-orbit="saturn"><div class="planet" data-planet="saturn"></div></div>
+        </div>
+        <div id="move-counter">Moves: 0</div>
+        <button id="reset-button">Reset</button>
+    </div>
+    <script>
+        const SolarSystemPuzzle = {
+            orbits: null,
+            moveCount: 0,
+
+            planetConfig: {
+                mercury: { spots: 12 },
+                venus: { spots: 18 },
+                earth: { spots: 24 },
+                mars: { spots: 30 },
+                jupiter: { spots: 36 },
+                saturn: { spots: 42 }
+            },
+
+            init() {
+                this.orbits = document.querySelectorAll('.orbit');
+                this.setupEventListeners();
+                this.randomizePlanetPositions();
+                this.updateMoveCounter();
+            },
+
+            setupEventListeners() {
+                this.orbits.forEach((orbit) => {
+                    const planet = orbit.querySelector('.planet');
+                    planet.addEventListener('click', () => this.rotatePlanet(planet));
+                });
+
+                document.getElementById('reset-button').addEventListener('click', () => this.resetGame());
+            },
+
+            rotatePlanet(planet) {
+                const planetName = planet.getAttribute('data-planet');
+                const config = this.planetConfig[planetName];
+                const currentPosition = parseInt(planet.getAttribute('data-position') || '0');
+                const newPosition = (currentPosition + 1) % config.spots;
+                
+                this.setPlanetPosition(planet, newPosition);
+                this.moveCount++;
+                this.updateMoveCounter();
+            },
+
+            setPlanetPosition(planet, position) {
+                const config = this.planetConfig[planet.getAttribute('data-planet')];
+                const angle = (position / config.spots) * 2 * Math.PI;
+                const orbit = planet.parentElement;
+                const orbitRadius = orbit.offsetWidth / 2;
+                const x = Math.cos(angle) * orbitRadius;
+                const y = Math.sin(angle) * orbitRadius;
+                planet.style.transform = `translate(${x}px, ${y}px)`;
+                planet.setAttribute('data-position', position.toString());
+            },
+
+            randomizePlanetPositions() {
+                this.orbits.forEach(orbit => {
+                    const planet = orbit.querySelector('.planet');
+                    const planetName = planet.getAttribute('data-planet');
+                    const config = this.planetConfig[planetName];
+                    const randomPosition = Math.floor(Math.random() * config.spots);
+                    this.setPlanetPosition(planet, randomPosition);
+                });
+            },
+
+            resetGame() {
+                this.moveCount = 0;
+                this.randomizePlanetPositions();
+                this.updateMoveCounter();
+            },
+
+            updateMoveCounter() {
+                document.getElementById('move-counter').textContent = `Moves: ${this.moveCount}`;
+            }
+        };
+
+        SolarSystemPuzzle.init();
+    </script>
+</body>
+</html>
