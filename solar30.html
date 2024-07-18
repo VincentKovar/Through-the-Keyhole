@@ -60,20 +60,18 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            cursor: pointer;
-            border: 1px dashed rgba(255, 165, 0, 0.5);
         }
-        .orbit[data-orbit="mercury"] { width: 40%; height: 40%; }
-        .orbit[data-orbit="venus"] { width: 52%; height: 52%; }
-        .orbit[data-orbit="earth"] { width: 64%; height: 64%; }
-        .orbit[data-orbit="mars"] { width: 76%; height: 76%; }
-        .orbit[data-orbit="jupiter"] { width: 88%; height: 88%; }
-        .orbit[data-orbit="saturn"] { width: 100%; height: 100%; }
+        .orbit[data-orbit="mercury"] { width: 40%; height: 40%; border: 1px solid rgba(255, 165, 0, 0.5); }
+        .orbit[data-orbit="venus"] { width: 52%; height: 52%; border: 1px solid rgba(255, 165, 0, 0.6); }
+        .orbit[data-orbit="earth"] { width: 64%; height: 64%; border: 1px solid rgba(255, 165, 0, 0.7); }
+        .orbit[data-orbit="mars"] { width: 76%; height: 76%; border: 1px solid rgba(255, 165, 0, 0.8); }
+        .orbit[data-orbit="jupiter"] { width: 88%; height: 88%; border: 1px solid rgba(255, 165, 0, 0.9); }
+        .orbit[data-orbit="saturn"] { width: 100%; height: 100%; border: 1px solid rgba(255, 165, 0, 1); }
         .planet {
             position: absolute;
             background: #ffa500;
             border-radius: 50%;
-            transition: transform 0.5s ease; /* Smooth transition */
+            transition: all 0.3s ease;
         }
         .planet[data-planet="mercury"] { width: 6px; height: 6px; }
         .planet[data-planet="venus"] { width: 8px; height: 8px; }
@@ -121,14 +119,13 @@
         const SolarSystemPuzzle = {
             orbits: null,
             moveCount: 0,
-
             planetConfig: {
-                mercury: { spots: 12, step: 4 },
-                venus: { spots: 12, step: 6 },
-                earth: { spots: 12, step: 8 },
-                mars: { spots: 12, step: 10 },
-                jupiter: { spots: 12, step: 12 },
-                saturn: { spots: 12, step: 14 }
+                mercury: { spots: 12, moveAmount: 4 },
+                venus: { spots: 12, moveAmount: 6 },
+                earth: { spots: 12, moveAmount: 8 },
+                mars: { spots: 12, moveAmount: 10 },
+                jupiter: { spots: 12, moveAmount: 12 },
+                saturn: { spots: 12, moveAmount: 14 }
             },
 
             init() {
@@ -151,7 +148,7 @@
                 const planetName = planet.getAttribute('data-planet');
                 const config = this.planetConfig[planetName];
                 const currentPosition = parseInt(planet.getAttribute('data-position') || '0');
-                const newPosition = (currentPosition + config.step) % config.spots;
+                const newPosition = (currentPosition + config.moveAmount) % config.spots;
                 
                 this.setPlanetPosition(planet, newPosition);
                 this.moveCount++;
@@ -165,9 +162,10 @@
                 const orbitRadius = orbit.offsetWidth / 2;
                 const centerX = orbitRadius;
                 const centerY = orbitRadius;
-                const x = centerX + Math.cos(angle) * (orbitRadius - planet.offsetWidth / 2);
-                const y = centerY + Math.sin(angle) * (orbitRadius - planet.offsetHeight / 2);
-                planet.style.transform = `translate(${x}px, ${y}px)`;
+                const x = centerX + Math.cos(angle) * orbitRadius - planet.offsetWidth / 2;
+                const y = centerY + Math.sin(angle) * orbitRadius - planet.offsetHeight / 2;
+                planet.style.left = `${x}px`;
+                planet.style.top = `${y}px`;
                 planet.setAttribute('data-position', position.toString());
             },
 
