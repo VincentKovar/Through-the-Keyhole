@@ -141,138 +141,147 @@
         <audio id="success-sound" src="success.mp3" preload="auto"></audio>
     </div>
     <script>
-        const SolarSystemPuzzle = {
-            orbits: document.querySelectorAll('.orbit'),
-            moveCount: 0,
-            planetsAligned: false,
-            currentHint: -1,
+      const SolarSystemPuzzle = {
+    orbits: document.querySelectorAll('.orbit'),
+    moveCount: 0,
+    planetsAligned: false,
+    currentHint: -1,
+    alignmentTolerance: 5,
 
-            planetConfig: {
-                mercury: { spots: 12, move: 1, affects: { venus: 2 } },
-                venus: { spots: 18, move: 2, affects: { earth: 3 } },
-                earth: { spots: 24, move: 3, affects: { mars: 4 } },
-                mars: { spots: 30, move: 4, affects: { jupiter: 5 } },
-                jupiter: { spots: 36, move: 5, affects: { saturn: 6 } },
-                saturn: { spots: 42, move: 6, affects: {} }
-            },
+    planetConfig: {
+        mercury: { spots: 12, move: 1, affects: { venus: 2 } },
+        venus: { spots: 18, move: 2, affects: { earth: 3 } },
+        earth: { spots: 24, move: 3, affects: { mars: 4 } },
+        mars: { spots: 30, move: 4, affects: { jupiter: 5 } },
+        jupiter: { spots: 36, move: 5, affects: { saturn: 6 } },
+        saturn: { spots: 42, move: 6, affects: {} }
+    },
 
-            hints: [
-                "Try to align the outer planets first.",
-                "Remember, moving one planet affects others!",
-                "Look for patterns in how the planets move together.",
-                "Sometimes, you need to misalign some planets to align others.",
-                "Pay attention to how many spots each planet moves."
-            ],
+    hints: [
+        "Try to align the outer planets first.",
+        "Remember, moving one planet affects others!",
+        "Look for patterns in how the planets move together.",
+        "Sometimes, you need to misalign some planets to align others.",
+        "Pay attention to how many spots each planet moves."
+    ],
 
-            init() {
-                this.setupEventListeners();
-                this.randomizePlanetPositions();
-            },
+    init() {
+        this.setupEventListeners();
+        this.randomizePlanetPositions();
+        this.updateMoveCounter();
+    },
 
-            setupEventListeners() {
-                this.orbits.forEach((orbit, index) => {
-                    orbit.addEventListener('click', () => this.rotateOrbit(index));
-                    
-                    const planet = orbit.querySelector('.planet');
-                    const tooltip = document.createElement('div');
-                    tooltip.className = 'tooltip';
-                    tooltip.textContent = planet.getAttribute('data-planet');
-                    orbit.appendChild(tooltip);
+    setupEventListeners() {
+        this.orbits.forEach((orbit) => {
+            const planet = orbit.querySelector('.planet');
+            planet.addEventListener('click', () => this.rotatePlanet(planet));
+            this.setupTooltip(orbit);
+        });
 
-                    orbit.addEventListener('mouseover', () => {
-                        tooltip.style.opacity = 1;
-                    });
+        document.getElementById('reset-button').addEventListener('click', () => this.resetGame());
+        document.getElementById('hint-button').addEventListener('click', () => this.toggleHint());
+    },
 
-                    orbit.addEventListener('mouseout', () => {
-                        tooltip.style.opacity = 0;
-                    });
-                });
+    setupTooltip(orbit) {
+        const planet = orbit.querySelector('.planet');
+        const tooltip = document.createElement('div');
+        tooltip.className = 'tooltip';
+        tooltip.textContent = planet.getAttribute('data-planet');
+        orbit.appendChild(tooltip);
 
-                document.getElementById('reset-button').addEventListener('click', () => {
-                    location.reload();
-                });
+        orbit.addEventListener('mouseover', () => { tooltip.style.opacity = 1; });
+        orbit.addEventListener('mouseout', () => { tooltip.style.opacity = 0; });
+    },
 
-                document.getElementById('hint-button').addEventListener('click', () => this.showHint());
-            },
+    rotatePlanet(planet) {
+        const planetName = planet.getAttribute('data-planet');
+        const config = this.planetConfig[planetName];
+        const currentPosition = parseInt(planet.getAttribute('data-position') || 0);
+        const newPosition = (currentPosition + config.move) % config.spots;
+        
+        this.setPlanePosition(planet, newPosition);
+        this.moveCount++;
+        this.updateMoveCounter();
 
-            rotatePlanet(planet, spots) {
-                const config = this.planetConfig[planet.getAttribute('data-planet')];
-                const angle = (spots / config.spots) * 360;
-                const currentRotation = this.getRotationAngle(planet);
-                const newRotation = (currentRotation + angle) % 360;
-                const orbitRadius = planet.parentElement.offsetWidth / 2;
-                const x = Math.sin(newRotation * Math.PI / 180) * orbitRadius;
-                const y = -Math.cos(newRotation * Math.PI / 180) * orbitRadius;
-                planet.style.transform = `translate(${x}px, ${y}px)`;
-            },
+        planet.classList.add('planet-glow');
+        setTimeout(() => planet.classList.remove('planet-glow'), 300);
 
-            getRotationAngle(planet) {
-                const transform = planet.style.transform;
-                if (!transform) return 0;
-                const values = transform.split('(')[1].split(')')[0].split(',');
-                const a = parseFloat(values[0]);
-                const b = parseFloat(values[1]);
-                return Math.round(Math.atan2(b, a) * (180/Math.PI));
-            },
+        for (const [affectedPlanet, spots] of Object.entries(config.affects)) {
+            const affectedOrbit = document.querySelector(`.orbit[data-orbit="${affectedPlanet}"]`);
+            const affectedPlanetElement = affectedOrbit.querySelector('.planet');
+            const affectedPosition = parseInt(affectedPlanetElement.getAttribute('data-position') || 0);
+            const newAffectedPosition = (affectedPosition + spots) % this.planetConfig[affectedPlanet].spots;
+            this.setPlanePosition(affectedPlanetElement, newAffectedPosition);
+        }
 
-            checkAlignment() {
-                const tolerance = 5; // degrees
-                const planets = document.querySelectorAll('.planet');
-                const aligned = Array.from(planets).every(planet => {
-                    const angle = this.getRotationAngle(planet);
-                    return (Math.abs(angle) <= tolerance || Math.abs(angle - 180) <= tolerance);
-                });
+        this.checkAlignment();
+    },
 
-                if (aligned && !this.planetsAligned) {
-                    this.planetsAligned = true;
-                    document.getElementById('success-sound').play();
-                    setTimeout(() => {
-                        alert("Congratulations! You've aligned all the planets!");
-                        window.location.href = 'next.html';
-                    }, 1000);
-                }
-            },
+    setPlanePosition(planet, position) {
+        const config = this.planetConfig[planet.getAttribute('data-planet')];
+        const angle = (position / config.spots) * 2 * Math.PI;
+        const orbitRadius = planet.parentElement.offsetWidth / 2;
+        const x = Math.sin(angle) * orbitRadius;
+        const y = -Math.cos(angle) * orbitRadius;
+        planet.style.transform = `translate(${x}px, ${y}px)`;
+        planet.setAttribute('data-position', position);
+    },
 
-            rotateOrbit(orbitIndex) {
-                const orbit = this.orbits[orbitIndex];
-                const planet = orbit.querySelector('.planet');
-                const planetName = planet.getAttribute('data-planet');
-                const config = this.planetConfig[planetName];
+    checkAlignment() {
+        const aligned = Array.from(this.orbits).every(orbit => {
+            const planet = orbit.querySelector('.planet');
+            const position = parseInt(planet.getAttribute('data-position'));
+            return position === 0 || position === this.planetConfig[planet.getAttribute('data-planet')].spots / 2;
+        });
 
-                this.rotatePlanet(planet, config.move);
-                this.moveCount++;
-                document.getElementById('move-counter').textContent = `Moves: ${this.moveCount}`;
+        if (aligned && !this.planetsAligned) {
+            this.planetsAligned = true;
+            document.getElementById('success-sound').play();
+            setTimeout(() => {
+                alert("Congratulations! You've aligned all the planets!");
+                window.location.href = 'next.html';
+            }, 1000);
+        }
+    },
 
-                planet.classList.add('planet-glow');
-                setTimeout(() => planet.classList.remove('planet-glow'), 300);
+    toggleHint() {
+        const hintText = document.getElementById('hint-text');
+        if (hintText.textContent) {
+            hintText.textContent = '';
+            document.getElementById('hint-button').textContent = 'Show Hint';
+        } else {
+            this.currentHint = (this.currentHint + 1) % this.hints.length;
+            hintText.textContent = this.hints[this.currentHint];
+            document.getElementById('hint-button').textContent = 'Hide Hint';
+        }
+    },
 
-                // Apply movement rules
-                for (const [affectedPlanet, spots] of Object.entries(config.affects)) {
-                    const affectedOrbit = document.querySelector(`.orbit[data-orbit="${affectedPlanet}"]`);
-                    const affectedPlanetElement = affectedOrbit.querySelector('.planet');
-                    this.rotatePlanet(affectedPlanetElement, spots);
-                }
+    randomizePlanetPositions() {
+        this.orbits.forEach(orbit => {
+            const planet = orbit.querySelector('.planet');
+            const planetName = planet.getAttribute('data-planet');
+            const config = this.planetConfig[planetName];
+            const randomPosition = Math.floor(Math.random() * config.spots);
+            this.setPlanePosition(planet, randomPosition);
+        });
+    },
 
-                this.checkAlignment();
-            },
+    resetGame() {
+        this.moveCount = 0;
+        this.planetsAligned = false;
+        this.currentHint = -1;
+        this.randomizePlanetPositions();
+        this.updateMoveCounter();
+        document.getElementById('hint-text').textContent = '';
+        document.getElementById('hint-button').textContent = 'Show Hint';
+    },
 
-            showHint() {
-                this.currentHint = (this.currentHint + 1) % this.hints.length;
-                document.getElementById('hint-text').textContent = this.hints[this.currentHint];
-            },
+    updateMoveCounter() {
+        document.getElementById('move-counter').textContent = `Moves: ${this.moveCount}`;
+    }
+};
 
-            randomizePlanetPositions() {
-                this.orbits.forEach(orbit => {
-                    const planet = orbit.querySelector('.planet');
-                    const planetName = planet.getAttribute('data-planet');
-                    const config = this.planetConfig[planetName];
-                    const randomSpots = Math.floor(Math.random() * config.spots);
-                    this.rotatePlanet(planet, randomSpots);
-                });
-            }
-        };
-
-        SolarSystemPuzzle.init();
+SolarSystemPuzzle.init();
     </script>
 </body>
 </html>
