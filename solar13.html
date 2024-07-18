@@ -132,10 +132,6 @@
 
             init() {
                 this.orbits = document.querySelectorAll('.orbit');
-                if (this.orbits.length === 0) {
-                    console.error('No orbit elements found');
-                    return;
-                }
                 this.setupEventListeners();
                 this.randomizePlanetPositions();
                 this.updateMoveCounter();
@@ -144,28 +140,15 @@
             setupEventListeners() {
                 this.orbits.forEach((orbit) => {
                     const planet = orbit.querySelector('.planet');
-                    if (planet) {
-                        planet.addEventListener('click', () => this.rotatePlanet(planet));
-                    } else {
-                        console.error('Planet element not found in orbit', orbit);
-                    }
+                    planet.addEventListener('click', () => this.rotatePlanet(planet));
                 });
 
-                const resetButton = document.getElementById('reset-button');
-                if (resetButton) {
-                    resetButton.addEventListener('click', () => this.resetGame());
-                } else {
-                    console.error('Reset button not found');
-                }
+                document.getElementById('reset-button').addEventListener('click', () => this.resetGame());
             },
 
             rotatePlanet(planet) {
                 const planetName = planet.getAttribute('data-planet');
                 const config = this.planetConfig[planetName];
-                if (!config) {
-                    console.error('Configuration not found for planet', planetName);
-                    return;
-                }
                 const currentPosition = parseInt(planet.getAttribute('data-position') || '0');
                 const newPosition = (currentPosition + 1) % config.spots;
                 
@@ -176,34 +159,25 @@
 
             setPlanetPosition(planet, position) {
                 const config = this.planetConfig[planet.getAttribute('data-planet')];
-                if (!config) {
-                    console.error('Configuration not found for planet', planet.getAttribute('data-planet'));
-                    return;
-                }
                 const angle = (position / config.spots) * 2 * Math.PI;
                 const orbit = planet.parentElement;
                 const orbitRadius = orbit.offsetWidth / 2;
-                const x = Math.sin(angle) * orbitRadius;
-                const y = -Math.cos(angle) * orbitRadius;
-                planet.style.transform = `translate(${x}px, ${y}px)`;
+                const centerX = orbitRadius;
+                const centerY = orbitRadius;
+                const x = centerX + Math.cos(angle) * orbitRadius - planet.offsetWidth / 2;
+                const y = centerY + Math.sin(angle) * orbitRadius - planet.offsetHeight / 2;
+                planet.style.left = `${x}px`;
+                planet.style.top = `${y}px`;
                 planet.setAttribute('data-position', position.toString());
             },
 
             randomizePlanetPositions() {
                 this.orbits.forEach(orbit => {
                     const planet = orbit.querySelector('.planet');
-                    if (planet) {
-                        const planetName = planet.getAttribute('data-planet');
-                        const config = this.planetConfig[planetName];
-                        if (config) {
-                            const randomPosition = Math.floor(Math.random() * config.spots);
-                            this.setPlanetPosition(planet, randomPosition);
-                        } else {
-                            console.error('Configuration not found for planet', planetName);
-                        }
-                    } else {
-                        console.error('Planet element not found in orbit', orbit);
-                    }
+                    const planetName = planet.getAttribute('data-planet');
+                    const config = this.planetConfig[planetName];
+                    const randomPosition = Math.floor(Math.random() * config.spots);
+                    this.setPlanetPosition(planet, randomPosition);
                 });
             },
 
@@ -214,12 +188,7 @@
             },
 
             updateMoveCounter() {
-                const moveCounter = document.getElementById('move-counter');
-                if (moveCounter) {
-                    moveCounter.textContent = `Moves: ${this.moveCount}`;
-                } else {
-                    console.error('Move counter element not found');
-                }
+                document.getElementById('move-counter').textContent = `Moves: ${this.moveCount}`;
             }
         };
 
