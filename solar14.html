@@ -95,6 +95,14 @@
         #reset-button:hover {
             background-color: #0056b3;
         }
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px #ffa500; }
+            50% { box-shadow: 0 0 20px #ffa500; }
+            100% { box-shadow: 0 0 5px #ffa500; }
+        }
+        .planet.glow {
+            animation: glow 0.3s ease-in-out;
+        }
     </style>
 </head>
 <body>
@@ -122,12 +130,12 @@
             moveCount: 0,
 
             planetConfig: {
-                mercury: { spots: 12 },
-                venus: { spots: 18 },
-                earth: { spots: 24 },
-                mars: { spots: 30 },
-                jupiter: { spots: 36 },
-                saturn: { spots: 42 }
+                mercury: { spots: 12, move: 1 },
+                venus: { spots: 18, move: 2 },
+                earth: { spots: 24, move: 3 },
+                mars: { spots: 30, move: 4 },
+                jupiter: { spots: 36, move: 5 },
+                saturn: { spots: 42, move: 6 }
             },
 
             init() {
@@ -150,9 +158,10 @@
                 const planetName = planet.getAttribute('data-planet');
                 const config = this.planetConfig[planetName];
                 const currentPosition = parseInt(planet.getAttribute('data-position') || '0');
-                const newPosition = (currentPosition + 1) % config.spots;
+                const newPosition = (currentPosition + config.move) % config.spots;
                 
                 this.setPlanetPosition(planet, newPosition);
+                this.addGlowEffect(planet);
                 this.moveCount++;
                 this.updateMoveCounter();
             },
@@ -162,10 +171,18 @@
                 const angle = (position / config.spots) * 2 * Math.PI;
                 const orbit = planet.parentElement;
                 const orbitRadius = orbit.offsetWidth / 2;
-                const x = Math.cos(angle) * orbitRadius;
-                const y = Math.sin(angle) * orbitRadius;
-                planet.style.transform = `translate(${x}px, ${y}px)`;
+                const centerX = orbitRadius;
+                const centerY = orbitRadius;
+                const x = centerX + Math.cos(angle) * orbitRadius - planet.offsetWidth / 2;
+                const y = centerY + Math.sin(angle) * orbitRadius - planet.offsetHeight / 2;
+                planet.style.left = `${x}px`;
+                planet.style.top = `${y}px`;
                 planet.setAttribute('data-position', position.toString());
+            },
+
+            addGlowEffect(planet) {
+                planet.classList.add('glow');
+                setTimeout(() => planet.classList.remove('glow'), 300);
             },
 
             randomizePlanetPositions() {
