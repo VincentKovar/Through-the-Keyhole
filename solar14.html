@@ -97,10 +97,10 @@
         }
         @keyframes glow {
             0% { box-shadow: 0 0 5px #ffa500; }
-            50% { box-shadow: 0 0 20px #ffa500; }
+            50% { box-shadow: 0 0 30px #ffa500; }
             100% { box-shadow: 0 0 5px #ffa500; }
         }
-        .planet.glow {
+        .orbit.glow {
             animation: glow 0.3s ease-in-out;
         }
     </style>
@@ -147,8 +147,10 @@
 
             setupEventListeners() {
                 this.orbits.forEach((orbit) => {
-                    const planet = orbit.querySelector('.planet');
-                    planet.addEventListener('click', () => this.rotatePlanet(planet));
+                    orbit.addEventListener('click', () => {
+                        const planet = orbit.querySelector('.planet');
+                        this.rotatePlanet(planet);
+                    });
                 });
 
                 document.getElementById('reset-button').addEventListener('click', () => this.resetGame());
@@ -161,7 +163,7 @@
                 const newPosition = (currentPosition + config.move) % config.spots;
                 
                 this.setPlanetPosition(planet, newPosition);
-                this.addGlowEffect(planet);
+                this.addGlowEffect(planet.parentElement);
                 this.moveCount++;
                 this.updateMoveCounter();
             },
@@ -173,16 +175,16 @@
                 const orbitRadius = orbit.offsetWidth / 2;
                 const centerX = orbitRadius;
                 const centerY = orbitRadius;
-                const x = centerX + Math.cos(angle) * orbitRadius - planet.offsetWidth / 2;
-                const y = centerY + Math.sin(angle) * orbitRadius - planet.offsetHeight / 2;
+                const x = centerX + Math.sin(angle) * orbitRadius - planet.offsetWidth / 2;
+                const y = centerY - Math.cos(angle) * orbitRadius - planet.offsetHeight / 2;
                 planet.style.left = `${x}px`;
                 planet.style.top = `${y}px`;
                 planet.setAttribute('data-position', position.toString());
             },
 
-            addGlowEffect(planet) {
-                planet.classList.add('glow');
-                setTimeout(() => planet.classList.remove('glow'), 300);
+            addGlowEffect(orbit) {
+                orbit.classList.add('glow');
+                setTimeout(() => orbit.classList.remove('glow'), 300);
             },
 
             randomizePlanetPositions() {
