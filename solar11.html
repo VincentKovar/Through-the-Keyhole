@@ -6,7 +6,116 @@
     <title>Solar System Puzzle</title>
     <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
     <style>
-        /* ... (styles remain unchanged) ... */
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Alice', serif;
+            text-align: center;
+            margin: 0;
+            background: #000;
+            color: #ffa500;
+        }
+        .container {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .logo {
+            width: 110px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        h1 {
+            margin: 10px 0;
+        }
+        #game-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 20px auto;
+            border: 2px solid #ffa500;
+            border-radius: 50%;
+            background: rgba(255, 165, 0, 0.1);
+        }
+        .sun {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ffa500;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px #ffa500;
+        }
+        .orbit {
+            position: absolute;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+        }
+        .orbit[data-orbit="mercury"] { width: 40%; height: 40%; border: 1px solid rgba(255, 165, 0, 0.5); }
+        .orbit[data-orbit="venus"] { width: 52%; height: 52%; border: 1px solid rgba(255, 165, 0, 0.6); }
+        .orbit[data-orbit="earth"] { width: 64%; height: 64%; border: 1px solid rgba(255, 165, 0, 0.7); }
+        .orbit[data-orbit="mars"] { width: 76%; height: 76%; border: 1px solid rgba(255, 165, 0, 0.8); }
+        .orbit[data-orbit="jupiter"] { width: 88%; height: 88%; border: 1px solid rgba(255, 165, 0, 0.9); }
+        .orbit[data-orbit="saturn"] { width: 100%; height: 100%; border: 1px solid rgba(255, 165, 0, 1); }
+        .planet {
+            position: absolute;
+            background: #ffa500;
+            border-radius: 50%;
+            transform-origin: 50% 50%;
+            transition: all 0.3s ease;
+        }
+        .planet[data-planet="mercury"] { width: 6px; height: 6px; }
+        .planet[data-planet="venus"] { width: 8px; height: 8px; }
+        .planet[data-planet="earth"] { width: 9px; height: 9px; }
+        .planet[data-planet="mars"] { width: 7px; height: 7px; }
+        .planet[data-planet="jupiter"] { width: 14px; height: 14px; }
+        .planet[data-planet="saturn"] { width: 12px; height: 12px; }
+        .planet-glow {
+            box-shadow: 0 0 10px 2px #ffa500;
+        }
+        #move-counter {
+            margin-top: 10px;
+        }
+        #reset-button, #hint-button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-right: 5px;
+        }
+        #reset-button:hover, #hint-button:hover {
+            background-color: #0056b3;
+        }
+        #hint-text {
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .tooltip {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            color: #000;
+            padding: 5px;
+            border-radius: 3px;
+            font-size: 12px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 10;
+        }
     </style>
 </head>
 <body>
@@ -99,9 +208,10 @@
 
             getRotationAngle(planet) {
                 const transform = planet.style.transform;
+                if (!transform) return 0;
                 const values = transform.split('(')[1].split(')')[0].split(',');
-                const a = values[0];
-                const b = values[1];
+                const a = parseFloat(values[0]);
+                const b = parseFloat(values[1]);
                 return Math.round(Math.atan2(b, a) * (180/Math.PI));
             },
 
