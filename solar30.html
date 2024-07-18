@@ -60,6 +60,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            pointer-events: none; /* Ensures orbits are not interactive */
         }
         .orbit[data-orbit="mercury"] { width: 40%; height: 40%; border: 1px solid rgba(255, 165, 0, 0.5); }
         .orbit[data-orbit="venus"] { width: 52%; height: 52%; border: 1px solid rgba(255, 165, 0, 0.6); }
@@ -71,7 +72,7 @@
             position: absolute;
             background: #ffa500;
             border-radius: 50%;
-            transition: all 0.3s ease;
+            transition: transform 0.5s ease;
         }
         .planet[data-planet="mercury"] { width: 6px; height: 6px; }
         .planet[data-planet="venus"] { width: 8px; height: 8px; }
@@ -119,13 +120,14 @@
         const SolarSystemPuzzle = {
             orbits: null,
             moveCount: 0,
+
             planetConfig: {
-                mercury: { spots: 12, moveAmount: 4 },
-                venus: { spots: 12, moveAmount: 6 },
-                earth: { spots: 12, moveAmount: 8 },
-                mars: { spots: 12, moveAmount: 10 },
-                jupiter: { spots: 12, moveAmount: 12 },
-                saturn: { spots: 12, moveAmount: 14 }
+                mercury: { spots: 12, steps: 4 },
+                venus: { spots: 12, steps: 6 },
+                earth: { spots: 12, steps: 8 },
+                mars: { spots: 12, steps: 10 },
+                jupiter: { spots: 12, steps: 12 },
+                saturn: { spots: 12, steps: 14 }
             },
 
             init() {
@@ -148,7 +150,7 @@
                 const planetName = planet.getAttribute('data-planet');
                 const config = this.planetConfig[planetName];
                 const currentPosition = parseInt(planet.getAttribute('data-position') || '0');
-                const newPosition = (currentPosition + config.moveAmount) % config.spots;
+                const newPosition = (currentPosition + config.steps) % config.spots;
                 
                 this.setPlanetPosition(planet, newPosition);
                 this.moveCount++;
@@ -162,10 +164,9 @@
                 const orbitRadius = orbit.offsetWidth / 2;
                 const centerX = orbitRadius;
                 const centerY = orbitRadius;
-                const x = centerX + Math.cos(angle) * orbitRadius - planet.offsetWidth / 2;
-                const y = centerY + Math.sin(angle) * orbitRadius - planet.offsetHeight / 2;
-                planet.style.left = `${x}px`;
-                planet.style.top = `${y}px`;
+                const x = centerX + Math.cos(angle) * (orbitRadius - planet.offsetWidth / 2);
+                const y = centerY + Math.sin(angle) * (orbitRadius - planet.offsetHeight / 2);
+                planet.style.transform = `translate(${x}px, ${y}px)`;
                 planet.setAttribute('data-position', position.toString());
             },
 
