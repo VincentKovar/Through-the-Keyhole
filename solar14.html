@@ -147,9 +147,11 @@
 
             setupEventListeners() {
                 this.orbits.forEach((orbit) => {
-                    orbit.addEventListener('click', () => {
+                    orbit.addEventListener('click', (event) => {
                         const planet = orbit.querySelector('.planet');
-                        this.rotatePlanet(planet);
+                        if (planet) {
+                            this.rotatePlanet(planet);
+                        }
                     });
                 });
 
