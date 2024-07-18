@@ -73,6 +73,7 @@
             background: #ffa500;
             border-radius: 50%;
             transition: transform 0.3s ease;
+            transform-origin: center;
         }
         .planet[data-planet="mercury"] { width: 6px; height: 6px; }
         .planet[data-planet="venus"] { width: 8px; height: 8px; }
@@ -172,10 +173,8 @@
 
             setPlanetPosition(planet, position) {
                 const config = this.planetConfig[planet.getAttribute('data-planet')];
-                const angle = (position / config.spots) * 2 * Math.PI;
-                const orbit = planet.parentElement;
-                const orbitRadius = orbit.offsetWidth / 2;
-                planet.style.transform = `rotate(${angle}rad) translate(${orbitRadius}px) rotate(-${angle}rad)`;
+                const angle = (position / config.spots) * 360;
+                planet.style.transform = `rotate(${angle}deg) translateX(${planet.parentElement.offsetWidth / 2}px) rotate(-${angle}deg)`;
                 planet.setAttribute('data-position', position.toString());
             },
 
