@@ -24,11 +24,13 @@
             width: 100%;
             max-width: 500px;
             margin: 0 auto;
+            aspect-ratio: 3 / 4;
+            overflow: hidden;
         }
         #camera, #canvas {
             width: 100%;
-            max-width: 500px;
-            height: auto;
+            height: 100%;
+            object-fit: cover;
         }
         #frame {
             position: absolute;
@@ -38,6 +40,7 @@
             height: 100%;
             pointer-events: none;
             z-index: 10;
+            object-fit: contain;
         }
         .logo {
             width: 110px;
@@ -89,6 +92,7 @@
         const ghostSound = document.getElementById('ghostSound');
         const ctx = canvas.getContext('2d');
         const frame = document.getElementById('frame');
+        const container = document.querySelector('.container');
 
         let stream;
 
@@ -98,15 +102,35 @@
         }
 
         function captureSelfie() {
-            canvas.width = camera.videoWidth;
-            canvas.height = camera.videoHeight;
-            ctx.drawImage(camera, 0, 0);
+            const containerWidth = container.offsetWidth;
+            const containerHeight = container.offsetHeight;
+            canvas.width = containerWidth;
+            canvas.height = containerHeight;
+
+            // Draw the video frame to fit the canvas
+            const videoAspectRatio = camera.videoWidth / camera.videoHeight;
+            const containerAspectRatio = containerWidth / containerHeight;
+            let drawWidth, drawHeight, drawX, drawY;
+
+            if (videoAspectRatio > containerAspectRatio) {
+                drawHeight = containerHeight;
+                drawWidth = drawHeight * videoAspectRatio;
+                drawX = (containerWidth - drawWidth) / 2;
+                drawY = 0;
+            } else {
+                drawWidth = containerWidth;
+                drawHeight = drawWidth / videoAspectRatio;
+                drawX = 0;
+                drawY = (containerHeight - drawHeight) / 2;
+            }
+
+            ctx.drawImage(camera, drawX, drawY, drawWidth, drawHeight);
             
             // Add clue overlay
             const clueOverlay = new Image();
             clueOverlay.onload = () => {
-                const overlayX = (canvas.width - clueOverlay.width) / 2;
-                const overlayY = (canvas.height - clueOverlay.height) / 2;
+                const overlayX = (containerWidth - clueOverlay.width) / 2;
+                const overlayY = (containerHeight - clueOverlay.height) / 2;
                 ctx.drawImage(clueOverlay, overlayX, overlayY);
             };
             clueOverlay.src = '/api/placeholder/200/100'; // Replace with your actual clue image
