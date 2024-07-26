@@ -28,13 +28,7 @@
         #camera, #canvas {
             width: 100%;
             max-width: 500px;
-        }
-        #overlay {
-            display: none;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            height: auto;
         }
         #frame {
             position: absolute;
@@ -43,6 +37,7 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
+            z-index: 10;
         }
         .logo {
             width: 110px;
@@ -63,6 +58,11 @@
             cursor: pointer;
             margin-top: 10px;
             font-family: Alice, sans-serif;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
         }
         #capture:hover {
             background-color: #0056b3;
@@ -78,21 +78,22 @@
         <video id="camera" autoplay playsinline></video>
         <canvas id="canvas"></canvas>
         <img id="frame" src="frame.png" alt="Frame">
-        <img id="overlay" src="/api/placeholder/200/100" alt="Clue Overlay">
+        <button id="capture">Take Selfie</button>
     </div>
-    <button id="capture">Take Selfie</button>
     <audio id="ghostSound" src="ghost.mp3"></audio>
 
     <script>
         const camera = document.getElementById('camera');
         const canvas = document.getElementById('canvas');
         const captureButton = document.getElementById('capture');
-        const overlay = document.getElementById('overlay');
         const ghostSound = document.getElementById('ghostSound');
         const ctx = canvas.getContext('2d');
+        const frame = document.getElementById('frame');
+
+        let stream;
 
         async function setupCamera() {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+            stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
             camera.srcObject = stream;
         }
 
@@ -101,15 +102,25 @@
             canvas.height = camera.videoHeight;
             ctx.drawImage(camera, 0, 0);
             
-            const overlayX = (canvas.width - overlay.width) / 2;
-            const overlayY = (canvas.height - overlay.height) / 2;
-            ctx.drawImage(overlay, overlayX, overlayY);
+            // Add clue overlay
+            const clueOverlay = new Image();
+            clueOverlay.onload = () => {
+                const overlayX = (canvas.width - clueOverlay.width) / 2;
+                const overlayY = (canvas.height - clueOverlay.height) / 2;
+                ctx.drawImage(clueOverlay, overlayX, overlayY);
+            };
+            clueOverlay.src = '/api/placeholder/200/100'; // Replace with your actual clue image
 
             camera.style.display = 'none';
             canvas.style.display = 'block';
             captureButton.textContent = 'Retake Selfie';
 
             ghostSound.play();
+
+            // Stop the camera stream
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
         }
 
         captureButton.addEventListener('click', () => {
@@ -117,6 +128,7 @@
                 canvas.style.display = 'none';
                 camera.style.display = 'block';
                 captureButton.textContent = 'Take Selfie';
+                setupCamera(); // Restart the camera
             } else {
                 captureSelfie();
             }
