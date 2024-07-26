@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Through the Keyhole</title>
+    <link rel="icon" href="WhBr-Rabbit-logo-golden-220609-v1.png" type="image/x-icon">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+            font-family: Alice, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background: #ffe4b5;
+        }
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        #camera, #canvas {
+            width: 100%;
+            max-width: 500px;
+        }
+        #overlay {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        #frame {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        .logo {
+            width: 110px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+        h1 {
+            margin: 5px;
+        }
+        #capture {
+            width: 100%;
+            max-width: 300px;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-family: Alice, sans-serif;
+        }
+        #capture:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <a href="https://www.whitebranches.com/keyhole" target="_blank">
+        <img src="WhBr-Rabbit-logo-golden-220609-v1.png" class="logo">
+    </a>
+    <h1>Through the Keyhole</h1>
+    <div class="container">
+        <video id="camera" autoplay playsinline></video>
+        <canvas id="canvas"></canvas>
+        <img id="frame" src="frame.png" alt="Frame">
+        <img id="overlay" src="/api/placeholder/200/100" alt="Clue Overlay">
+    </div>
+    <button id="capture">Take Selfie</button>
+    <audio id="ghostSound" src="ghost.mp3"></audio>
+
+    <script>
+        const camera = document.getElementById('camera');
+        const canvas = document.getElementById('canvas');
+        const captureButton = document.getElementById('capture');
+        const overlay = document.getElementById('overlay');
+        const ghostSound = document.getElementById('ghostSound');
+        const ctx = canvas.getContext('2d');
+
+        async function setupCamera() {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+            camera.srcObject = stream;
+        }
+
+        function captureSelfie() {
+            canvas.width = camera.videoWidth;
+            canvas.height = camera.videoHeight;
+            ctx.drawImage(camera, 0, 0);
+            
+            const overlayX = (canvas.width - overlay.width) / 2;
+            const overlayY = (canvas.height - overlay.height) / 2;
+            ctx.drawImage(overlay, overlayX, overlayY);
+
+            camera.style.display = 'none';
+            canvas.style.display = 'block';
+            captureButton.textContent = 'Retake Selfie';
+
+            ghostSound.play();
+        }
+
+        captureButton.addEventListener('click', () => {
+            if (canvas.style.display === 'block') {
+                canvas.style.display = 'none';
+                camera.style.display = 'block';
+                captureButton.textContent = 'Take Selfie';
+            } else {
+                captureSelfie();
+            }
+        });
+
+        setupCamera().catch(error => {
+            console.error('Error accessing camera:', error);
+            alert('Unable to access camera. Please ensure you have given permission and are using a supported browser.');
+        });
+    </script>
+</body>
+</html>
