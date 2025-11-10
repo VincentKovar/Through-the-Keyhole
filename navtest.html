@@ -1,19 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Navigator</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Navigation Test</title>
   <style>
-    #arrow { width: 100px; height: 100px; transition: transform 0.2s ease; }
-    #navigationContainer { display: none; }
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    #navigationContainer {
+      display: none;
+      margin-top: 20px;
+    }
+    #arrow {
+      width: 100px;
+      height: 100px;
+      transition: transform 0.2s ease;
+    }
+    #distanceDisplay {
+      margin-top: 10px;
+      font-size: 1.2em;
+    }
+    #compassPermissionButton {
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
+
+  <h1>Find the Building</h1>
   <button id="startButton">Start Navigation</button>
+
   <div id="navigationContainer">
     <button id="compassPermissionButton">Enable Compass</button>
-    <img id="arrow" src="arrow.png" alt="Direction Arrow">
+    <div>
+      <img id="arrow" src="arrow.png" alt="Direction Arrow">
+    </div>
     <div id="distanceDisplay">Distance: --</div>
     <audio id="beepAudio" src="beep.mp3" preload="auto"></audio>
   </div>
+
+  <script src="navguide.js"></script>
 </body>
 </html>
