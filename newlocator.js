@@ -1,111 +1,190 @@
-let targetLocation = { latitude: 48.41890859784646, longitude: -122.33687234141873 };
-let watchID = null;
-let beepAudio;
-let distanceDisplay = document.getElementById('distance');
-let instructionsDisplay = document.getElementById('instructions');
-let previousDistance = null;
-let beepInterval;
-let facingCorrectDirection = false;
-let clickCount = 0; // Counter for logo clicks
+// --- CONFIGURATION ---
+const TARGET_LAT = 47.74269947016799;
+const TARGET_LON = -122.17991178492984;
+const EARTH_RADIUS_METERS = 6371000;
+const COMPLETION_DISTANCE_METERS = 13.7; // 15 yards is approx 13.7m
 
-document.addEventListener('DOMContentLoaded', function() {
-    beepAudio = document.getElementById('beep-audio'); // Correctly retrieve beepAudio after DOM is loaded
-    document.getElementById('logo').addEventListener('click', () => {
-        clickCount++;
-        setTimeout(() => { clickCount = 0; }, 1000); // Reset count after 1 second
-        if (clickCount === 3) {
-            navigateToNext();
-        }
-    });
-});
+// --- DOM ELEMENTS ---
+const startButton = document.getElementById('startButton');
+const container = document.getElementById('navigationContainer');
+const arrow = document.getElementById('arrow');
+const distanceDisplay = document.getElementById('distanceDisplay');
+// Assuming you add this to navtest.html: <audio id="beepAudio" src="beep.mp3" preload="auto"></audio>
+const beepAudio = document.getElementById('beepAudio'); 
 
-function startGame() {
-    document.querySelector('button').style.display = 'none'; // Hide the start button
-    if (navigator.geolocation) {
-        watchID = navigator.geolocation.watchPosition(updatePosition, handleError, { enableHighAccuracy: true });
-        window.addEventListener('deviceorientation', handleOrientation, true);
-    } else {
-        instructionsDisplay.textContent = "Geolocation is not supported by this browser.";
-    }
-    console.log("Game started");
+// --- STATE ---
+let deviceHeading = 0; // The mobile device's current compass heading (0-360)
+let pulseInterval = null;
+let watchID = null; 
+
+// --- UTILITY FUNCTIONS (THE MATH) ---
+
+function toRadians(degrees) {
+    return degrees * (Math.PI / 180);
 }
 
-function updatePosition(position) {
-    let currentLocation = {
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude
-    };
-    console.log("Current location:", currentLocation);
-    let distance = calculateDistance(currentLocation, targetLocation);
-    distanceDisplay.textContent = `Distance to target: ${distance.toFixed(2)} meters`;
-
-    if (distance < previousDistance || previousDistance === null) {
-        adjustBeep(distance);
-        adjustLogoBlink(distance);
-    }
-
-    previousDistance = distance;
-
-    if (distance < 50) {
-        document.getElementById('next-container').style.display = 'block';
-    }
+// Haversine Formula (Calculates distance in meters)
+function getDistance(lat1, lon1, lat2, lon2) {
+    const dLat = toRadians(lat2 - lat1);
+    const dLon = toRadians(lon2 - lon1);
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
+              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return EARTH_RADIUS_METERS * c; 
 }
 
-function calculateDistance(loc1, loc2) {
-    let R = 6371e3; // metres
-    let φ1 = loc1.latitude * Math.PI / 180;
-    let φ2 = loc2.latitude * Math.PI / 180;
-    let Δφ = (loc2.latitude - loc1.latitude) * Math.PI / 180;
-    let Δλ = (loc2.longitude - loc1.longitude) * Math.PI / 180;
+// Calculates Bearing (Angle from current location to target)
+function getBearing(lat1, lon1, lat2, lon2) {
+    lat1 = toRadians(lat1);
+    lon1 = toRadians(lon1);
+    lat2 = toRadians(lat2);
+    lon2 = toRadians(lon2);
 
-    let a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; // Distance in meters
+    const y = Math.sin(lon2 - lon1) * Math.cos(lat2);
+    const x = Math.cos(lat1) * Math.sin(lat2) -
+              Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
+    let bearing = Math.atan2(y, x);
+    
+    bearing = bearing * (180 / Math.PI);
+    return (bearing + 360) % 360;
 }
 
+// --- DEVICE HANDLERS ---
+
+// **FIX for Wonky Arrow**: Capture the device's actual compass heading
 function handleOrientation(event) {
-    const alpha = event.alpha;
-    const bearing = calculateBearing(currentLocation, targetLocation);
-    facingCorrectDirection = Math.abs(alpha - bearing) <= 7;
-    instructionsDisplay.textContent = facingCorrectDirection ? "Correct direction!" : "Adjust your direction.";
-    adjustBeep(previousDistance);
+    // 'alpha' is the standard compass heading, but we check for the older webkit property as a fallback.
+    if (event.alpha !== null) {
+        deviceHeading = event.alpha;
+    } else if (event.webkitCompassHeading !== undefined) {
+        deviceHeading = event.webkitCompassHeading; // iOS fallback for some older devices
+    }
 }
 
-function calculateBearing(loc1, loc2) {
-    let y = Math.sin(loc2.longitude - loc1.longitude) * Math.cos(loc2.latitude);
-    let x = Math.cos(loc1.latitude) * Math.sin(loc2.latitude) - Math.sin(loc1.latitude) * Math.cos(loc2.latitude) * Math.cos(loc2.longitude - loc1.longitude);
-    let bearing = Math.atan2(y, x) * (180 / Math.PI);
-    bearing = (bearing + 360) % 360; // Normalize bearing
-    return bearing;
+// Main function that runs whenever a new GPS position is received.
+function locationUpdate(position) {
+    const currentLat = position.coords.latitude;
+    const currentLon = position.coords.longitude;
+
+    const distance = getDistance(currentLat, currentLon, TARGET_LAT, TARGET_LON);
+    const targetBearing = getBearing(currentLat, currentLon, TARGET_LAT, TARGET_LON);
+    
+    // **FIX for Wonky Arrow**: Arrow Rotation logic
+    // Subtract the device's orientation (compass heading) to correct the visual direction.
+    const rotationAngle = targetBearing - deviceHeading;
+    arrow.style.transform = `rotate(${rotationAngle}deg)`;
+
+    // 2. FEEDBACK AND COMPLETION
+    distanceDisplay.textContent = `Distance: ${distance.toFixed(1)} meters`;
+    
+    if (distance < COMPLETION_DISTANCE_METERS) {
+        triggerNextPuzzle();
+    } else {
+        controlFeedback(distance);
+    }
 }
 
-function adjustBeep(distance) {
-    clearInterval(beepInterval);
-    let interval = distance < 25 ? 800 : distance < 50 ? 1000 : distance < 100 ? 1500 : distance < 200 ? 2000 : distance < 400 ? 3000 : 4000;
-    beepInterval = setInterval(() => {
-        if (facingCorrectDirection && 'vibrate' in navigator) {
-            beepAudio.play();
-            navigator.vibrate(200);
+// **FIX for Missing Haptic/Beep**: Adjusts frequency of feedback based on distance.
+function controlFeedback(distance) {
+    if (pulseInterval) {
+        clearInterval(pulseInterval);
+    }
+
+    let intervalTime = 0; // in milliseconds
+
+    if (distance > 100) {
+        intervalTime = 3000; 
+    } else if (distance > 50) {
+        intervalTime = 1500; 
+    } else { // Close range (50m - 13.7m)
+        intervalTime = 500; 
+    }
+    
+    pulseInterval = setInterval(() => {
+        // Haptic Pulse (50ms)
+        navigator.vibrate(50); 
+        
+        // Audio Beep Logic (Requires beep.mp3 and audio tag in HTML)
+        if (beepAudio) {
+            // Reset and play the sound to sync with the pulse
+            beepAudio.currentTime = 0; 
+            beepAudio.play().catch(e => console.log("Audio play failed, may need user interaction: " + e));
         }
-    }, interval);
+    }, intervalTime);
 }
 
-function adjustLogoBlink(distance) {
-    let blinkRate = Math.max(0.5, 5 - distance / 80);
-    document.getElementById('logo').style.animation = `blink ${blinkRate}s steps(5, start) infinite`;
-}
-
-function handleError(error) {
-    console.error("Error with geolocation: ", error);
-    instructionsDisplay.textContent = "Unable to retrieve your location.";
-}
-
-function navigateToNext() {
-    clearInterval(beepInterval);
-    if (navigator.geolocation && watchID !== null) {
+// Final action when target is reached.
+function triggerNextPuzzle() {
+    // Clear all running processes
+    if (watchID) {
         navigator.geolocation.clearWatch(watchID);
-        watchID = null;
+    }
+    if (pulseInterval) {
+        clearInterval(pulseInterval);
     }
     window.removeEventListener('deviceorientation', handleOrientation);
-    window.location.href = 'slider.html';
+
+    // Stop haptic/audio
+    navigator.vibrate(0); 
+    if (beepAudio) beepAudio.pause();
+
+    // Redirect the player
+    alert("Target Reached! Opening Next Puzzle...");
+    // window.location.href = "next_puzzle.html"; 
 }
+
+// --- INITIALIZATION (THE START GATE) ---
+
+function startNavigation() {
+    startButton.style.display = 'none';
+    container.style.display = 'block';
+
+    // 1. Initialize Geolocation with High Accuracy
+    const watchOptions = {
+        enableHighAccuracy: true,
+        timeout: 15000, // Increased timeout for better stability
+        maximumAge: 0 
+    };
+
+    watchID = navigator.geolocation.watchPosition(
+        locationUpdate, 
+        (error) => {
+            distanceDisplay.textContent = `Error ${error.code}: ${error.message}. Ensure location is enabled and you are using HTTPS.`;
+            console.error(error);
+        }, 
+        watchOptions
+    );
+
+    // 2. Initialize Compass (Device Orientation)
+    // NOTE: On Android, this usually works without a permission prompt, but we check for iOS compatibility just in case.
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission()
+            .then(permissionState => {
+                if (permissionState === 'granted') {
+                    window.addEventListener('deviceorientation', handleOrientation);
+                } else {
+                    alert('Compass permission denied. Arrow direction will be unreliable.');
+                }
+            });
+    } else {
+        window.addEventListener('deviceorientation', handleOrientation);
+    }
+
+    // 3. **FIX for Missing Haptic/Beep**: Activate Haptics and Audio
+    // Runs inside the user-driven button click to satisfy security requirements.
+    navigator.vibrate(50); // Initial activation pulse
+
+    if (beepAudio) {
+        beepAudio.play().then(() => {
+            beepAudio.pause();
+            beepAudio.currentTime = 0;
+        }).catch(e => {
+            console.log("Audio initialization failed. Sound may not work.");
+            // Hide the error, but alert the user if needed: alert("Tap failed to initialize sound!");
+        });
+    }
+}
+
+// Attach the main function to the start button
+startButton.addEventListener('click', startNavigation);
