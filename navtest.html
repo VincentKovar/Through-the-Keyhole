@@ -45,7 +45,16 @@
             font-size: 0.9em;
             color: #555;
             margin-top: 10px;
-            min-height: 40px; /* Reserve space for the numbers */
+            min-height: 40px; /* Reserves space for the debug numbers */
+        }
+        #compassPermissionButton {
+            margin-top: 20px; 
+            padding: 10px; 
+            background-color: #f44336; /* Red color to draw attention */
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer;
         }
     </style>
 </head>
@@ -60,6 +69,8 @@
         <div id="distanceDisplay">Awaiting Location...</div>
         
         <div id="headingDisplay">Compass: N/A</div> 
+
+        <button id="compassPermissionButton">Fix Arrow Direction</button>
 
     </div>
 
