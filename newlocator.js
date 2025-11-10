@@ -9,7 +9,7 @@ const startButton = document.getElementById('startButton');
 const container = document.getElementById('navigationContainer');
 const arrow = document.getElementById('arrow');
 const distanceDisplay = document.getElementById('distanceDisplay');
-// Assuming you add this to navtest.html: <audio id="beepAudio" src="beep.mp3" preload="auto"></audio>
+const headingDisplay = document.getElementById('headingDisplay'); // NEW DEBUG ELEMENT
 const beepAudio = document.getElementById('beepAudio'); 
 
 // --- STATE ---
@@ -54,11 +54,11 @@ function getBearing(lat1, lon1, lat2, lon2) {
 
 // **FIX for Wonky Arrow**: Capture the device's actual compass heading
 function handleOrientation(event) {
-    // 'alpha' is the standard compass heading, but we check for the older webkit property as a fallback.
+    // If we receive compass data, update the deviceHeading variable.
     if (event.alpha !== null) {
         deviceHeading = event.alpha;
     } else if (event.webkitCompassHeading !== undefined) {
-        deviceHeading = event.webkitCompassHeading; // iOS fallback for some older devices
+        deviceHeading = event.webkitCompassHeading; 
     }
 }
 
@@ -71,12 +71,18 @@ function locationUpdate(position) {
     const targetBearing = getBearing(currentLat, currentLon, TARGET_LAT, TARGET_LON);
     
     // **FIX for Wonky Arrow**: Arrow Rotation logic
-    // Subtract the device's orientation (compass heading) to correct the visual direction.
     const rotationAngle = targetBearing - deviceHeading;
     arrow.style.transform = `rotate(${rotationAngle}deg)`;
 
     // 2. FEEDBACK AND COMPLETION
     distanceDisplay.textContent = `Distance: ${distance.toFixed(1)} meters`;
+    
+    // DEBUG: Display the raw compass heading and rotation angle
+    headingDisplay.innerHTML = `
+        Compass: ${deviceHeading.toFixed(1)}°<br>
+        Target: ${targetBearing.toFixed(1)}°<br>
+        Rotation: ${rotationAngle.toFixed(1)}°
+    `;
     
     if (distance < COMPLETION_DISTANCE_METERS) {
         triggerNextPuzzle();
@@ -109,7 +115,7 @@ function controlFeedback(distance) {
         if (beepAudio) {
             // Reset and play the sound to sync with the pulse
             beepAudio.currentTime = 0; 
-            beepAudio.play().catch(e => console.log("Audio play failed, may need user interaction: " + e));
+            beepAudio.play().catch(e => console.log("Audio play failed: " + e));
         }
     }, intervalTime);
 }
@@ -129,9 +135,7 @@ function triggerNextPuzzle() {
     navigator.vibrate(0); 
     if (beepAudio) beepAudio.pause();
 
-    // Redirect the player
     alert("Target Reached! Opening Next Puzzle...");
-    // window.location.href = "next_puzzle.html"; 
 }
 
 // --- INITIALIZATION (THE START GATE) ---
@@ -140,10 +144,15 @@ function startNavigation() {
     startButton.style.display = 'none';
     container.style.display = 'block';
 
+    // Check for required audio element
+    if (!beepAudio) {
+        alert("Audio element not found in HTML. Beeping will not work. Please add <audio id='beepAudio' src='beep.mp3' preload='auto'></audio>.");
+    }
+
     // 1. Initialize Geolocation with High Accuracy
     const watchOptions = {
         enableHighAccuracy: true,
-        timeout: 15000, // Increased timeout for better stability
+        timeout: 15000, 
         maximumAge: 0 
     };
 
@@ -157,7 +166,6 @@ function startNavigation() {
     );
 
     // 2. Initialize Compass (Device Orientation)
-    // NOTE: On Android, this usually works without a permission prompt, but we check for iOS compatibility just in case.
     if (typeof DeviceOrientationEvent.requestPermission === 'function') {
         DeviceOrientationEvent.requestPermission()
             .then(permissionState => {
@@ -168,11 +176,11 @@ function startNavigation() {
                 }
             });
     } else {
+        // For Android and older browsers, just add the listener
         window.addEventListener('deviceorientation', handleOrientation);
     }
 
     // 3. **FIX for Missing Haptic/Beep**: Activate Haptics and Audio
-    // Runs inside the user-driven button click to satisfy security requirements.
     navigator.vibrate(50); // Initial activation pulse
 
     if (beepAudio) {
@@ -180,8 +188,8 @@ function startNavigation() {
             beepAudio.pause();
             beepAudio.currentTime = 0;
         }).catch(e => {
-            console.log("Audio initialization failed. Sound may not work.");
-            // Hide the error, but alert the user if needed: alert("Tap failed to initialize sound!");
+            console.log("Audio initialization failed. Player must interact with the page first.");
+            // We let the game continue, but the beep may not work until the user touches the screen again.
         });
     }
 }
