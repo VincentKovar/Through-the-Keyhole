@@ -1,71 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compass-Free Navigator</title>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            font-family: sans-serif;
-            background-color: #f4f4f9;
-        }
-        #startButton {
-            padding: 15px 30px;
-            font-size: 1.2em;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-bottom: 20px;
-        }
-        #navigationContainer {
-            display: none; /* Hidden until the start button is pressed */
-            text-align: center;
-        }
-        #arrow {
-            display: none; /* Hiding the arrow as compass is not used */
-            width: 150px;
-            height: 150px;
-            margin-bottom: 20px;
-        }
-        #distanceDisplay {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 15px;
-        }
-        #feedbackDisplay {
-            font-size: 1.2em;
-            font-style: italic;
-            min-height: 40px; /* Reserves space for the text */
-            font-weight: 600;
-        }
-    </style>
+  <title>Navigator</title>
+  <style>
+    #arrow { width: 100px; height: 100px; transition: transform 0.2s ease; }
+    #navigationContainer { display: none; }
+  </style>
 </head>
 <body>
-
-    <button id="startButton">Begin Navigation</button>
-    
-    <div id="navigationContainer">
-        <h1>Warmer/Colder Tracker</h1>
-
-        <img id="arrow" src="finger.png" alt="Direction Pointer">
-        
-        <div id="distanceDisplay">Awaiting Location...</div>
-
-        <div id="feedbackDisplay">Waiting for movement...</div> 
-    </div>
-
-    <audio id="beepAudio" src="beep.mp3" preload="auto"></audio> 
-
-    <script src="navigator_safe.js"></script> 
-
+  <button id="startButton">Start Navigation</button>
+  <div id="navigationContainer">
+    <button id="compassPermissionButton">Enable Compass</button>
+    <img id="arrow" src="arrow.png" alt="Direction Arrow">
+    <div id="distanceDisplay">Distance: --</div>
+    <audio id="beepAudio" src="beep.mp3" preload="auto"></audio>
+  </div>
 </body>
 </html>
