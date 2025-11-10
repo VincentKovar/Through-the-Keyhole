@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treasure Hunt Navigator Test</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: sans-serif;
+            background-color: #f4f4f9;
+        }
+        #startButton {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        #navigationContainer {
+            display: none; /* Hidden until the start button is pressed */
+            text-align: center;
+        }
+        #arrow {
+            width: 150px;
+            height: 150px;
+            /* The image will be rotated by JavaScript */
+            transition: transform 0.2s ease-out; 
+            margin-bottom: 20px;
+        }
+        #distanceDisplay {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <button id="startButton">Begin Navigation</button>
+    
+    <div id="navigationContainer">
+        <h1>Find the Keyhole</h1>
+        <img id="arrow" src="finger.png" alt="Direction Pointer">
+        <div id="distanceDisplay">Awaiting Location...</div>
+    </div>
+
+    <script src="navigator.js"></script> 
+
+</body>
+</html>
