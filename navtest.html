@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Treasure Hunt Navigator Test</title>
+    <title>Compass-Free Navigator</title>
     <style>
         body {
             display: flex;
@@ -30,31 +30,22 @@
             text-align: center;
         }
         #arrow {
+            display: none; /* Hiding the arrow as compass is not used */
             width: 150px;
             height: 150px;
-            /* The image will be rotated by JavaScript */
-            transition: transform 0.2s ease-out; 
             margin-bottom: 20px;
         }
         #distanceDisplay {
             font-size: 1.5em;
             font-weight: bold;
             color: #333;
+            margin-bottom: 15px;
         }
-        #headingDisplay {
-            font-size: 0.9em;
-            color: #555;
-            margin-top: 10px;
-            min-height: 40px; /* Reserves space for the debug numbers */
-        }
-        #compassPermissionButton {
-            margin-top: 20px; 
-            padding: 10px; 
-            background-color: #f44336; /* Red color to draw attention */
-            color: white; 
-            border: none; 
-            border-radius: 5px; 
-            cursor: pointer;
+        #feedbackDisplay {
+            font-size: 1.2em;
+            font-style: italic;
+            min-height: 40px; /* Reserves space for the text */
+            font-weight: 600;
         }
     </style>
 </head>
@@ -63,20 +54,18 @@
     <button id="startButton">Begin Navigation</button>
     
     <div id="navigationContainer">
-        <h1>Find the Keyhole</h1>
+        <h1>Warmer/Colder Tracker</h1>
+
         <img id="arrow" src="finger.png" alt="Direction Pointer">
         
         <div id="distanceDisplay">Awaiting Location...</div>
-        
-        <div id="headingDisplay">Compass: N/A</div> 
 
-        <button id="compassPermissionButton">Fix Arrow Direction</button>
-
+        <div id="feedbackDisplay">Waiting for movement...</div> 
     </div>
 
     <audio id="beepAudio" src="beep.mp3" preload="auto"></audio> 
 
-    <script src="navigator.js"></script> 
+    <script src="navigator_safe.js"></script> 
 
 </body>
 </html>
